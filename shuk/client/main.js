@@ -8,6 +8,8 @@ if(QueryString.listkey != undefined){
   Session.set('listkey', QueryString.listkey)
 }
 var player;
+
+Session.set('current', 0);
 var current = 0;
 var old_current = -1;
 var weight = 1000;  
@@ -31,7 +33,7 @@ function createListKey(name){
 }
 function createPlayChannel(){
   if(Meteor.user() && Session.get('listkey')){
-    pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:current});
+    pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current')});
     console.log(pchannel);
     Session.set('playchannel',pchannel);
   }
@@ -70,16 +72,27 @@ function stopVideo() {
   player.stopVideo();
 }  
 function nextSong(){
-  old_current=current;
-  current++;
-  c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[current];
+  setCurrent('modify',1);
+  c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];
   if(c)
     playSong(c.name);
   else {
-    current=0;
-    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[current];
+    setCurrent('set',0);
+    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];
     playSong(c.name);
   }
+}
+function setCurrent(m,i){
+  old_current = current;
+  if(m=='modify'){
+    Session.set('current', Session.get('current') + i);
+  }else if(m=='set'){
+    Session.set('current', i);
+  }$('ul.playlist li').removeClass('current');
+  $('ul.playlist li').eq(Session.get('current')).addClass('current');
+  console.log(Session.get('current'))
+  PlayChannels.update({_id: Session.get('playchannel')},{current:Session.get('current')});
+  PlayChannels.find({_id: Session.get('playchannel')}).fetch()[0];
 }
 Template.musiclist.invokeAfterLoad = function () {
   Meteor.defer(function () {     
@@ -109,7 +122,7 @@ Template.musiclist.events = {
     }
     Meteor.flush();
     $('#playchannelurl').html('<input value="'+window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel')+'" />');    
-    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[current];          
+    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];          
     playSong(c.name);        
    },
   'click span.title': function () {
@@ -117,10 +130,9 @@ Template.musiclist.events = {
     var id = this._id; 
     for(k=0,l=c.length;k<l;k++){
       if(c[k]._id == id){
-        current = k;
+        setCurrent('set',k);;
         playSong(c[k].name);
       }
-      i++;
     }
    },
   'click .clearlist': function () {         
