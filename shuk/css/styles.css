@@ -1,0 +1,146 @@
+
+#autocompleter{
+  margin: 0 0 0 0px;
+  border-radius: 0;
+  width: 112.6%;
+  font-size: 1em;
+  padding:16px 10px ;
+	
+  position:absolute;
+  top:52px;
+  z-index:99999;
+  background-color:white;
+  -moz-box-shadow:    2px 2px 2px 2px #eaeaea;
+  -webkit-box-shadow: 2px 2px 2px 2px #eaeaea;
+  box-shadow:         2px 2px 2px 2px #eaeaea;
+}
+#autocompleter li{
+  list-style:none;
+  padding:10px;
+  border-bottom:1px solid #EAEAEA;
+}
+#autocompleter li:last-child{
+  border:none;
+}
+#autocompleter li:hover{
+ background-color:#000000;
+ color:white;
+ cursor:pointer;
+}
+#autocompleter li img{
+  height:100%;
+  width:100%;
+  margin-right:20px;
+}
+#autocompleter li
+{
+  overflow:auto;
+}
+#autocompleter li div{
+  float:left;
+  padding-right:10px;
+}
+.selected{
+ background-color:#000000;
+ color:white;
+}
+.shareurl{
+  border-radius: 30px;
+  height: 30px;
+  line-height: 32px;
+  background-color: #FFFFFF;
+  overflow:hidden;
+  padding: 0 10px;
+  position: relative;
+  font-weight: bold;
+}
+
+
+ul.playlist {
+	list-style: none;
+	border: none;
+	margin: 0;
+}
+ul.playlist li {
+	list-style: none;
+	border-bottom: 1px solid #CCC;
+	background: #EEE;
+	padding: 15px;
+	color: #666;
+	font-size: 14px;
+	position: relative;
+}
+
+ul.playlist li:hover {
+	border-bottom: 1px solid #C1C1C1;
+	background: #E1E1E1;
+	cursor: pointer;
+}
+
+
+ul.playlist li a.avatar {
+	position: absolute;
+	width: 28px;
+	height: 28px;
+	right: 10px;
+	top: 10px;
+	opacity: 0.3;
+}
+
+ul.playlist li:hover a.avatar {
+	opacity: 1;
+}
+
+ul.playlist li.current {
+	font-weight: bold;
+	font-size: 2em;
+	line-height:2em;
+	background: #FFF;
+	box-shadow: 0px 1px 1px #CCC;
+	display: block;
+	position: relative;
+	z-index: 10;
+	color: #000;
+	padding: 20px;
+	
+}
+
+
+ul.playlist li.current a.avatar {
+	opacity: 1;
+}
+ul.playlist li.current input,ul.playlist li.current a{
+  display:none;
+}
+.clearlist, .playsong, .skip{
+  cursor:pointer;
+}
+#search {
+  position:relative;
+  background: #000 url('/img/icon-search.png') no-repeat 3.5% 13px;
+  width:85.7%;
+}
+#search input {
+	margin: 0 0 0 12%;
+	border-radius: 0;
+	width: 100%;
+	font-size: 16px;
+	padding:16px 2.3% ;
+}
+#player {
+	width: 100%;
+	overflow: hidden;
+}
+.thumb-search{
+  background:url('/img/ajax-loader.gif') no-repeat center;
+}
+.vote-up {
+	position: absolute;
+	right: -30px;
+	display: none;
+	top: 15px;
+}
+
+li:hover .vote-up {
+	display: block;
+}    

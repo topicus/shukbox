@@ -1,0 +1,1 @@
+Meteor.accounts.facebook.config('407750262605974', 'http://localhost:3000');
