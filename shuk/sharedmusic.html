@@ -66,22 +66,31 @@
                   <input placeholder="Busca un tema!" autofocus="autofocus" class="nextsong" id="nextsong" type="text"/>
                   <div id="videoResultsDiv"></div> 
               </div>
-              <iframe id="player" width="100%" height="0" src="" frameborder="0" allowfullscreen></iframe>
+              <iframe id="player" width="100%" height="0" src="" frameBorder="0" scrolling="no" allowfullscreen></iframe>
               <div id="player-div"></div>
-              <ul class="playlist">
-              {{#each songs}}
-                <li>{{>song}}</li>
-              {{/each}}
-              </ul>
+              <div id="wrap-playlist">
+				<ul class="playlist">
+				{{#each songs}}
+				  <li>{{>song}}</li>
+				{{/each}}
+				</ul>
+			  </div>
             </div>
             <div class="span4">
 	            <h1>SHUKBOX</h1>
-	            <p>REALTIME VIDEO LIST </p>
-	            <i class="icon-play playsong"></i>
-	            <i class="icon-trash clearlist"></i>
-	            <i class="icon-share skip"></i>
-				<div id="listurl"></div>
-				<div id="playchannelurl"></div>
+	            <p>REALTIME VIDEO LIST</p>
+	            <div id="controls">
+				  <a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
+				  <a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
+				  <a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
+				  <a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>				
+				</div>
+				<div id="shares">
+				  <p><strong>Share the playlist:</strong></p>
+				  <div id="listurl"></div>
+				  <p><strong>Share the playchannel:</strong></p>
+				  <div id="playchannelurl"></div>
+				</div>
             </div>
 			
         </div>
