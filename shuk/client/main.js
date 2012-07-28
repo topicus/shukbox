@@ -1,4 +1,13 @@
-//var listkey = null;  
+Songs = new Meteor.Collection("songs");
+PlayLists = new Meteor.Collection('playlists');
+PlayChannels = new Meteor.Collection('playchannels');
+
+Meteor.autosubscribe(function () {
+  Meteor.subscribe('songs');
+  Meteor.subscribe('playlists');
+  Meteor.subscribe('playchannels');
+});
+
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var currentSelected = -1;
@@ -8,9 +17,9 @@ if(QueryString.listkey != undefined){
   Session.set('listkey', QueryString.listkey)
 }
 if(QueryString.playchannel!=undefined){
-  //Session.set('playchannel', QueryString.playchannel)
-  console.log(PlayChannels.findOne({_id:QueryString.playchannel}));
+  Session.set('playchannel', QueryString.playchannel)
 }
+
 var player;
 
 Session.set('current', 0);
@@ -32,13 +41,12 @@ if(!Meteor.user()){
 function createListKey(name){
   if(Meteor.user() && !Session.get('listkey')){
     name = (name)? name : Meteor.uuid();
-    Session.set('listkey', Playlists.insert({name:name, user:Meteor.user()._id}));
+    Session.set('listkey', PlayLists.insert({name:name, user:Meteor.user()._id}));
   }
 }
 function createPlayChannel(){
   if(Meteor.user() && Session.get('listkey')){
     pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current')});
-    console.log(pchannel);
     Session.set('playchannel',pchannel);
   }
 }
@@ -97,9 +105,10 @@ function setCurrent(m,i){
   lis.removeClass('current');
   var currentLi = lis.eq(Session.get('current'));
   currentLi.addClass('current');
-  
-  PlayChannels.update({_id: Session.get('playchannel')},{current:Session.get('current')});
-  PlayChannels.find({_id: Session.get('playchannel')}).fetch()[0];
+  if(Session.get('playchannel') ){
+    console.log( PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} ));
+        PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
+  }
 }
 Template.musiclist.invokeAfterLoad = function () {
   Meteor.defer(function () {     

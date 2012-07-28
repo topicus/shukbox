@@ -1,14 +1,34 @@
-Meteor.startup(function () {
-  var canModify = function(userId, tasks) {
-    return _.all(tasks, function(task) {
-      return !task.privateTo || task.privateTo === userId;
-    });
-  };
+Songs = new Meteor.Collection("songs");
+PlayLists = new Meteor.Collection('playlists');
+PlayChannels = new Meteor.Collection('playchannels');
 
+Meteor.publish('songs', function () {
+  return Songs.find();
+});
+Meteor.publish('playlists', function () {
+  return PlayLists.find();
+});
+Meteor.publish('playchannels', function () {
+  return PlayChannels.find();
+});
+
+Meteor.startup(function () {
   Songs.allow({
     insert: function () { return true; },
-    update: canModify,
-    remove: canModify,
-    fetch: ['privateTo']
+    update: function () { return true; },
+    remove: function () { return true; },
+    fetch: function () { return true; }
   });
+  PlayChannels.allow({
+    insert: function () { return true; },
+    update: function () { return true; },
+    remove: function () { return true; },
+    fetch: function () { return true; }
+  });
+  PlayLists.allow({
+    insert: function () { return true; },
+    update: function () { return true; },
+    remove: function () { return true; },
+    fetch: function () { return true; }
+  });  
 });
