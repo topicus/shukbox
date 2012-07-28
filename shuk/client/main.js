@@ -7,6 +7,10 @@ var HAS_INPUT_EVENT = 0;
 if(QueryString.listkey != undefined){
   Session.set('listkey', QueryString.listkey)
 }
+if(QueryString.playchannel!=undefined){
+  //Session.set('playchannel', QueryString.playchannel)
+  console.log(PlayChannels.findOne({_id:QueryString.playchannel}));
+}
 var player;
 
 Session.set('current', 0);
@@ -93,8 +97,6 @@ function setCurrent(m,i){
   lis.removeClass('current');
   var currentLi = lis.eq(Session.get('current'));
   currentLi.addClass('current');
-  $('ul.playlist').css('margin-top','-'+currentLi.position().top+'px');
-
   
   PlayChannels.update({_id: Session.get('playchannel')},{current:Session.get('current')});
   PlayChannels.find({_id: Session.get('playchannel')}).fetch()[0];
@@ -115,8 +117,14 @@ Template.musiclist.invokeAfterLoad = function () {
 
   });
   return "";
-};  
-Template.musiclist.songs = function () {
+};
+Template.currentvideo.currentVideo = function(){
+  if(PlayChannels.findOne(Session.get('playchannel'))){
+    return PlayChannels.findOne(Session.get('playchannel'));
+  }
+  return false;
+}
+Template.musiclist.songs = function () { 
   return Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
 };
 Template.musiclist.events = {

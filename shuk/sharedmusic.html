@@ -51,7 +51,8 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-  </div>      
+  </div>
+	{{> currentvideo}}
     {{> musiclist}}
   </div>
 </body>
@@ -97,7 +98,13 @@
       </div>
     </div>          
 </template>
-
+<template name="currentvideo">
+  <div>
+	{{#if currentVideo}}
+	  {{currentVideo.current}}
+	{{/if}}
+  </div>
+</template>
 <template name="song">
   <div class="song">
     <span class="title">{{title}}</span>
