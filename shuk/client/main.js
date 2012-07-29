@@ -12,17 +12,30 @@ var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var currentSelected = -1;
 var HAS_INPUT_EVENT = 0;
-
+  
 if(QueryString.listkey != undefined){
   Session.set('listkey', QueryString.listkey)
 }
 if(QueryString.playchannel!=undefined){
-  Session.set('playchannel', QueryString.playchannel)
+  Session.set('playchannel', QueryString.playchannel);
+}
+Session.set('current', 0);
+
+PlayChannels.find({_id:Session.get('playchannel')}).observe({
+  added: function (item) {
+    console.log("aca");
+  } 
+});  
+checkListKey();
+if(!Meteor.user()){
+  var username = 'anonym'+Meteor.uuid();
+  var password = Meteor.uuid()
+  Meteor.createUser({username:username, password:password}, null, function(r){
+    Meteor.loginWithPassword(username, password);
+  });
 }
 
 var player;
-
-Session.set('current', 0);
 var current = 0;
 var old_current = -1;
 var weight = 1000;  
@@ -31,31 +44,26 @@ tag.src = "//www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-if(!Meteor.user()){
-  var username = 'anonym'+Meteor.uuid();
-  var password = Meteor.uuid()
-  Meteor.createUser({username:username, password:password}, null, function(r){
-    Meteor.loginWithPassword(username, password);
-  });
-}
-function createListKey(name){
+
+function checkListKey(name){
   if(Meteor.user() && !Session.get('listkey')){
     name = (name)? name : Meteor.uuid();
     Session.set('listkey', PlayLists.insert({name:name, user:Meteor.user()._id}));
   }
 }
-function createPlayChannel(){
-  if(Meteor.user() && Session.get('listkey')){
+function checkPlayChannel(){
+  if(Meteor.user() && Session.get('listkey') && !Session.get('playchannel')){
     pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current')});
     Session.set('playchannel',pchannel);
   }
 }
 function onYouTubeIframeAPIReady() {
   cursor = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
-  if(cursor.count())
-    playSong(cursor.fetch()[0].name);
+  if(cursor.count()){
+    playSong(cursor.fetch()[0].name);    
+  }
 }
-function playSong(vid){
+function playSong(vid){    
     if(!player){
       player = new YT.Player('player-div', {
         height: '300',
@@ -106,8 +114,7 @@ function setCurrent(m,i){
   var currentLi = lis.eq(Session.get('current'));
   currentLi.addClass('current');
   if(Session.get('playchannel') ){
-    console.log( PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} ));
-        PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
+    PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
   }
 }
 Template.musiclist.invokeAfterLoad = function () {
@@ -117,9 +124,6 @@ Template.musiclist.invokeAfterLoad = function () {
       search($('#nextsong').val());
     });
     $('.tip').tooltip({animation:true,placement:'bottom'});
-    
-    sharePop = $('.share');
-    
     if(Session.get('listkey')){
       $('#listurl').html('<input type="text" value="'+window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey')+'" />');
     }
@@ -129,9 +133,17 @@ Template.musiclist.invokeAfterLoad = function () {
 };
 Template.currentvideo.currentVideo = function(){
   if(PlayChannels.findOne(Session.get('playchannel'))){
-    return PlayChannels.findOne(Session.get('playchannel'));
+    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
+    var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
+    return c;
   }
   return false;
+}
+Template.shares.playlist_url = function(){
+  return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
+}
+Template.shares.playchannel_url = function(){
+  return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
 }
 Template.musiclist.songs = function () { 
   return Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
@@ -147,16 +159,14 @@ Template.musiclist.events = {
     $('#shares').show();
   },
   'click .playsong': function () {
-    if(!Session.get('playchannel')){    
-      createPlayChannel();
-    }
+    checkPlayChannel();
     Meteor.flush();
-    $('#playchannelurl').html('<input type="text" value="'+window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel')+'" />');    
     c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];          
     setCurrent('set',0);
-    playSong(c.name);        
+    if(c) playSong(c.name);        
    },
   'click span.title': function () {
+    checkPlayChannel();
     var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch();
     var id = this._id; 
     for(k=0,l=c.length;k<l;k++){
@@ -240,11 +250,7 @@ function showMyVideos(data){
     });
 }
 function addSong(jselector){
-  if(!Session.get('listkey')){    
-    createListKey();
-  }
   Meteor.flush();
-  $('#listurl').html('<input type="text" value="'+window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey')+'" />');
   vid = get_youtube_id(jselector.children('a').attr("href"));
   title = jselector.children('a').attr("title");
   item_min_score = Songs.findOne({listkey:Session.get('listkey')},{sort: {score: 1}, limit:1});
@@ -257,12 +263,4 @@ function addSong(jselector){
   if(c.count()){      
     $('ul.playlist').css("border", '1px solid #CCC');
   }    
-}
-function get_youtube_id(url){
-    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-    var match = url.match(regExp);
-    if (match&&match[7].length==11){
-        return match[7];
-    }
-    return false;
 }

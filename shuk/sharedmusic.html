@@ -86,12 +86,7 @@
 				  <a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
 				  <a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>				
 				</div>
-				<div id="shares">
-				  <p><strong>Share the playlist:</strong></p>
-				  <div id="listurl"></div>
-				  <p><strong>Share the playchannel:</strong></p>
-				  <div id="playchannelurl"></div>
-				</div>
+				{{> shares}}
             </div>
 			
         </div>
@@ -101,14 +96,25 @@
 <template name="currentvideo">
   <div>
 	{{#if currentVideo}}
-	  {{currentVideo.current}}
+	  {{currentVideo.title}}
+	{{/if}}
+  </div>
+</template>
+<template name="shares">
+  <div id="shares">
+	{{#if playlist_url}}
+	  <p><strong>Share the playlist:</strong></p>
+	  <div id="listurl"><input type="text" value="{{playlist_url}}" /></div>
+	{{/if}}
+	{{#if playchannel_url}}
+	  <p><strong>Share the playchannel:</strong></p>
+	  <div id="playchannelurl"><input type="text" value="{{playchannel_url}}" /></div>
 	{{/if}}
   </div>
 </template>
 <template name="song">
   <div class="song">
     <span class="title">{{title}}</span>
-    <span>{{score}}</span>
     <input type="button" value="X" class="delete" />
     <input type="button" value="+1" class="vote" />
   </div>
