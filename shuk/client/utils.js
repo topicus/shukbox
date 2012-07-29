@@ -55,6 +55,9 @@ function showMyVideos(data){
       addSong($(this));
     });
 }
+/*SEARCH IN YOUTUBE
+*@param string
+*/
 function search(q){
   if(q!=''){
     var script = document.createElement('script');
@@ -68,4 +71,17 @@ function search(q){
   }else{
     document.getElementById("videoResultsDiv").innerHTML = '';
   }
+}
+function copyToClipboard(text)
+{
+    if (window.clipboardData) // Internet Explorer
+    {  
+        window.clipboardData.setData("Text", text);
+    }
+    else
+    {  
+        unsafeWindow.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");  
+        const clipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);  
+        clipboardHelper.copyString(text);
+    }
 }

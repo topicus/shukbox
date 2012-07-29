@@ -14,7 +14,7 @@ var currentSelected = -1;
 var HAS_INPUT_EVENT = 0;
   
 if(QueryString.listkey != undefined){
-  Session.set('listkey', QueryString.listkey);
+  Session.set('listkey', QueryString.listkey)
 }
 if(QueryString.playchannel!=undefined){
   Session.set('playchannel', QueryString.playchannel);
@@ -23,7 +23,7 @@ Session.set('current', 0);
 
 PlayChannels.find({_id:Session.get('playchannel')}).observe({
   added: function (item) {
-    Session.set('listkey', item.playlist);
+    Session.set('listkey', item.playlist)
   } 
 });  
 checkListKey();
@@ -110,9 +110,9 @@ function setCurrent(m,i){
     Session.set('current', i);
   }
   var lis = $('ul.playlist li');
-  setTimeout(function(){
-    $('#currentVideo').addClass('current');
-  }, 100);  
+  Meteor.defer(function() {
+    $('#currentVideo').removeClass('current');
+  });  
   lis.slice(0,Session.get('current')+1).hide();
   if(Session.get('playchannel') ){
     PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
@@ -130,12 +130,11 @@ Template.musiclist.invokeAfterLoad = function () {
 };
 Template.currentvideo.currentVideo = function(){
   if(PlayChannels.findOne(Session.get('playchannel'))){
-    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'));
-    //var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
-    
-    return currentPlayChannel.current;
+    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
+    var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
+    return c;
   }
-  return "";
+  return false;
 }
 Template.shares.playlist_url = function(){
   return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
@@ -153,7 +152,7 @@ Template.musiclist.events = {
   'click .vote': function () {
     Songs.update({_id: this._id},{$inc:{score:1}});
   }, 
-  'click input.delete': function () { 
+  'click .delete': function () { 
     Songs.remove(this._id);
   },
   'click .share':function(){
