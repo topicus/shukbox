@@ -102,7 +102,7 @@ ul.playlist li:hover a.avatar {
 	opacity: 1;
 }
 
-ul.playlist li.current {
+#currentVideo.current {
 	font-weight: bold;
 	font-size: 2em;
 	line-height:2em;
@@ -113,9 +113,11 @@ ul.playlist li.current {
 	z-index: 10;
 	color: #000;
 	padding: 20px;
-	
+	display:block !important;
 }
-
+#currentVideo{
+  display:none;
+}
 
 ul.playlist li.current a.avatar {
 	opacity: 1;

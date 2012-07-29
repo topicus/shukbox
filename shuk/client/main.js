@@ -14,7 +14,7 @@ var currentSelected = -1;
 var HAS_INPUT_EVENT = 0;
   
 if(QueryString.listkey != undefined){
-  Session.set('listkey', QueryString.listkey)
+  Session.set('listkey', QueryString.listkey);
 }
 if(QueryString.playchannel!=undefined){
   Session.set('playchannel', QueryString.playchannel);
@@ -23,7 +23,7 @@ Session.set('current', 0);
 
 PlayChannels.find({_id:Session.get('playchannel')}).observe({
   added: function (item) {
-    console.log("aca");
+    Session.set('listkey', item.playlist);
   } 
 });  
 checkListKey();
@@ -110,9 +110,10 @@ function setCurrent(m,i){
     Session.set('current', i);
   }
   var lis = $('ul.playlist li');
-  lis.removeClass('current');
-  var currentLi = lis.eq(Session.get('current'));
-  currentLi.addClass('current');
+  setTimeout(function(){
+    $('#currentVideo').addClass('current');
+  }, 100);  
+  lis.slice(0,Session.get('current')+1).hide();
   if(Session.get('playchannel') ){
     PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
   }
@@ -124,28 +125,28 @@ Template.musiclist.invokeAfterLoad = function () {
       search($('#nextsong').val());
     });
     $('.tip').tooltip({animation:true,placement:'bottom'});
-    if(Session.get('listkey')){
-      $('#listurl').html('<input type="text" value="'+window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey')+'" />');
-    }
-
   });
   return "";
 };
 Template.currentvideo.currentVideo = function(){
   if(PlayChannels.findOne(Session.get('playchannel'))){
-    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
-    var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
-    return c;
+    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'));
+    //var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
+    
+    return currentPlayChannel.current;
   }
-  return false;
+  return "";
 }
 Template.shares.playlist_url = function(){
   return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
 }
 Template.shares.playchannel_url = function(){
-  return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
+  if(Session.get('playchannel')==undefined)
+    return false;
+  else
+    return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
 }
-Template.musiclist.songs = function () { 
+Template.musiclist.songs = function () {
   return Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
 };
 Template.musiclist.events = {
@@ -160,24 +161,22 @@ Template.musiclist.events = {
   },
   'click .playsong': function () {
     checkPlayChannel();
-    Meteor.flush();
     c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];          
     setCurrent('set',0);
     if(c) playSong(c.name);        
    },
   'click span.title': function () {
     checkPlayChannel();
-    var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch();
-    var id = this._id; 
+    var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch(); 
     for(k=0,l=c.length;k<l;k++){
-      if(c[k]._id == id){
+      if(c[k]._id == this._id){
         setCurrent('set',k);
         playSong(c[k].name);
       }
     }
    },
   'click .clearlist': function () {         
-      Songs.remove({});
+      Songs.remove({listkey:Session.get('listkey')});
    },      
   'click .skip': function () {
       nextSong();
@@ -203,9 +202,7 @@ Template.musiclist.events = {
         else if(e.keyCode ==38)
           currentSelected--;
       }
-      if(old!=-1){
-        $('#autocompleter li').eq(old).removeClass('selected')
-      }
+      if(old!=-1) $('#autocompleter li').eq(old).removeClass('selected')
       $('#autocompleter li').eq(currentSelected).addClass('selected')
     }
     if(e.keyCode==ENTER){
@@ -213,42 +210,6 @@ Template.musiclist.events = {
     }
    }     
 };
-function search(q){
-  if(q!=''){
-    var script = document.createElement('script');
-    script.setAttribute('id', 'jsonScript');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
-           'videos?vq='+q+'&max-results=5&' + 
-           'alt=json-in-script&callback=showMyVideos&' + 
-           'orderby=relevance&sortorder=descending&format=5&fmt=18');
-    document.documentElement.firstChild.appendChild(script);
-  }else{
-    document.getElementById("videoResultsDiv").innerHTML = '';
-  }
-}
-function showMyVideos(data){
-    var feed = data.feed;
-    var entries = feed.entry || [];
-    var html = ['<ul id="autocompleter">'];
-    for (var i = 0; i < entries.length; i++)
-    {
-        var entry = entries[i];
-        var playCount = entry.yt$statistics.viewCount.valueOf() + ' views';
-        var title = entry.title.$t;
-        var thumb = entry.media$group.media$thumbnail[3].url;
-        var thumb_height = entry.media$group.media$thumbnail[3].height * 0.5;
-        var thumb_width = entry.media$group.media$thumbnail[3].width * 0.5;
-        var thumb_tag = '<div style="height:'+thumb_height+'px; width:'+thumb_width+'px" class="thumb-search"><img src="'+thumb+'"/></div>'
-        var lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>';
-        html.push('<li>', thumb_tag, title, ', ', playCount, ', ', lnk, '</li>');
-    }
-    html.push('</ul>');
-    document.getElementById('videoResultsDiv').innerHTML = html.join('');
-    $('#autocompleter li').click(function(){
-      addSong($(this));
-    });
-}
 function addSong(jselector){
   Meteor.flush();
   vid = get_youtube_id(jselector.children('a').attr("href"));
@@ -260,7 +221,5 @@ function addSong(jselector){
   currentSelected = -1;
   $('.nextsong').val('');  
   c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
-  if(c.count()){      
-    $('ul.playlist').css("border", '1px solid #CCC');
-  }    
+  if(c.count()) $('ul.playlist').css("border", '1px solid #CCC');
 }

@@ -33,3 +33,39 @@ function get_youtube_id(url){
     }
     return false;
 }
+function showMyVideos(data){
+    var feed = data.feed;
+    var entries = feed.entry || [];
+    var html = ['<ul id="autocompleter">'];
+    for (var i = 0; i < entries.length; i++)
+    {
+        var entry = entries[i];
+        var playCount = entry.yt$statistics.viewCount.valueOf() + ' views';
+        var title = entry.title.$t;
+        var thumb = entry.media$group.media$thumbnail[3].url;
+        var thumb_height = entry.media$group.media$thumbnail[3].height * 0.5;
+        var thumb_width = entry.media$group.media$thumbnail[3].width * 0.5;
+        var thumb_tag = '<div style="height:'+thumb_height+'px; width:'+thumb_width+'px" class="thumb-search"><img src="'+thumb+'"/></div>'
+        var lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>';
+        html.push('<li>', thumb_tag, title, ', ', playCount, ', ', lnk, '</li>');
+    }
+    html.push('</ul>');
+    document.getElementById('videoResultsDiv').innerHTML = html.join('');
+    $('#autocompleter li').click(function(){
+      addSong($(this));
+    });
+}
+function search(q){
+  if(q!=''){
+    var script = document.createElement('script');
+    script.setAttribute('id', 'jsonScript');
+    script.setAttribute('type', 'text/javascript');
+    script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
+           'videos?vq='+q+'&max-results=5&' + 
+           'alt=json-in-script&callback=showMyVideos&' + 
+           'orderby=relevance&sortorder=descending&format=5&fmt=18');
+    document.documentElement.firstChild.appendChild(script);
+  }else{
+    document.getElementById("videoResultsDiv").innerHTML = '';
+  }
+}
