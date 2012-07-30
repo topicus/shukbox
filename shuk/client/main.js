@@ -7,6 +7,12 @@ Meteor.autosubscribe(function () {
   Meteor.subscribe('playlists');
   Meteor.subscribe('playchannels');
 });
+/*
+var insertedNodes = [];
+document.addEventListener("DOMNodeInserted", function(e) {
+ console.log(e.target);
+}, false);
+*/
 
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
@@ -23,7 +29,8 @@ Session.set('current', 0);
 
 PlayChannels.find({_id:Session.get('playchannel')}).observe({
   added: function (item) {
-    Session.set('listkey', item.playlist)
+    Session.set('listkey', item.playlist);
+    setCurrent('set',Session.get('current'));
   } 
 });  
 checkListKey();
@@ -34,6 +41,8 @@ if(!Meteor.user()){
     Meteor.loginWithPassword(username, password);
   });
 }
+
+
 
 var player;
 var current = 0;
@@ -109,11 +118,7 @@ function setCurrent(m,i){
   }else if(m=='set'){
     Session.set('current', i);
   }
-  var lis = $('ul.playlist li');
-  Meteor.defer(function() {
-    $('#currentVideo').removeClass('current');
-  });  
-  lis.slice(0,Session.get('current')+1).hide();
+  
   if(Session.get('playchannel') ){
     PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
   }
@@ -145,8 +150,44 @@ Template.shares.playchannel_url = function(){
   else
     return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
 }
+var current = Session.get('current');
+Template.search.events = {
+  'keydown input.nextsong':function(e){
+    if(jQuery.inArray(e.keyCode, CONTROL_KEYCODES)!=-1){
+      autocompleter = $('#autocompleter li');
+      old = currentSelected;
+      if(currentSelected ==-1){
+        currentSelected = 0;
+      }else if(currentSelected==autocompleter.length-1 && e.keyCode == 40){
+        currentSelected=0;
+      }else if(!currentSelected && e.keyCode == 38){
+        currentSelected = autocompleter.length-1;
+      }else{
+        if(e.keyCode == 40)
+          currentSelected++;
+        else if(e.keyCode ==38)
+          currentSelected--;
+      }
+      if(old!=-1) $('#autocompleter li').eq(old).removeClass('selected')
+      $('#autocompleter li').eq(currentSelected).addClass('selected')
+    }
+    if(e.keyCode==ENTER){
+      addSong($('#autocompleter li').eq(currentSelected));
+    }
+  }  
+};
 Template.musiclist.songs = function () {
-  return Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
+  if(Session.get('playchannel')==undefined){
+    return Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
+  }else{
+    var cur = PlayChannels.findOne({_id:Session.get('playchannel')});
+    if(cur){
+      var elements = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch();
+      console.log(elements.slice(cur.current+1, elements.length -1));
+      return elements.slice(cur.current+1, elements.length -1);
+    }
+  }
+  return false;
 };
 Template.musiclist.events = {
   'click .vote': function () {
@@ -186,27 +227,7 @@ Template.musiclist.events = {
     }
    },
   'keydown input.nextsong':function(e){
-    if(jQuery.inArray(e.keyCode, CONTROL_KEYCODES)!=-1){
-      autocompleter = $('#autocompleter li');
-      old = currentSelected;
-      if(currentSelected ==-1){
-        currentSelected = 0;
-      }else if(currentSelected==autocompleter.length-1 && e.keyCode == 40){
-        currentSelected=0;
-      }else if(!currentSelected && e.keyCode == 38){
-        currentSelected = autocompleter.length-1;
-      }else{
-        if(e.keyCode == 40)
-          currentSelected++;
-        else if(e.keyCode ==38)
-          currentSelected--;
-      }
-      if(old!=-1) $('#autocompleter li').eq(old).removeClass('selected')
-      $('#autocompleter li').eq(currentSelected).addClass('selected')
-    }
-    if(e.keyCode==ENTER){
-      addSong($('#autocompleter li').eq(currentSelected));
-    }
+
    }     
 };
 function addSong(jselector){

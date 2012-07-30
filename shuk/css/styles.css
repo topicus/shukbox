@@ -110,7 +110,10 @@ ul.playlist li:hover a.avatar {
 
 #currentVideo.current {
 	font-weight: bold;
-	font-size: 2em;
+	font-size: 1.5em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	line-height:2em;
 	background: #FFF;
 	box-shadow: 0px 1px 1px #CCC;
