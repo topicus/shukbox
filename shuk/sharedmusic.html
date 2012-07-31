@@ -90,11 +90,11 @@
   </div>  
 </template>
 <template name="currentvideo">
-  <div id="currentVideo">
-	{{#if currentVideo}}
-	  {{currentVideo.title}}
-	{{/if}}
+  {{#if currentVideo}}
+  <div id="currentVideo" class="current">	
+	  {{currentVideo.title}}	
   </div>
+  {{/if}}
 </template>
 <template name="shares">
   <div id="shares">

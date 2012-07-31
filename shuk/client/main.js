@@ -24,8 +24,10 @@ if(typeof QueryString.listkey !== "undefined"){
 }
 if(typeof QueryString.playchannel !== "undefined"){
   Session.set('playchannel', QueryString.playchannel);
+}else{
+  Session.set('current', 0);
 }
-Session.set('current', 0);
+
 
 PlayChannels.find({_id:Session.get('playchannel')}).observe({
   added: function (item) {
@@ -88,8 +90,6 @@ function playSong(vid){
       player.loadVideoById(vid);
       player.playVideo();
     }
-    Meteor.flush();
-    $('#currentVideo').addClass('current');
 }
 function onPlayerReady(event) {
   player.playVideo();
@@ -203,7 +203,6 @@ Template.musiclist.songs = function () {
     var cur = PlayChannels.findOne({_id:Session.get('playchannel')});
     if(cur){
       var elements = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch();
-      console.log(elements.slice(cur.current+1, elements.length -1));
       return elements.slice(cur.current+1, elements.length -1);
     }
   }
