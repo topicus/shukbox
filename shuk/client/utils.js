@@ -1,3 +1,4 @@
+
 var QueryString = function () {
   var query_string = {};
   var query = window.location.search.substring(1);
@@ -72,16 +73,7 @@ function search(q){
     document.getElementById("videoResultsDiv").innerHTML = '';
   }
 }
-function copyToClipboard(text)
-{
-    if (window.clipboardData) // Internet Explorer
-    {  
-        window.clipboardData.setData("Text", text);
-    }
-    else
-    {  
-        unsafeWindow.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");  
-        const clipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);  
-        clipboardHelper.copyString(text);
-    }
+
+function timestamp(){
+  return new Date().getTime();  
 }

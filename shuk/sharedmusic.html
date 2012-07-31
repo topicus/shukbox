@@ -27,6 +27,7 @@
 </head>
 
 <body>
+
   <div class="container">
 	<div class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
@@ -62,12 +63,7 @@
 			  </div>
 			  <div class="span4">
 				  <h1 class="logo"></h1>
-				  <div id="controls">
-					<a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
-					<a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
-					<a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
-					<a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>				
-				  </div>
+				  {{> controls}}
 				  {{> shares}}
 			  </div>
 		</div>
@@ -85,8 +81,16 @@
 	  </ul>
 	</div>       
 </template>
+<template name="controls">
+  <div id="controls">
+	<a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
+	<a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
+	<a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
+	<a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>				
+  </div>  
+</template>
 <template name="currentvideo">
-  <div id="currentVideo" class="current">
+  <div id="currentVideo">
 	{{#if currentVideo}}
 	  {{currentVideo.title}}
 	{{/if}}
@@ -94,13 +98,13 @@
 </template>
 <template name="shares">
   <div id="shares">
-	{{#if playlist_url}}
+	{{#if playlist_url}}	  
 	  <p><strong>Share the playlist:</strong></p>
-	  <div id="listurl"><a style="margin-top:-10px; margin-right:6px;" href="javascript:void(0);" class="btn">Copy</a><input style="width:130px;" type="text" value="{{playlist_url}}" /></div>
+	  <div id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
 	{{/if}}
-	{{#if playchannel_url}}
+	{{#if playchannel_url}}	  
 	  <p><strong>Share the playchannel:</strong></p>
-	  <div id="playchannelurl"><a style="margin-top:-10px; margin-right:6px;" href="javascript:void(0);" class="btn">Copy</a><input style="width:130px;"  type="text" value="{{playchannel_url}}" /></div>
+	  <div id="playchannelurl"><input id="playchannel_url" style="width:50%" type="text" value="{{playchannel_url}}" /></div>
 	{{/if}}
   </div>
 </template>
