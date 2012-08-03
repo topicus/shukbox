@@ -39,14 +39,7 @@
 		  </a>
 		  <a class="brand" href="#"></a>
 		  <div class="nav-collapse">
-			<ul class="nav">
-			  {{#if currentUser}}
-			  <li><a href="javascript:Meteor.logout();">Logout</a></li>
-			  {{else}}
-			  <li><a href="javascript:Meteor.loginWithFacebook();">Login with facebook</a></li>
-			  <li><a href="javascript:Meteor.loginWithGoogle();"></a></li>
-			  {{/if}}
-			</ul>
+		  {{> navbar}}
 		  </div><!--/.nav-collapse -->
 		</div>
 	  </div>
@@ -70,6 +63,22 @@
 	  </div>
 	</div>	
 </body>
+<template name="navbar">
+  <ul class="nav">
+
+	{{#if currentUser}}
+	  {{#if signedup}}
+		<li><a href="javascript:logout();">Logout</a></li>
+	  {{else}}
+		<li><a href="javascript:login('facebook');">Login with facebook</a></li>
+		<li><a href="javascript:login('google');"></a></li>	  
+	  {{/if}}		
+	{{else}}
+	  <li><a href="javascript:login('facebook');">Login with facebook</a></li>
+	  <li><a href="javascript:login('google');"></a></li>
+	{{/if}}
+  </ul>  
+</template>
 <template name="musiclist">  
     {{invokeAfterLoad}}
 	{{> currentvideo}}
@@ -110,7 +119,10 @@
 </template>
 <template name="song">
   <div class="song">
-    <span class="title">{{title}}</span>
+	{{#if fbid}}
+	<img src="http://graph.facebook.com/{{fbid}}/picture"/>
+    {{/if}}
+	<span class="title">{{title}}</span>
     <div class="actions">
 	  <a href="javascript:void(0);" class="delete">X<a/>
 	  <a href="javascript:void(0);" class="vote"></a>

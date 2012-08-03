@@ -190,3 +190,13 @@ li:hover .vote-up {
 #shares{
   margin-top:20px;
 }
+.song{
+	overflow:auto;
+}
+.song img{
+	display:block;
+	width:35px;
+	height:35px;
+	float:left;
+	margin-right:15px;
+}
