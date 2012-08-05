@@ -71,11 +71,11 @@
 		<li><a href="javascript:logout();">Logout</a></li>
 	  {{else}}
 		<li><a href="javascript:login('facebook');">Login with facebook</a></li>
-		<li><a href="javascript:login('google');"></a></li>	  
+		<li><a href="javascript:login('google');">Login with google</a></li>	  
 	  {{/if}}		
 	{{else}}
 	  <li><a href="javascript:login('facebook');">Login with facebook</a></li>
-	  <li><a href="javascript:login('google');"></a></li>
+	  <li><a href="javascript:login('google');">Login with google</a></li>
 	{{/if}}
   </ul>  
 </template>
@@ -119,9 +119,15 @@
 </template>
 <template name="song">
   <div class="song">
-	{{#if fbid}}
-	<img src="http://graph.facebook.com/{{fbid}}/picture"/>
-    {{/if}}
+	{{#if currentUser}}
+	  {{#if fbid}}
+		<img src="http://graph.facebook.com/{{fbid}}/picture"/>
+	  {{/if}}
+	  {{#if goog}}
+		<img src="https://plus.google.com/s2/photos/profile/me?sz=30"/>
+	  {{/if}}	  
+	{{/if}}
+
 	<span class="title">{{title}}</span>
     <div class="actions">
 	  <a href="javascript:void(0);" class="delete">X<a/>

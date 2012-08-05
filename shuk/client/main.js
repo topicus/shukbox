@@ -1,5 +1,5 @@
 include_facebook();
- 
+var goog = false;
 Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
@@ -62,16 +62,18 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 function login(type){
   if(type==='facebook'){
     Meteor.loginWithFacebook();
+    FB.getLoginStatus(function(response) {
+      if(response.status==='connected'){
+        FB.api('/me', function(response) {
+          window.fbid = response.id;
+        });        
+      }
+    });    
   }else if(type==='google'){
+    window.goog = true;
     Meteor.loginWithGoogle();
   }
-  FB.getLoginStatus(function(response) {
-    if(response.status==='connected'){
-      FB.api('/me', function(response) {
-        window.fbid = response.id;
-      });        
-    }
-  });
+
 }
 function logout(){
   Meteor.logout();
@@ -251,6 +253,7 @@ Template.controls.events = {
       nextSong();
    }  
 };
+
 Template.musiclist.events = {
   'click .vote': function () {
     Songs.update({_id: this._id},{$inc:{score:1}});
