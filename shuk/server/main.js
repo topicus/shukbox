@@ -11,8 +11,13 @@ Meteor.publish('playlists', function () {
 Meteor.publish('playchannels', function () {
   return PlayChannels.find();
 });
-
+Meteor.methods({
+  getUserServiceId: function () {
+    return Meteor.users.find({_id:this.userId()}).fetch()[0];
+  }
+});
 Meteor.startup(function () {
+
   Songs.allow({
     insert: function () { return true; },
     update: function () { return true; },

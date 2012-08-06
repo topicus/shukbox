@@ -108,25 +108,28 @@
 <template name="shares">
   <div id="shares">
 	{{#if playlist_url}}	  
-	  <p><strong>Share the playlist:</strong></p>
-	  <div id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
+	  <p style="display:none;"><strong>Share the playlist:</strong></p>
+	  <div style="display:none;" id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
 	{{/if}}
-	{{#if playchannel_url}}	  
-	  <p><strong>Share the playchannel:</strong></p>
+	{{#if playchannel_url}}
+	  {{on_playchannel_ready}}
+	  <p><strong>Share:</strong></p>
 	  <div id="playchannelurl"><input id="playchannel_url" style="width:50%" type="text" value="{{playchannel_url}}" /></div>
+		<div class="fb-like" data-href="{{playchannel_url}}" data-send="true" data-width="50" data-show-faces="false"></div>
+
+	  <!--<div class="fb-comments" data-href="{{playchannel_url}}" data-num-posts="2" data-width="370"></div>-->
 	{{/if}}
   </div>
 </template>
 <template name="song">
   <div class="song">
-	{{#if currentUser}}
 	  {{#if fbid}}
 		<img src="http://graph.facebook.com/{{fbid}}/picture"/>
+      {{else}}
+		{{#if goid}}
+		  	<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
+		{{/if}}
 	  {{/if}}
-	  {{#if goog}}
-		<img src="https://plus.google.com/s2/photos/profile/me?sz=30"/>
-	  {{/if}}	  
-	{{/if}}
 
 	<span class="title">{{title}}</span>
     <div class="actions">
@@ -137,7 +140,7 @@
 </template>
 <template name="search">
   <div id="search">
-	  <input placeholder="Busca un tema!" autofocus="autofocus" class="nextsong" id="nextsong" type="text"/>
+	  <input placeholder="Search a video!" autofocus="autofocus" class="nextsong" id="nextsong" type="text"/>
 	  <div id="videoResultsDiv"></div> 
   </div>  
 </template>

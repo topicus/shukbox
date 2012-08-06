@@ -28,7 +28,7 @@ if(typeof QueryString.listkey !== "undefined"){
 if(typeof QueryString.playchannel !== "undefined"){
   Session.set('playchannel', QueryString.playchannel);
 }else{
-  Session.set('current', 0);
+  checkPlayChannel();
 }
 
 
@@ -40,6 +40,7 @@ PlayChannels.find({_id:Session.get('playchannel')}).observe({
 });
 
 checkListKey();
+
 if(!Meteor.user()){
   var username = 'anonym'+Meteor.uuid();
   var password = Meteor.uuid()
@@ -176,14 +177,8 @@ Template.shares.playchannel_url = function(){
   else
     return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
 };
-
-   
-Template.shares.on_playlist_ready = function(){
-  if(typeof $('#playlist_url').val() !== "undefined"){
-    alert($('#playlist_url').val());
-    clip.setText($('#playlist_url').val());
-    clip.glue('copy_list');
-  }
+Template.shares.on_playchannel_ready = function(){
+  //Meteor.flush();
 };
 Template.shares.events = {
   'click #playlist_url': function(e){
@@ -273,22 +268,38 @@ Template.musiclist.events = {
    }  
 };
 Template.navbar.signedup = function(){
+  return checkSigned();
+};
+
+function checkSigned(){
   var u = Meteor.user();
   if(u && u.anonym)
     return false;
-  return true;
+  return true;  
 }
 function addSong(jselector){
   Meteor.flush();
   var vid = get_youtube_id(jselector.children('a').attr("href"));
   var title = jselector.children('a').attr("title");
-  item_min_score = Songs.findOne({listkey:Session.get('listkey')},{sort: {score: 1}, limit:1});
+  var item_min_score = Songs.findOne({listkey:Session.get('listkey')},{sort: {score: 1}, limit:1});
   if(item_min_score) weight = item_min_score.score - 1;
-  if(!fbid) fbid = false;
-  Songs.insert({name: vid, fbid:fbid, score: weight, title:title, listkey:Session.get('listkey'), timestamp:timestamp()});
+
+  Meteor.call('getUserServiceId',function(error,result){
+    if(typeof(error) === 'undefined'){     
+      fbid = (result.services.facebook) ? result.services.facebook.id : false;
+      goid = (result.services.google) ? result.services.google.id : false;
+      Songs.insert({name: vid, fbid:fbid, goid:goid, score: weight, title:title, listkey:Session.get('listkey'), timestamp:timestamp()});
+    }
+  });
   $("#autocompleter").hide();
   currentSelected = -1;
   $('.nextsong').val('');  
   c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
   if(c.count()) $('ul.playlist').css("border", '1px solid #CCC');
 }
+Handlebars.registerHelper("google", function() {
+  return goog;
+});
+Handlebars.registerHelper("facebook", function() {
+  return fbid;
+});
