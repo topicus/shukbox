@@ -33,7 +33,8 @@ Meteor.startup(function () {
     },
     remove: function (uid, doc) {
       s = Songs.findOne({_id:doc[0]._id});
-      if(PlayLists.findOne({_id:s.listkey}).user===uid)
+      p = PlayLists.findOne({_id:s.listkey});
+      if(p && p.user===uid)
         return true;
       else
         return false;

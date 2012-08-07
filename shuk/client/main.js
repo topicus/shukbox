@@ -8,33 +8,36 @@ Meteor.autosubscribe(function () {
   Meteor.subscribe('playlists');
   Meteor.subscribe('playchannels');
 });
-
 /*
 var insertedNodes = [];
 document.addEventListener("DOMNodeInserted", function(e) {
  console.log(e.target);
 }, false);
 */
-
+var SYNC = false;
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var currentSelected = -1;
-var HAS_INPUT_EVENT = 0; 
+var HAS_INPUT_EVENT = 0;
+var YT_API_READY = 0;
 if(typeof QueryString.listkey !== "undefined"){
   Session.set('listkey', QueryString.listkey)
 }
 if(typeof QueryString.playchannel !== "undefined"){
   Session.set('playchannel', QueryString.playchannel);
+  PlayChannels.find({_id:Session.get('playchannel')}).observe({
+    added: function (item) {
+      Session.set('listkey', item.playlist);
+      setCurrent('set',Session.get('current'));
+    } 
+  });  
+}else{
+  checkListKey();
 }
 
-PlayChannels.find({_id:Session.get('playchannel')}).observe({
-  added: function (item) {
-    Session.set('listkey', item.playlist);
-    setCurrent('set',Session.get('current'));
-  } 
-});
 
-checkListKey();
+
+
 
 if(!Meteor.user()){
   var username = 'anonym'+Meteor.uuid();
@@ -69,12 +72,13 @@ function login(type){
 }
 function logout(){
   Meteor.logout();
-  fbid = false;
 }
 function checkListKey(name){
   if(Meteor.user() && !Session.get('listkey')){
     name = (name)? name : Meteor.uuid();
-    Session.set('listkey', PlayLists.insert({name:name, user:Meteor.user()._id, timestamp:timestamp()}));
+    var list =  PlayLists.insert({name:name, user:Meteor.user()._id, timestamp:timestamp()});
+    console.log(list);
+    Session.set('listkey',list);
     checkPlayChannel();
   }
 }
@@ -91,6 +95,7 @@ function onYouTubeIframeAPIReady() {
   }
 }
 function playSong(vid){
+    YT_API_READY = 1;
     if(!player){
       player = new YT.Player('player-div', {
         height: '300',
@@ -138,17 +143,9 @@ function setCurrent(m,i){
   }
   
   if(Session.get('playchannel') ){
-    PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} )    
+    PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} );    
   }
 }
-Template.musiclist.invokeAfterLoad = function () {
-  Meteor.defer(function () {
-   
-
-    $('.tip').tooltip({animation:true,placement:'bottom'});
-  });
-  return "";
-};
 Template.currentvideo.currentVideo = function(){
   if(PlayChannels.findOne(Session.get('playchannel'))){
     var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
@@ -156,7 +153,20 @@ Template.currentvideo.currentVideo = function(){
     return c;
   }
   return false;
-}
+};
+Template.currentvideo.on_current_video_ready = function(){
+  if(SYNC){
+    Meteor.flush();
+    Meteor.defer(function(){
+      if(PlayChannels.findOne(Session.get('playchannel'))){
+        var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
+        var c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[currentPlayChannel.current];
+        if(c) playSong(c.name);
+      }
+      return false;    
+    });
+  }
+};
 Template.shares.playlist_url = function(){
   return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
 }
@@ -191,7 +201,7 @@ Template.playlists.mylists = function(){
 Template.playlists.events = {
   'click span':function(e){
     Session.set("playchannel",undefined);
-    Session.set("listkey", e.target.innerHTML);
+    Session.set("listkey",this._id);
   }
 };
 Template.search.on_ready_search = function(){
@@ -243,13 +253,23 @@ Template.musiclist.songs = function () {
   return false;
 };
 Template.controls.events = {
+  'click .save':function(){
+    $('#save-control').toggle();
+    $('#listname').select();
+  },
+  'click .savelist':function(){
+
+    PlayLists.update({_id:Session.get('listkey')}, { $set:{name:$('#listname').val()} });
+
+  },
+  'click .sync':function(){
+    SYNC = !SYNC;
+  },   
   'click .share':function(){
     $('#shares').show();
   },
-  'click .playsong': function () {
-    
-    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[Session.get('current')];          
-
+  'click .playsong': function () {    
+    c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[0];          
     if(typeof c !== "undefined"){
       checkPlayChannel();
       setCurrent('set',0);
@@ -285,7 +305,12 @@ Template.musiclist.events = {
 Template.navbar.signedup = function(){
   return checkSigned();
 };
-
+Template.musiclist.invokeAfterLoad = function () {
+  Meteor.defer(function () {
+    $('.tip').tooltip({animation:true,placement:'bottom'});
+  });
+  return "";
+};
 function checkSigned(){
   var u = Meteor.user();
   if(u && u.anonym)

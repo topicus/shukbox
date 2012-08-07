@@ -193,6 +193,24 @@ li:hover .vote-up {
 .song{
 	overflow:auto;
 }
+#mylists{
+	list-style:none;
+	padding:0px;
+	margin:0px;
+	cursor:pointer;
+	
+}
+#save-control{
+	margin-top:10px;
+	display:none;
+}
+#save-control a {
+	margin-top:-9px;
+	width:15%;
+}
+#listname{
+	width:30%;
+}
 .song img{
 	display:block;
 	width:35px;

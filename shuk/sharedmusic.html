@@ -80,7 +80,6 @@
   </ul>  
 </template>
 <template name="musiclist">  
-    {{invokeAfterLoad}}
 	{{> currentvideo}}
 	<div id="wrap-playlist">
 	  <ul class="playlist">
@@ -88,14 +87,22 @@
 		<li>{{>song}}</li>
 	  {{/each}}
 	  </ul>
-	</div>       
+	</div>
+	{{invokeAfterLoad}}
 </template>
 <template name="controls">
+
   <div id="controls">
 	<a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
 	<a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
 	<a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
-	<a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>				
+	<a rel="tooltip" class="share tip" title="Share Video"><i class="icon-share"></i></a>
+	<a rel="tooltip" class="save tip" title="Save List"><i class="icon-file"></i></a>
+	<a rel="tooltip" class="sync tip" title="Sync List"><i class="icon-retweet"></i></a>
+  </div>
+  <div id="save-control">
+	<a class="btn savelist" href="javascript:void(0);">Save</a>
+	<input type="text" id="listname" name="listname" value="Untitled-list"/>
   </div>  
 </template>
 <template name="currentvideo">
@@ -103,6 +110,7 @@
   <div id="currentVideo" class="current">	
 	  {{currentVideo.title}}	
   </div>
+  {{on_current_video_ready}}
   {{/if}}
 </template>
 <template name="shares">
@@ -133,7 +141,7 @@
 
 	<span class="title">{{title}}</span>
     <div class="actions">
-	  <a href="javascript:void(0);" class="delete">X<a/>
+	  <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
 	  <a href="javascript:void(0);" class="vote"></a>
 	</div>
   </div>
@@ -146,7 +154,7 @@
   {{on_ready_search}}
 </template>
 <template name="playlists">
-  	  <ul>
+  	  <ul id="mylists">
 	  {{#each mylists}}
 		<li>{{>playlist}}</li>
 	  {{/each}}
