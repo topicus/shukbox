@@ -13,6 +13,9 @@
   height:52px;
   background:url('/img/logo.png') top left;
 }
+h3{
+	margin-top:20px;
+}
 #autocompleter{
   margin: 0 0 0 0px;
   border-radius: 0;
@@ -199,6 +202,12 @@ li:hover .vote-up {
 	margin:0px;
 	cursor:pointer;
 	
+}
+#mylists li{
+	margin-top:10px;
+}
+#mylists li:hover{
+	font-weight:bold;	
 }
 #save-control{
 	margin-top:10px;
