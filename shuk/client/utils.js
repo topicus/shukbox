@@ -82,13 +82,6 @@ function include_facebook(){
       cookie     : true, // enable cookies to allow the server to access the session
       xfbml      : true  // parse XFBML
     });
-    FB.Event.subscribe('auth.authResponseChange', function(response) {
-      if(response.status==='connected'){
-        FB.api('/me', function(response) {
-          window.fbid = response.id;
-        });        
-      }
-    });
   };
 
   // Load the SDK Asynchronously

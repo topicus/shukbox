@@ -27,7 +27,6 @@
 </head>
 
 <body>
-
   <div class="container">
 	<div class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
@@ -58,6 +57,7 @@
 				  <h1 class="logo"></h1>
 				  {{> controls}}
 				  {{> shares}}
+				  {{> playlists}}
 			  </div>
 		</div>
 	  </div>
@@ -112,11 +112,11 @@
 	  <div style="display:none;" id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
 	{{/if}}
 	{{#if playchannel_url}}
-	  {{on_playchannel_ready}}
+	  
 	  <p><strong>Share:</strong></p>
 	  <div id="playchannelurl"><input id="playchannel_url" style="width:50%" type="text" value="{{playchannel_url}}" /></div>
-		<div class="fb-like" data-href="{{playchannel_url}}" data-send="true" data-width="50" data-show-faces="false"></div>
-
+	  <div class="fb-like" data-href="{{playchannel_url}}" data-send="true" data-width="50" data-show-faces="false"></div>
+	  {{on_playchannel_ready}}
 	  <!--<div class="fb-comments" data-href="{{playchannel_url}}" data-num-posts="2" data-width="370"></div>-->
 	{{/if}}
   </div>
@@ -142,5 +142,16 @@
   <div id="search">
 	  <input placeholder="Search a video!" autofocus="autofocus" class="nextsong" id="nextsong" type="text"/>
 	  <div id="videoResultsDiv"></div> 
-  </div>  
+  </div>
+  {{on_ready_search}}
+</template>
+<template name="playlists">
+  	  <ul>
+	  {{#each mylists}}
+		<li>{{>playlist}}</li>
+	  {{/each}}
+	  </ul>
+</template>
+<template name="playlist">
+  <span>{{name}}</span>
 </template>

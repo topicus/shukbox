@@ -19,21 +19,56 @@ Meteor.methods({
 Meteor.startup(function () {
 
   Songs.allow({
-    insert: function () { return true; },
-    update: function () { return true; },
-    remove: function () { return true; },
-    fetch: function () { return true; }
+    insert: function (uid, doc) {
+      /*
+      if(PlayLists.findOne({_id:doc.listkey}).user===uid)
+        return true;
+      else
+        return false;
+      */
+      return true;
+    },
+    update: function (uid, doc) {
+      return true;
+    },
+    remove: function (uid, doc) {
+      s = Songs.findOne({_id:doc[0]._id});
+      if(PlayLists.findOne({_id:s.listkey}).user===uid)
+        return true;
+      else
+        return false;
+    },
+    fetch: function (uid, doc) {
+      
+      return true;
+    }
   });
   PlayChannels.allow({
-    insert: function () { return true; },
-    update: function () { return true; },
-    remove: function () { return true; },
-    fetch: function () { return true; }
+    insert: function (uid, doc) {
+      return true;
+    },
+    update: function (uid, doc) {
+      return true;
+    },
+    remove: function (uid, doc) {
+      return true;
+    },
+    fetch: function (uid, doc) {
+      return true;
+    }
   });
   PlayLists.allow({
-    insert: function () { return true; },
-    update: function () { return true; },
-    remove: function () { return true; },
-    fetch: function () { return true; }
+    insert: function (uid, doc) {
+      return true;
+    },
+    update: function (uid, doc) {
+      return true;
+    },
+    remove: function (uid, doc) {
+      return true;
+    },
+    fetch: function (uid, doc) {
+      return true;
+    }
   });  
 });
