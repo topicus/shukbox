@@ -77,7 +77,7 @@ function include_facebook(){
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '407750262605974', // App ID
-      channelUrl : '//localhost:3000/channel.html', // Channel File
+      channelUrl : '//'+window.location.host+'/channel.html', // Channel File
       status     : true, // check login status
       cookie     : true, // enable cookies to allow the server to access the session
       xfbml      : true  // parse XFBML

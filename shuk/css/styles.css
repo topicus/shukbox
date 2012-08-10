@@ -192,6 +192,7 @@ li:hover .vote-up {
 }
 #shares{
   margin-top:20px;
+  height:90px;
 }
 .song{
 	overflow:auto;
@@ -208,6 +209,9 @@ li:hover .vote-up {
 }
 #mylists li:hover{
 	font-weight:bold;	
+}
+#mylists li span.current-list{
+	font-weight:bold;
 }
 #save-control{
 	margin-top:10px;
@@ -226,4 +230,8 @@ li:hover .vote-up {
 	height:35px;
 	float:left;
 	margin-right:15px;
+}
+.call-to-action{
+	margin-top:30px;
+	width:50%;
 }

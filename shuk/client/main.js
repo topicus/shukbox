@@ -2,6 +2,7 @@ include_facebook();
 Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
+Requests = new Meteor.Collection('requests');
 
 Meteor.autosubscribe(function () {
   Meteor.subscribe('songs');
@@ -35,17 +36,9 @@ if(typeof QueryString.playchannel !== "undefined"){
   checkListKey();
 }
 
+loginAsAnonym();
 
 
-
-
-if(!Meteor.user()){
-  var username = 'anonym'+Meteor.uuid();
-  var password = Meteor.uuid()
-  Meteor.createUser({username:username, password:password}, {anonym:true}, function(r){
-    Meteor.loginWithPassword(username, password);
-  });
-}
 $(document).ready(function(){
     $('input.nextsong').bind('input', function() {
       HAS_INPUT_EVENT = 1;
@@ -58,31 +51,56 @@ var current = 0;
 var old_current = -1;
 var weight = 1000;  
 var tag = document.createElement('script');
+var login_interval;
+var logout_interval;
 tag.src = "//www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 function login(type){
+  login_interval = Meteor.setInterval(waitForLogin, 500);
+
   if(type==='facebook'){
     Meteor.loginWithFacebook(); 
   }else if(type==='google'){
     Meteor.loginWithGoogle();
   }
-
 }
+function waitForLogin(){
+  if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
+    Meteor.clearInterval(login_interval);
+    window.location.href = '';    
+  }
+};
+function waitForLogout(){
+  if(!Meteor.user()){
+    Meteor.clearInterval(logout_interval);
+    window.location.href = '';    
+  }  
+};
 function logout(){
   Meteor.logout();
-}
+  logout_interval = Meteor.setInterval(waitForLogout, 500);
+};
+function loginAsAnonym(){
+  if(!Meteor.user()){
+    var username = 'anonym'+Meteor.uuid();
+    var password = Meteor.uuid()
+    Meteor.createUser({username:username, password:password}, {anonym:true}, function(r){
+      Meteor.loginWithPassword(username, password);
+      checkListKey();
+    });
+  }  
+};
 function checkListKey(force_create){
   if(Meteor.user() && !Session.get('listkey') || Meteor.user() && force_create){
     name = 'Untitled-list';
     var saved = (force_create)? true : false;
     var list =  PlayLists.insert({name:name, user:Meteor.user()._id, timestamp:timestamp(),saved:saved});
-    console.log(list);
     Session.set('listkey',list);
     checkPlayChannel();
   }
-}
+};
 function checkPlayChannel(){
   if(Meteor.user() && Session.get('listkey') && !Session.get('playchannel')){
     pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current'), timestamp:timestamp()});
@@ -177,8 +195,7 @@ Template.shares.playchannel_url = function(){
   else
     return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
 };
-Template.shares.on_playchannel_ready = function(){
-  
+Template.shares.on_playchannel_ready = function(){  
   if(typeof(FB)!=='undefined'){
     Meteor.flush();
     Meteor.defer(function(){
@@ -199,6 +216,12 @@ Template.shares.events = {
 Template.playlists.mylists = function(){
   return PlayLists.find({user:this.userId, saved:true})
 };
+Template.playlist.is_current = function(){
+  if(Session.equals('listkey', this._id)){
+    return 'current-list';
+  }
+  return '';
+};
 Template.playlists.events = {
   'click span':function(e){
     Session.set("playchannel",undefined);
@@ -214,7 +237,10 @@ Template.playlists.events = {
   'click .savelist':function(){
     $('#save-control').toggle();
     PlayLists.update({_id:Session.get('listkey')}, { $set:{name:$('#listname').val(), saved:true} }); 
-  }  
+  }, 
+  'click .delete': function () { 
+    PlayLists.remove(this._id);
+  }
 };
 Template.search.on_ready_search = function(){
   Meteor.flush();
@@ -268,9 +294,6 @@ Template.controls.events = {
   'click .sync':function(){
     SYNC = !SYNC;
   },   
-  'click .share':function(){
-    $('#shares').show();
-  },
   'click .playsong': function () {    
     c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}}).fetch()[0];          
     if(typeof c !== "undefined"){
@@ -305,9 +328,6 @@ Template.musiclist.events = {
     }
    }  
 };
-Template.navbar.signedup = function(){
-  return checkSigned();
-};
 Template.musiclist.invokeAfterLoad = function () {
   Meteor.defer(function () {
     $('.tip').tooltip({animation:true,placement:'bottom'});
@@ -316,7 +336,7 @@ Template.musiclist.invokeAfterLoad = function () {
 };
 function checkSigned(){
   var u = Meteor.user();
-  if(u && u.anonym)
+  if(u && typeof(u.anonym) !=='undefined')
     return false;
   return true;  
 }
@@ -340,3 +360,12 @@ function addSong(jselector){
   c = Songs.find({listkey:Session.get('listkey')},{sort: {score: -1}});
   if(c.count()) $('ul.playlist').css("border", '1px solid #CCC');
 }
+function getServiceId(){
+
+};
+/*HELPERS HANDLEBARS*/
+Handlebars.registerHelper("signedup", function() {
+  return checkSigned();
+});
+
+/*END HANDLEBARS HELPER*/

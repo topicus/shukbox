@@ -1,6 +1,7 @@
 Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
+Requests = new Meteor.Collection('requests');
 
 Meteor.publish('songs', function () {
   return Songs.find();
