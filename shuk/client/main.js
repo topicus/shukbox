@@ -16,6 +16,7 @@ document.addEventListener("DOMNodeInserted", function(e) {
 }, false);
 */
 var SYNC = false;
+var REPEAT = false;
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var currentSelected = -1;
@@ -69,13 +70,12 @@ function login(type){
 function waitForLogin(){
   if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
     Meteor.clearInterval(login_interval);
-    window.location.href = '';    
   }
 };
 function waitForLogout(){
   if(!Meteor.user()){
     Meteor.clearInterval(logout_interval);
-    window.location.href = '';    
+    Meteor.flush();
   }  
 };
 function logout(){
@@ -149,9 +149,11 @@ function nextSong(){
   if(c)
     playSong(c.name);
   else {
-    setCurrent('set',0);
-    c = Songs.find({listkey:Session.get('listkey')},{sort: {timestamp: 1}}).fetch()[Session.get('current')];
-    playSong(c.name);
+    if(REPEAT){
+      setCurrent('set',0);
+      c = Songs.find({listkey:Session.get('listkey')},{sort: {timestamp: 1}}).fetch()[Session.get('current')];
+      playSong(c.name);
+    }
   }
 }
 function setCurrent(m,i){
@@ -336,18 +338,15 @@ Template.musiclist.invokeAfterLoad = function () {
 };
 Template.modifiers.events = {
   'click .block': function () {
-    PlayLists.find({_id:Session.get('listkey')});
+    if(PlayLists.find({_id:Session.get('listkey')}).count()){
+      PlayLists.update({_id:Session.get('listkey')}, {$set:{blocked:true}});
+      console.log(PlayLists.findOne({_id:Session.get('listkey')}));
+    }
   },
   'click .sync': function () {
      SYNC = !SYNC;
   }  
 };
-function checkSigned(){
-  var u = Meteor.user();
-  if(u && typeof(u.anonym) !=='undefined')
-    return false;
-  return true;  
-}
 function addSong(jselector){
   Meteor.flush();
   var vid = get_youtube_id(jselector.children('a').attr("href"));
@@ -364,18 +363,16 @@ function addSong(jselector){
   currentSelected = -1;
   $('.nextsong').val('');  
 }
-function getServiceId(){
-
-};
 /*HELPERS HANDLEBARS*/
-Handlebars.registerHelper("signedup", function() {
-  return checkSigned();
-});
-
-
-Handlebars.registerHelper('owner', function(){
-  if(Meteor.user())
-  return Session.get('owner') === Meteor.user()._id;
-});
-
+if (window.Handlebars) {
+  Handlebars.registerHelper("signedup", function() {
+    var u = Meteor.user();
+    if(u && typeof(u.anonym) !=='undefined')
+      return null;
+    return Meteor.user();  
+  });
+  Handlebars.registerHelper('owner', function(){
+    if(Meteor.user()) return Session.get('owner') === Meteor.user()._id;
+  });
+}
 /*END HANDLEBARS HELPER*/
