@@ -235,3 +235,6 @@ li:hover .vote-up {
 	margin-top:30px;
 	width:50%;
 }
+.votes{
+	font-size:10px;
+}

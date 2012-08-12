@@ -27,6 +27,7 @@
 </head>
 
 <body>
+
   <div class="container">
 	<div class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
@@ -50,7 +51,8 @@
             <div class="span6" style="padding-top:20px;">
 			  {{> search}} 
 			  <iframe id="player" width="100%" height="0" src="" frameBorder="0" scrolling="no" allowfullscreen></iframe>
-			  <div id="player-div"></div> 
+			  <div id="player-div"></div>
+			  {{> modifiers}}
 			  {{> musiclist}}
 			  </div>
 			  <div class="span4">
@@ -68,7 +70,8 @@
   <ul class="nav">
 
 	{{#if currentUser}}
-	  {{#if signedup}}
+	  {{#if signedup}}	  
+		<li>{{profile_image}}</li>
 		<li><a href="javascript:void(0);">{{currentUser.name}}</a></li>
 		<li><a href="javascript:logout();">Logout</a></li>
 	  {{else}}
@@ -81,7 +84,7 @@
 	{{/if}}
   </ul>  
 </template>
-<template name="musiclist">  
+<template name="musiclist">
 	{{> currentvideo}}
 	<div id="wrap-playlist">
 	  <ul class="playlist">
@@ -101,8 +104,8 @@
 		  	<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
 		{{/if}}
 	  {{/if}}
-
 	<span class="title">{{title}}</span>
+	<div class="votes"><strong>Votes:</strong> {{score}}</div>
     <div class="actions">
 	  <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
 	  <a href="javascript:void(0);" class="vote"></a>
@@ -114,7 +117,6 @@
 	<a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
 	<a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
 	<a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
-	<a rel="tooltip" class="sync tip" title="Sync List"><i class="icon-retweet"></i></a>
   </div>
 </template>
 <template name="currentvideo">
@@ -173,4 +175,15 @@
 <template name="playlist">
   <span class="{{is_current}}">{{name}}</span>
   <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
+</template>
+<template name="modifiers">
+	<div class="btn-group" data-toggle="buttons-checkbox" style="width:400px;">
+	  {{# if owner}}
+		<button class="btn block">Block</button>		
+		<button class="btn repeat">Repeat</button>
+	  {{else}}
+		<button class="btn sync">Sync</button>
+	  {{/if}}	  	  
+	</div>
+	<br/>    
 </template>
