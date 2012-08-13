@@ -21,9 +21,9 @@ Meteor.startup(function () {
 
   Songs.allow({
     insert: function (uid, doc) {
-      var pl = PlayLists.findOne({_id:doc.listkey});
-      var blocked = (typeof(pl.blocked)==='undefined')? false:(!pl.blocked)? false : true;
-      if(!blocked || pl.user===uid)
+      var plo = PlayLists.findOne({_id:doc.listkey});
+      var blocked = (typeof(plo.blocked)==='undefined')? false:(!plo.blocked)? false : true;
+      if(!blocked || plo.user===uid)
         return true;
       else
         return false;
@@ -70,9 +70,10 @@ Meteor.startup(function () {
     },
     remove: function (uid, doc) {
       var pl = PlayLists.findOne({_id:doc[0]._id});
-      if(uid === pl.user)
+      if(uid === pl.user){
+        Songs.remove({listkey:doc[0]._id});
         return true;
-      else
+      }else
         return false;
     },
     fetch: function (uid, doc) {

@@ -12,6 +12,8 @@
   width:205px;
   height:52px;
   background:url('/img/logo.png') top left;
+  margin-left:-10px;
+  margin-top:13px;
 }
 h3{
 	margin-top:20px;
@@ -192,7 +194,11 @@ li:hover .vote-up {
 }
 #shares{
   margin-top:20px;
-  height:90px;
+  display:none;
+}
+#likewrap{
+	width:160px;
+	height:35px;
 }
 .song{
 	overflow:auto;
@@ -237,4 +243,24 @@ li:hover .vote-up {
 }
 .votes{
 	font-size:10px;
+}
+.modifiers .navbar div.navbar-inner{
+	margin-left:0px;
+	padding-left:0px;
+}
+.modifiers .nav li a{
+	padding-left:18px;
+	padding-right:18px;
+}
+.modifiers .nav li.divider-vertical{
+	margin:0px;
+}
+#mainnav .nav li img{
+	margin-top:7px !important;
+	display:block;
+	padding:2px;
+	background:white;
+}
+#mainnav .navbar-inner{
+	height:43px !important;
 }

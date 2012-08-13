@@ -29,7 +29,7 @@
 <body>
 
   <div class="container">
-	<div class="navbar navbar-fixed-top">
+	<div id="mainnav" class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
 		<div class="container">
 		  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -51,16 +51,14 @@
             <div class="span6" style="padding-top:20px;">
 			  {{> search}} 
 			  <iframe id="player" width="100%" height="0" src="" frameBorder="0" scrolling="no" allowfullscreen></iframe>
-			  <div id="player-div"></div>
+			  <div id="player-div"></div>			  
 			  {{> modifiers}}
+			  {{> shares}}
 			  {{> musiclist}}
 			  </div>
 			  <div class="span4">
-				  <h1 class="logo"></h1>
-				  {{> controls}}
-				  {{> shares}}
+				  <h1 class="logo"></h1>				  
 				  {{> playlists}}
-
 			  </div>
 		</div>
 	  </div>
@@ -68,10 +66,9 @@
 </body>
 <template name="navbar">
   <ul class="nav">
-
 	{{#if currentUser}}
 	  {{#if signedup}}	  
-		<li>{{profile_image}}</li>
+		<li><img width="25" height="25" src="{{profile_image_url}}" /></li>
 		<li><a href="javascript:void(0);">{{currentUser.name}}</a></li>
 		<li><a href="javascript:logout();">Logout</a></li>
 	  {{else}}
@@ -112,13 +109,6 @@
 	</div>
   </div>
 </template>
-<template name="controls">
-  <div id="controls">
-	<a rel="tooltip" class="playsong tip" title="Play All"><i class="icon-play"></i></a>
-	<a rel="tooltip" class="clearlist tip" title="Clear List"><i class="icon-trash"></i></a>
-	<a rel="tooltip" class="skip tip" title="Skip Video"><i class="icon-forward"></i></a>
-  </div>
-</template>
 <template name="currentvideo">
   {{#if currentVideo}}
   <div id="currentVideo" class="current">	
@@ -134,11 +124,12 @@
 	  <div style="display:none;" id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
 	{{/if}}
 	{{#if playchannel_url}}	  
-	  <p><strong>Share:</strong></p>
-	  <div id="playchannelurl"><input id="playchannel_url" style="width:50%" type="text" value="{{playchannel_url}}" /></div>
-	  <div class="fb-like" data-href="{{playchannel_url}}" data-send="true" data-width="50" data-show-faces="false"></div>
+	  <p><strong>Share Playlist</strong></p>
+	  <div id="playchannelurl"><input id="playchannel_url" style="width:320px" type="text" value="{{playchannel_url}}" /></div>
+	  <div id="likewrap">
+		<div class="fb-like" data-width="350" data-href="{{playchannel_url}}" data-layout="standard" data-send="true" data-show-faces="false"></div>
+	  </div>	  
 	  {{on_playchannel_ready}}
-	  <!--<div class="fb-comments" data-href="{{playchannel_url}}" data-num-posts="2" data-width="370"></div>-->
 	{{/if}}
   </div>
 </template>
@@ -162,38 +153,45 @@
 		  <a class="btn savelist" href="javascript:void(0);">Save</a>
 		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
 		</div>  	  
-		<button class="btn update">Save current list</button>
-		<button class="btn create">Add empty list</button>
-	  {{else}}
-		<div class="alert alert-success call-to-action">
-		  Login with facebook or google to save lists
-		  <a class="btn" href="javascript:login('facebook');">Login with facebook</a>
-		  <a class="btn" href="javascript:login('google');">Login with google</a>
-		</div>	  
+		<button class="btn update">Save List</button>
+		<button class="btn create">Create List</button> 
 	  {{/if}}
 </template>
+
 <template name="playlist">
   <span class="{{is_current}}">{{name}}</span>
   <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
 </template>
+
 <template name="modifiers">
-	<div class="navbar">
-	  <div class="navbar-inner">
-		<div class="container">
-		  <ul class="nav">
-			<li><a class="playsong reseteable" href="#"><i class="icon-play icon-white"></i></a></li>
-			<li><a class="clearlist reseteable" href="#"><i class="icon-trash icon-white"></i></a></li>
-			<li><a class="skip reseteable" href="#"><i class="icon-forward icon-white"></i></a></li>
-			<li><a class="share reseteable" href="#"><i class="icon-share icon-white"></i></a></li>
-			{{# if owner}}
-			  <li><a class="block reseteable" href="#"><i class="icon-lock icon-white"></i></a></li>
-			  <li><a class="repeat reseteable" href="#"><i class="icon-repeat icon-white"></i></a></li>
-			{{else}}
-			  <li><a class="addlist reseteable" href="#">Save to MyLists</a></li>
-			  <li><a class="sync reseteable" href="#">Sync to host</a></li>
-			{{/if}}	
-		  </ul>
+	<div class="modifiers">
+	  <div class="navbar">
+		<div class="navbar-inner">
+		  <div class="container">
+			<ul class="nav">
+			  <li><a class="playsong reseteable tip" title="Play List" href="#"><i class="icon-play icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+			  <li><a class="clearlist reseteable tip" title="Empty List" href="#"><i class="icon-trash icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+			  <li><a class="skip reseteable tip" title="Skip Video" href="#"><i class="icon-forward icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+			  <li><a class="share reseteable tip" title="Share List" href="#"><i class="icon-share icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+			  {{# if owner}}
+				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="#"><i class="icon-lock icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="#"><i class="icon-repeat icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+			  {{else}}
+				<li><a class="addlist reseteable tip" title="Save List. Clone current list and save in your lists" href="#"><i class="icon-list-alt icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="#"><i class="icon-retweet icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+			  {{/if}}	
+			</ul>
+		  </div>
 		</div>
 	  </div>
 	</div>
+	{{on_modifiers_loaded}}
 </template>
