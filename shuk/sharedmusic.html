@@ -177,13 +177,23 @@
   <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
 </template>
 <template name="modifiers">
-	<div class="btn-group" data-toggle="buttons-checkbox" style="width:400px;">
-	  {{# if owner}}
-		<button class="btn block">Block</button>		
-		<button class="btn repeat">Repeat</button>
-	  {{else}}
-		<button class="btn sync">Sync</button>
-	  {{/if}}	  	  
+	<div class="navbar">
+	  <div class="navbar-inner">
+		<div class="container">
+		  <ul class="nav">
+			<li><a class="playsong reseteable" href="#"><i class="icon-play icon-white"></i></a></li>
+			<li><a class="clearlist reseteable" href="#"><i class="icon-trash icon-white"></i></a></li>
+			<li><a class="skip reseteable" href="#"><i class="icon-forward icon-white"></i></a></li>
+			<li><a class="share reseteable" href="#"><i class="icon-share icon-white"></i></a></li>
+			{{# if owner}}
+			  <li><a class="block reseteable" href="#"><i class="icon-lock icon-white"></i></a></li>
+			  <li><a class="repeat reseteable" href="#"><i class="icon-repeat icon-white"></i></a></li>
+			{{else}}
+			  <li><a class="addlist reseteable" href="#">Save to MyLists</a></li>
+			  <li><a class="sync reseteable" href="#">Sync to host</a></li>
+			{{/if}}	
+		  </ul>
+		</div>
+	  </div>
 	</div>
-	<br/>    
 </template>
