@@ -18,7 +18,6 @@ Meteor.methods({
   }
 });
 Meteor.startup(function () {
-
   Songs.allow({
     insert: function (uid, doc) {
       var plo = PlayLists.findOne({_id:doc.listkey});
