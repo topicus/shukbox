@@ -3,14 +3,14 @@ PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
 
-Meteor.publish('songs', function () {
-  return Songs.find();
+Meteor.publish('songs', function (listkey) {
+  return Songs.find({listkey:listkey});
 });
-Meteor.publish('playlists', function () {
-  return PlayLists.find();
+Meteor.publish('playlists', function (playlist) {
+  return PlayLists.find({$or:[{_id:playlist}, {user:this.userId()}]});
 });
-Meteor.publish('playchannels', function () {
-  return PlayChannels.find();
+Meteor.publish('playchannels', function (playchannel) {
+  return PlayChannels.find({_id:playchannel});
 });
 Meteor.methods({
   getUserServiceId: function () {

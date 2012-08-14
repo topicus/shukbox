@@ -5,16 +5,22 @@ PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
 
 Session.set('listkey', null);
+Session.set('playchannel', null);
+Session.set('synced', null);
+Session.set('repeat', null);
+Session.set('fulluser', null);
 
 Meteor.autosubscribe(function () {
-  var listkey, _id, playlist = Session.get('listkey');
-  if(listkey)
+  var listkey = Session.get('listkey');
+  var playchannel = Session.get('playchannel')
+  if(listkey){
     Meteor.subscribe('songs',listkey);
-  if(_id)
-    Meteor.subscribe('playlists',_id);
-  if(playlist)
-    Meteor.subscribe('playchannels', playlist);
+    Meteor.subscribe('playchannels', playchannel);
+    Meteor.subscribe('playlists', listkey);
+  }
 });
+
+
 /*
 var insertedNodes = [];
 document.addEventListener("DOMNodeInserted", function(e) {
@@ -75,6 +81,9 @@ function login(type){
     }
   });
 };
+Meteor.call('getUserServiceId', function(error, result){
+  if(typeof(error) ==='undefined') Session.set('fulluser',result);
+});
 /*TIMER WAITING FOR SERVICE LOGIN*/
 function waitForLogin(){
   if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
@@ -112,7 +121,6 @@ function checkListKey(force_create){
     var list =  PlayLists.insert({name:name, user:Meteor.user()._id, timestamp:timestamp(),saved:saved, blocked:false});
     Session.set('listkey',list);
     checkPlayChannel();
-    getFullUser();
   }
 };
 function checkPlayChannel(){
@@ -406,29 +414,30 @@ function addSong(jselector){
   Meteor.flush();
   var vid = get_youtube_id(jselector.children('a').attr("href"));
   var title = jselector.children('a').attr("title");
-
-  Meteor.call('getUserServiceId',function(error,result){
-    if(typeof(error) === 'undefined'){     
-      fbid = (result.services.facebook) ? result.services.facebook.id : false;
-      goid = (result.services.google) ? result.services.google.id : false;
-      var so = Songs.findOne({listkey:Session.get('listkey')});
-      if(typeof(so)!=='undefined'){
-        var last_weight = (!so.weight || typeof(so.weight) ==='undefined')? 0:so.weight+1;
-      }
-      Songs.insert({name: vid, fbid:fbid, goid:goid, score: 0, title:title, listkey:Session.get('listkey'), added_by:Meteor.user()._id, weight:last_weight, timestamp:timestamp()});
-    }
-  });
+  //var user_logged = Meteor.users.find({_id:Meteor.user()._id});
+  //console.log(user_logged.fetch());
+  var user_logged = Session.get('fulluser');
+  var fbid = (user_logged.services.facebook) ? user_logged.services.facebook.id : false;
+  var goid = (user_logged.services.google) ? user_logged.services.google.id : false;
+  var so = Songs.findOne({listkey:Session.get('listkey')});
+  if(typeof(so)!=='undefined'){
+    var last_weight = (!so.weight || typeof(so.weight) ==='undefined')? 0:so.weight+1;
+  }
+  Songs.insert({
+    name: vid,
+    fbid:fbid,
+    goid:goid,
+    score: 0,
+    title:title,
+    listkey:Session.get('listkey'),
+    added_by:Meteor.user()._id,
+    weight:last_weight,
+    timestamp:timestamp()
+  });  
   $("#autocompleter").hide();
   currentSelected = -1;
   $('.nextsong').val('');  
 }
-function getFullUser(){  
-  Meteor.call('getUserServiceId',function(error,result){
-    if(typeof(error) === 'undefined'){
-      Session.set('fulluser', result);
-    }
-  });
-};
 /*HELPERS HANDLEBARS*/
 if (window.Handlebars) {
   Handlebars.registerHelper("signedup", function() {
