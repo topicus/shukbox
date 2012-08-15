@@ -1,5 +1,3 @@
-
-
 var QueryString = function () {
   var query_string = {};
   var query = window.location.search.substring(1);
@@ -42,19 +40,20 @@ function showMyVideos(data){
         var lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>';
         html.push('<li>', thumb_tag, title, ', ', playCount, ', ', lnk, '</li>');
     }
+    html.push('<li><span class="more-videos">+More Videos</span></li>');
     html.push('</ul>');
     document.getElementById('videoResultsDiv').innerHTML = html.join('');
     $('#autocompleter li').click(function(){
       addSong($(this));
     });
 }
-/*SEARCH IN YOUTUBE
-*@param string
-*/
+/*SEARCH IN YOUTUBE*/
 var search_timeout = null;
+var autocomple_offset = 1;
 function search(q){
-  if(search_timeout)
-    clearTimeout(search_timeout);
+  if(search_timeout) clearTimeout(search_timeout);
+  
+  var off = (typeof(autocomple_offset) !== 'undefined')? autocomple_offset : 1;
   if(q!==''){
     search_timeout = setTimeout(function(){
       var script = document.createElement('script');
@@ -62,7 +61,8 @@ function search(q){
       script.setAttribute('type', 'text/javascript');
       script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
              'videos?vq='+q+'&max-results=6&' + 
-             'alt=json-in-script&callback=showMyVideos&' + 
+             'alt=json-in-script&callback=showMyVideos&' +
+             'start-index='+off+'&' +
              'orderby=relevance&sortorder=descending&format=5&fmt=18');
       document.documentElement.firstChild.appendChild(script);
     }, 200);
@@ -89,6 +89,8 @@ function include_facebook(){
      ref.parentNode.insertBefore(js, ref);
    }(document));  
 }
+
+/*GET TIMESTAMP*/
 function timestamp(){
   return new Date().getTime();  
 }
@@ -101,11 +103,16 @@ function addInputEvent(){
   old_input_state = inputnode.value;
   timer_input_event = Meteor.setInterval(function(){
     if(old_input_state !== inputnode.value){
-      console.log("cambio");
       search(inputnode.value);
       old_input_state = inputnode.value;
+      autocomple_offset = 1;
     }
-  }, 50);
+    if(inputnode.value===''){
+      var autocompleter = document.getElementById("autocompleter");
+      if(autocompleter) autocompleter.style.display = 'none';
+      currentSelected = -1;
+    }
+  }, 100);
 }
 function removeInputEvent(){
   Meteor.clearInterval(timer_input_event);

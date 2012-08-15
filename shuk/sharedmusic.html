@@ -137,7 +137,7 @@
 </template>
 <template name="search">
   <div id="search">
-	  <input placeholder="Search a video!" class="nextsong" id="nextsong" type="text"/>
+	  <input placeholder="Search a video or paste youtube url!" class="nextsong" id="nextsong" type="text"/>
 	  <div id="videoResultsDiv"></div> 
   </div>
   {{on_ready_search}}
@@ -182,12 +182,12 @@
 			<ul class="nav">
 			  <li><a class="playsong reseteable tip" title="Play List" href="#"><i class="icon-play icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="clearlist reseteable tip" title="Empty List" href="#"><i class="icon-trash icon-white"></i></a></li>
-			  <li class="divider-vertical"></li>
 			  <li><a class="skip reseteable tip" title="Skip Video" href="#"><i class="icon-forward icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
 			  <li><a class="share reseteable tip" title="Share List" href="#"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
+			  <li><a class="clearlist reseteable tip" title="Empty List" href="#"><i class="icon-trash icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>			  
 			  {{# if owner}}
 				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="#"><i class="icon-lock icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
