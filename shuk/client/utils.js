@@ -60,7 +60,7 @@ function search(q){
       script.setAttribute('id', 'jsonScript');
       script.setAttribute('type', 'text/javascript');
       script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
-             'videos?vq='+q+'&max-results=6&' + 
+             'videos?vq='+q+'&max-results='+AUTOCOMPLETE_PAGE_SIZE+'&' + 
              'alt=json-in-script&callback=showMyVideos&' +
              'start-index='+off+'&' +
              'orderby=relevance&sortorder=descending&format=5&fmt=18');

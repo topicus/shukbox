@@ -196,6 +196,7 @@ li:hover .vote-up {
 }
 .song{
 	overflow:auto;
+	padding-right:30px;
 }
 #mylists{
 	list-style:none;

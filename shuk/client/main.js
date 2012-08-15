@@ -27,7 +27,8 @@ document.addEventListener("DOMNodeInserted", function(e) {
 */
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
-var AUTOCOMPLETE_PAGE_SIZE = 6;
+var ESC = 27;
+var AUTOCOMPLETE_PAGE_SIZE = 5;
 var currentSelected = -1;
 
 Session.set('synced', false);
@@ -317,6 +318,11 @@ Template.search.events = {
         currentSelected=-1;
       }    
       if(currentSelected!==-1) addSong($('#autocompleter li').eq(currentSelected));
+    }
+    if(e.keyCode==ESC){
+      currentSelected = -1;
+      autocomple_offset = 1;
+      $("#autocompleter").hide();    
     }
   }  
 };
