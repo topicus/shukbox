@@ -143,6 +143,7 @@
   {{on_ready_search}}
 </template>
 <template name="playlists">
+	<div class="hidden-phone">
 	  {{#if signedup}}
 		<h3>My lists</h3>	  
 		<ul id="mylists">
@@ -154,15 +155,23 @@
 		<div id="save-control">
 		  <a class="btn savelist" href="javascript:void(0);">Save</a>
 		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
-		</div>  	  
-		<button class="btn update">Save List</button>
-		<button class="btn create">Create List</button> 
+		</div>
+		{{#if salvable}}
+		  <a href="#" class="btn update">Save List</a>
+		{{/if}}
+		<a href="#" class="btn create">Create List</a> 
 	  {{/if}}
+	</div>
 </template>
 
 <template name="playlist">
-  <span class="{{is_current}}">{{name}}</span>
-  <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
+  <div class="item-playlist">
+	<span class="{{is_current}}">{{name}}</span>
+	<div class="playlist-actions">
+	  <a href="javascript:void(0);" class="edit"><i class="icon-edit"></i><a/>
+	  <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
+	</div>
+  </div>
 </template>
 
 <template name="modifiers">

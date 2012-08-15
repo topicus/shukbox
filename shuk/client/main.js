@@ -9,6 +9,8 @@ Session.set('playchannel', null);
 Session.set('synced', null);
 Session.set('repeat', null);
 Session.set('fulluser', null);
+Session.set('owner', null);
+Session.set('edited', null);
 
 Meteor.autosubscribe(function () {
   var listkey = Session.get('listkey');
@@ -249,16 +251,38 @@ Template.playlists.events = {
     $('.reseteable').button('toggle');
   },
   'click .create':function(){
+    Meteor.flush();
     checkListKey(true);
+    Meteor.defer(function(){
+      $('#save-control').show();
+      $('#listname').select();         
+    }); 
   },
-  'click .update':function(){
-    $('#save-control').toggle();
+  'click .update':function(e){
+    $('#save-control').show();
     $('#listname').select();
   },
   'click .savelist':function(){
-    $('#save-control').toggle();
-    PlayLists.update({_id:Session.get('listkey')}, { $set:{name:$('#listname').val(), saved:true} }); 
-  }, 
+    $('#save-control').hide();
+    var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
+    PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
+    Session.set('edited', null);
+  },
+  'keydown #save-control input':function(e){
+    console.log(Session.get('edited'));
+    if(e.which===13){
+      $('#save-control').hide();      
+      var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
+      PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
+      Session.set('edited', null);
+    }
+  },
+  'click .edit':function(e){
+    $('#save-control').show();
+    $('#listname').val(this.name);
+    $('#listname').select();
+    Session.set('edited', this._id);
+  },
   'click .delete': function () {
     Session.set('listkey', undefined);
     PlayLists.remove(this._id);
@@ -439,12 +463,24 @@ if (window.Handlebars) {
     return Meteor.user();  
   });
   Handlebars.registerHelper('owner', function(){
-    if(Meteor.user()) return Session.get('owner') === Meteor.user()._id;
+    if(Meteor.user())
+      return Session.get('owner') === Meteor.user()._id;
+    return false;
   });
+  Handlebars.registerHelper('salvable', function(){
+    if(Meteor.user()){
+      var plo = PlayLists.findOne({_id:Session.get('listkey')});
+      console.log(plo);
+      if(typeof(plo) !== 'undefined')
+        return Session.get('owner') === Meteor.user()._id && !plo.saved;
+    }
+    return false;
+  });  
   Handlebars.registerHelper('profile_image_url', function(){
     var f = Session.get('fulluser')
     if(f){
-      var service_id = (f.services.facebook) ? "http://graph.facebook.com/"+f.services.facebook.id+"/picture" : (f.services.google) ? "https://plus.google.com/s2/photos/profile/"+f.services.google.id+"?sz=30" : false;
+      var s = f.services;
+      var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
       return service_id;
     }else{
       return '';

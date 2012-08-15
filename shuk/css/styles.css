@@ -92,6 +92,7 @@ ul.playlist li {
 	color: #666;
 	font-size: 14px;
 	position: relative;
+	padding-right:40px;
 }
 
 ul.playlist li:hover {
@@ -99,19 +100,10 @@ ul.playlist li:hover {
 	background: #E1E1E1;
 	cursor: pointer;
 }
-
-
-ul.playlist li a.avatar {
-	position: absolute;
-	width: 28px;
-	height: 28px;
-	right: 10px;
-	top: 10px;
-	opacity: 0.3;
-}
-
-ul.playlist li:hover a.avatar {
-	opacity: 1;
+ul.playlist li img{
+	padding:5px;
+	background:white;
+	border:1px solid #DDD;
 }
 
 #currentVideo.current {
@@ -198,8 +190,9 @@ li:hover .vote-up {
   display:none;
 }
 #likewrap{
-	width:160px;
+	width:120px;
 	height:35px;
+	overflow:hidden;
 }
 .song{
 	overflow:auto;
@@ -270,4 +263,54 @@ li:hover .vote-up {
 }
 #mainnav .navbar-inner{
 	min-height:43px !important;
+}
+
+.item-playlist{
+	overflow:auto;
+	width:68%;
+}
+.item-playlist .playlist-actions{
+	float:right;
+
+}
+@media (max-width: 480px) {
+	.modifiers .nav li a{
+		padding-left:13px;
+		padding-right:13px;
+	}	
+	#search {	
+	  background: #000 url('/img/icon-search.png') no-repeat 3.5% 13px;
+	  width:83%;
+	}
+	#search input {
+		margin: 0 0 0 16%;
+		border-radius: 0;
+		width: 100%;
+		font-size: 16px;
+		padding:16px 2.3% ;
+	}	
+}
+@media (min-width: 768px) and (max-width: 979px) {
+	.modifiers .nav li a{
+		padding-left:18px;
+		padding-right:18px;
+	}
+	#search {	
+	  background: #000 url('/img/icon-search.png') no-repeat 3.5% 13px;
+	  width:83%;
+	}
+	#search input {
+		margin: 0 0 0 16%;
+		border-radius: 0;
+		width: 100%;
+		font-size: 16px;
+		padding:16px 2.3% ;
+	}	
+}
+@media (min-width: 1200px) {
+	.modifiers .nav li a{
+		padding-left:24px;
+		padding-right:24px;
+		padding-top:13px;
+	}		
 }
