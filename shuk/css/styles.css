@@ -253,6 +253,12 @@ li:hover .vote-up {
 	padding-left:18px;
 	padding-right:18px;
 }
+.modifiers .nav li a i{
+	margin:0 auto;
+	display:block;
+	width:14px;
+	height:14px;
+}
 .modifiers .nav li.divider-vertical{
 	margin:0px;
 }
@@ -263,5 +269,5 @@ li:hover .vote-up {
 	background:white;
 }
 #mainnav .navbar-inner{
-	height:43px !important;
+	min-height:43px !important;
 }

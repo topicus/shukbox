@@ -53,12 +53,7 @@ if(typeof QueryString.playchannel !== "undefined"){
 
 loginAsAnonym();
 
-$(document).ready(function(){
-    $('input.nextsong').bind('input', function() {
-      HAS_INPUT_EVENT = 1;
-      search($('#nextsong').val());
-    });
-});
+
 var player;
 var current = 0;
 var old_current = -1;
@@ -271,9 +266,7 @@ Template.playlists.events = {
   }
 };
 Template.search.on_ready_search = function(){
-  Meteor.flush();
-  Meteor.defer(function(){
-    
+  Meteor.defer(function(){    
     $('input.nextsong').bind('input', function() {
       HAS_INPUT_EVENT = 1;
       search($('#nextsong').val());
