@@ -20,7 +20,6 @@ Meteor.autosubscribe(function () {
   }
 });
 
-
 /*
 var insertedNodes = [];
 document.addEventListener("DOMNodeInserted", function(e) {
