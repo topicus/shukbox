@@ -92,3 +92,22 @@ function include_facebook(){
 function timestamp(){
   return new Date().getTime();  
 }
+
+/*SIMULATE INPUT EVENT*/
+var old_input_state = '';
+var timer_input_event = null;
+function addInputEvent(){
+  var inputnode = document.getElementById("nextsong");
+  old_input_state = inputnode.value;
+  timer_input_event = Meteor.setInterval(function(){
+    if(old_input_state !== inputnode.value){
+      console.log("cambio");
+      search(inputnode.value);
+      old_input_state = inputnode.value;
+    }
+  }, 50);
+}
+function removeInputEvent(){
+  Meteor.clearInterval(timer_input_event);
+}
+/*END SIMULATE INPUT EVENT*/

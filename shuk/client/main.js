@@ -31,7 +31,6 @@ document.addEventListener("DOMNodeInserted", function(e) {
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var currentSelected = -1;
-var HAS_INPUT_EVENT = 0;
 var YT_API_READY = 0;
 
 Session.set('synced', false);
@@ -288,15 +287,13 @@ Template.playlists.events = {
     checkListKey();
   }
 };
-Template.search.on_ready_search = function(){
-  Meteor.defer(function(){    
-    $('input.nextsong').bind('input', function() {
-      HAS_INPUT_EVENT = 1;
-      search($('#nextsong').val());
-    });
-  });
-};
 Template.search.events = {
+  'focusin input.nextsong':function(e){
+    addInputEvent();
+  },
+  'focusout input.nextsong':function(e){
+    removeInputEvent();
+  },  
   'keydown input.nextsong':function(e){
     if(jQuery.inArray(e.keyCode, CONTROL_KEYCODES)!=-1){
       autocompleter = $('#autocompleter li');
