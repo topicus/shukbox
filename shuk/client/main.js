@@ -269,7 +269,6 @@ Template.playlists.events = {
     Session.set('edited', null);
   },
   'keydown #save-control input':function(e){
-    console.log(Session.get('edited'));
     if(e.which===13){
       $('#save-control').hide();      
       var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');

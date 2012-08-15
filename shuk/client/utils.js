@@ -1,4 +1,5 @@
 
+
 var QueryString = function () {
   var query_string = {};
   var query = window.location.search.substring(1);
@@ -50,19 +51,25 @@ function showMyVideos(data){
 /*SEARCH IN YOUTUBE
 *@param string
 */
+var search_timeout = null;
 function search(q){
-  if(q!=''){
-    var script = document.createElement('script');
-    script.setAttribute('id', 'jsonScript');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
-           'videos?vq='+q+'&max-results=6&' + 
-           'alt=json-in-script&callback=showMyVideos&' + 
-           'orderby=relevance&sortorder=descending&format=5&fmt=18');
-    document.documentElement.firstChild.appendChild(script);
+  if(search_timeout)
+    clearTimeout(search_timeout);
+  if(q!==''){
+    search_timeout = setTimeout(function(){
+      var script = document.createElement('script');
+      script.setAttribute('id', 'jsonScript');
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('src', 'http://gdata.youtube.com/feeds/' + 
+             'videos?vq='+q+'&max-results=6&' + 
+             'alt=json-in-script&callback=showMyVideos&' + 
+             'orderby=relevance&sortorder=descending&format=5&fmt=18');
+      document.documentElement.firstChild.appendChild(script);
+    }, 200);
   }else{
-    document.getElementById("videoResultsDiv").innerHTML = '';
+    document.getElementById("autocompleter").style.display = 'none';
   }
+  
 }
 function include_facebook(){
   window.fbAsyncInit = function() {
