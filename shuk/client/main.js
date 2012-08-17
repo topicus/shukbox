@@ -11,6 +11,9 @@ Session.set('repeat', null);
 Session.set('fulluser', null);
 Session.set('owner', null);
 Session.set('edited', null);
+Session.set('synced', null);
+Session.set('repeat', null);
+
 
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
@@ -19,6 +22,33 @@ Meteor.autosubscribe(function () {
   
 });
 
+//////////////// ROUTER | TRACKING PLAYCHANNEL IN THE URL /////////////////
+var ShukboxRouter = Backbone.Router.extend({
+  routes: {
+    ":playchannel": "main"
+  },
+  main: function (playchannel) {
+    Session.set('playchannel', playchannel);
+    PlayChannels.find({_id:Session.get('playchannel')}).observe({
+      added: function (item) {        
+        Session.set('listkey', item.playlist);
+        setCurrent('set',Session.get('current'));
+        Session.set('owner', item.user);
+      } 
+    });  
+  },
+  setList: function (playchannel) {
+    this.navigate(playchannel, true);
+  }
+});
+
+Router = new ShukboxRouter;
+
+Meteor.startup(function () {
+  Backbone.history.start({pushState: true});
+  Router.setList(Session.get('playchannel'));
+});
+//////////////// END ROUTER /////////////////
 /*
 var insertedNodes = [];
 document.addEventListener("DOMNodeInserted", function(e) {
@@ -31,29 +61,9 @@ var ESC = 27;
 var AUTOCOMPLETE_PAGE_SIZE = 5;
 var currentSelected = -1;
 
-Session.set('synced', false);
-Session.set('repeat', false);
-
-if(typeof QueryString.listkey !== "undefined"){
-  Session.set('listkey', QueryString.listkey)
-}
-if(typeof QueryString.playchannel !== "undefined"){
-  Session.set('playchannel', QueryString.playchannel);
-  
-  PlayChannels.find({_id:Session.get('playchannel')}).observe({
-    added: function (item) {
-      console.log(item);
-      Session.set('listkey', item.playlist);
-      setCurrent('set',Session.get('current'));
-      Session.set('owner', item.user);
-    } 
-  });  
-}else{
-  checkListKey();
-}
-
+checkListKey();
 loginAsAnonym();
-
+getFullUser();
 
 var player;
 var current = 0;
@@ -76,7 +86,7 @@ function login(type){
     }
   });
 };
-getFullUser();
+
 /*TIMER WAITING FOR SERVICE LOGIN*/
 function waitForLogin(){
   if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
@@ -119,6 +129,7 @@ function checkPlayChannel(){
     pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current'), timestamp:timestamp()});
     Session.set('playchannel',pchannel);
     Session.set('owner', Meteor.user()._id);
+    Router.setList(pchannel);
   }
 }
 function onYouTubeIframeAPIReady() {
@@ -180,9 +191,9 @@ function setCurrent(m,i){
   }
 }
 Template.currentvideo.currentVideo = function(){
-  if(PlayChannels.findOne(Session.get('playchannel'))){
-    var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
-    var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[currentPlayChannel.current];
+  var pco = PlayChannels.findOne(Session.get('playchannel'));
+  if(typeof(pco) !== 'undefined'){
+    var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
     return c;
   }
   return false;
@@ -319,6 +330,7 @@ Template.search.events = {
         autocomple_offset +=AUTOCOMPLETE_PAGE_SIZE;
         search(document.getElementById('nextsong').value, AUTOCOMPLETE_PAGE_SIZE);        
         currentSelected=-1;
+        $('#autocompleter li.selected span').html('Loading...');
       }    
       if(currentSelected!==-1) addSong($('#autocompleter li').eq(currentSelected));
     }
@@ -371,8 +383,11 @@ Template.modifiers.on_modifiers_loaded = function () {
 };
 Template.modifiers.blocked = function(){
   var plo = PlayLists.findOne({_id:Session.get('listkey')});
-  var blocked = (typeof(plo.blocked)==='undefined')? false:(!plo.blocked)? false : true;  
-  return (plo.blocked)? 'active' : '';
+  if(typeof(plo) !=='undefined'){
+    var blocked = (typeof(plo.blocked)==='undefined')? false:(!plo.blocked)? false : true;  
+    return (plo.blocked)? 'active' : '';
+  }
+  return '';
 };
 Template.modifiers.synced = function(){
   return (Session.get('synced'))? 'active' : '';
@@ -412,6 +427,7 @@ Template.modifiers.events = {
     }
   },
   'click .addlist':function(e){
+
     var plo = PlayLists.findOne({_id:Session.get('listkey')});
 
     delete plo._id;
@@ -421,8 +437,8 @@ Template.modifiers.events = {
     var new_id = PlayLists.insert(plo);
     Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
       delete item._id;
-      item.user = Meteor.user()._id;
-      item.listkey = new_id; 
+      item.listkey = new_id;
+      Songs.insert(item);
     });
   },  
   'click .sync': function (e) {
@@ -440,7 +456,7 @@ function addSong(jselector){
   var user_logged = Session.get('fulluser');
   var fbid = (user_logged.services.facebook) ? user_logged.services.facebook.id : false;
   var goid = (user_logged.services.google) ? user_logged.services.google.id : false;
-  var so = Songs.findOne({listkey:Session.get('listkey')});
+  var so = Songs.findOne({listkey:Session.get('listkey')},{sort: {weight: -1}});
   
   if(typeof(so)!=='undefined'){
     var last_weight = (!so.weight || typeof(so.weight) ==='undefined')? 0:so.weight+1;
@@ -494,3 +510,5 @@ if (window.Handlebars) {
   });  
 }
 /*END HANDLEBARS HELPER*/
+
+

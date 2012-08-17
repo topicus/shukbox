@@ -112,6 +112,13 @@
   </div>
 </template>
 <template name="currentvideo">
+  {{#if fbid}}
+	<img src="http://graph.facebook.com/{{fbid}}/picture"/>
+  {{else}}
+	{{#if goid}}
+		<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
+	{{/if}}
+  {{/if}}  
   {{#if currentVideo}}
   <div id="currentVideo" class="current">	
 	  {{currentVideo.title}}	

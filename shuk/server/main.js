@@ -31,9 +31,9 @@ Meteor.startup(function () {
       return true;
     },
     remove: function (uid, doc) {
-      s = Songs.findOne({_id:doc[0]._id});
-      p = PlayLists.findOne({_id:s.listkey});
-      if(p && p.user===uid)
+      var so = Songs.findOne({_id:doc[0]._id});
+      var plo = PlayLists.findOne({_id:so.listkey});
+      if(plo && plo.user===uid)
         return true;
       else
         return false;
@@ -47,10 +47,14 @@ Meteor.startup(function () {
       return true;
     },
     update: function (uid, doc) {
-      return true;
+      var pco = PlayChannels.findOne({_id:doc[0]._id});
+      if(pco && pco.user===uid) return true;
+      return false;
     },
     remove: function (uid, doc) {
-      return true;
+      var pco = PlayChannels.findOne({_id:doc[0]._id});
+      if(pco && pco.user===uid) return true;
+      return false;
     },
     fetch: function (uid, doc) {
       return true;
@@ -61,15 +65,15 @@ Meteor.startup(function () {
       return true;
     },
     update: function (uid, doc) {
-      var pl = PlayLists.findOne({_id:doc[0]._id});
-      if(uid === pl.user)
+      var plo = PlayLists.findOne({_id:doc[0]._id});
+      if(uid === plo.user)
         return true;
       else
         return false;
     },
     remove: function (uid, doc) {
-      var pl = PlayLists.findOne({_id:doc[0]._id});
-      if(uid === pl.user){
+      var plo = PlayLists.findOne({_id:doc[0]._id});
+      if(plo && uid === plo.user){
         Songs.remove({listkey:doc[0]._id});
         return true;
       }else
