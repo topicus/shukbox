@@ -76,28 +76,24 @@ function login(type){
     }
   });
 };
-Meteor.call('getUserServiceId', function(error, result){
-  if(typeof(error) ==='undefined') Session.set('fulluser',result);
-});
+getFullUser();
 /*TIMER WAITING FOR SERVICE LOGIN*/
 function waitForLogin(){
   if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
     Meteor.clearInterval(login_interval);
+    getFullUser();
   }
 };
-/*TIMER WAITING FOR SERVICE LOGOUT*/
-function waitForLogout(){
-  if(!Meteor.user()){
-    Meteor.clearInterval(logout_interval);
-    Meteor.flush();
-    Session.set('listkey', undefined);
-    Session.set('playchannel', undefined);
-    loginAsAnonym();
-  }  
-};
 function logout(){
-  Meteor.logout();
-  logout_interval = Meteor.setInterval(waitForLogout, 500);
+  Meteor.logout(function(){
+    Session.get('fulluser', null)    
+  });
+}
+function getFullUser(){
+    Meteor.call('getUserServiceId', function(error, result){
+      console.log(result);
+      if(typeof(error) ==='undefined') Session.set('fulluser',result);
+    });
 };
 function loginAsAnonym(){
   if(!Meteor.user()){
@@ -256,12 +252,18 @@ Template.playlists.events = {
       $('#listname').select();         
     }); 
   },
+  'click .cancel-edit-list':function(e){
+    Meteor.flush();
+    $('#save-control').hide();
+  },
   'click .update':function(e){
+    Meteor.flush();
+    $('.savelist').html('Save');
     $('#save-control').show();
     $('#listname').select();
   },
-  'click .savelist':function(){
-    $('#save-control').hide();
+  'click .savelist':function(){   
+    $('#save-control').hide();    
     var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
     PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
     Session.set('edited', null);
@@ -278,6 +280,7 @@ Template.playlists.events = {
     $('#save-control').show();
     $('#listname').val(this.name);
     $('#listname').select();
+    $('.savelist').html('Edit');
     Session.set('edited', this._id);
   },
   'click .delete': function () {
@@ -458,7 +461,16 @@ function addSong(jselector){
   currentSelected = -1;
   $('.nextsong').val('');  
 }
-
+Template.navbar.profile_image_url = function(){
+    var f = Session.get('fulluser');
+    if(f){
+      var s = f.services;
+      var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
+      return service_id;
+    }else{
+      return '';
+    }  
+};
 /*HELPERS HANDLEBARS*/
 if (window.Handlebars) {
   Handlebars.registerHelper("signedup", function() {
@@ -479,16 +491,6 @@ if (window.Handlebars) {
         return Session.get('owner') === Meteor.user()._id && !plo.saved;
     }
     return false;
-  });  
-  Handlebars.registerHelper('profile_image_url', function(){
-    var f = Session.get('fulluser')
-    if(f){
-      var s = f.services;
-      var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
-      return service_id;
-    }else{
-      return '';
-    }
   });  
 }
 /*END HANDLEBARS HELPER*/

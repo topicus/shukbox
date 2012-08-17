@@ -216,11 +216,12 @@ li:hover .vote-up {
 }
 #save-control{
 	margin-top:10px;
+	margin-bottom:20px;
 	display:none;
 }
 #save-control a {
 	margin-top:-9px;
-	width:15%;
+	width:24%;
 }
 #listname{
 	width:30%;

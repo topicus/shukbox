@@ -43,8 +43,15 @@ function showMyVideos(data){
     html.push('<li><span class="more-videos">+More Videos</span></li>');
     html.push('</ul>');
     document.getElementById('videoResultsDiv').innerHTML = html.join('');
-    $('#autocompleter li').click(function(){
-      addSong($(this));
+    var autocompleter = $('#autocompleter li');
+    autocompleter.click(function(e){
+      if($(e.currentTarget).index()==autocompleter.length-1){
+        autocomple_offset +=AUTOCOMPLETE_PAGE_SIZE;
+        search(document.getElementById('nextsong').value, AUTOCOMPLETE_PAGE_SIZE);        
+        currentSelected=-1;        
+      }else{
+        addSong($(this));
+      }      
     });
 }
 /*SEARCH IN YOUTUBE*/

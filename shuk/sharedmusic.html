@@ -153,13 +153,14 @@
 		</ul>
 		<br/>
 		<div id="save-control">
-		  <a class="btn savelist" href="javascript:void(0);">Save</a>
+		  <a class="btn savelist btn-primary" href="javascript:void(0);">Save</a>
 		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
+		  <a href="javascript:void(0);"><i class="cancel-edit-list icon-remove"></i></a>
 		</div>
 		{{#if salvable}}
-		  <a href="#" class="btn update">Save List</a>
+		  <a href="javascript:void(0);" class="btn update">Save List</a>
 		{{/if}}
-		<a href="#" class="btn create">Create List</a> 
+		<a href="javascript:void(0);" class="btn create">Create List</a> 
 	  {{/if}}
 	</div>
 </template>
@@ -180,23 +181,23 @@
 		<div class="navbar-inner">
 		  <div class="container">
 			<ul class="nav">
-			  <li><a class="playsong reseteable tip" title="Play List" href="#"><i class="icon-play icon-white"></i></a></li>
+			  <li><a class="playsong reseteable tip" title="Play List" href="javascript:void(0);"><i class="icon-play icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="skip reseteable tip" title="Skip Video" href="#"><i class="icon-forward icon-white"></i></a></li>
+			  <li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="share reseteable tip" title="Share List" href="#"><i class="icon-share icon-white"></i></a></li>
+			  <li><a class="share reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="clearlist reseteable tip" title="Empty List" href="#"><i class="icon-trash icon-white"></i></a></li>
+			  <li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>			  
 			  {{# if owner}}
-				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="#"><i class="icon-lock icon-white"></i></a></li>
+				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
-				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="#"><i class="icon-repeat icon-white"></i></a></li>
+				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{else}}
-				<li><a class="addlist reseteable tip" title="Save List. Clone current list and save in your lists" href="#"><i class="icon-list-alt icon-white"></i></a></li>
+				<li><a class="addlist reseteable tip" title="Save List. Clone current list and save in your lists" href="javascript:void(0);"><i class="icon-list-alt icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
-				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="#"><i class="icon-retweet icon-white"></i></a></li>
+				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{/if}}	
 			</ul>
