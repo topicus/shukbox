@@ -27,8 +27,7 @@
 </head>
 
 <body>
-
-  <div class="container">
+<div class="container">
 	<div id="mainnav" class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
 		<div class="container">
@@ -44,9 +43,9 @@
 		</div>
 	  </div>
 	</div>
-    <div class="row">
-      <div class="span12">
-        <div class="row">
+	<div class="row">
+	  <div class="span12">
+	    <div class="row">
 		  <div class="span1">&nbsp;</div>
 		  <div class="span3">
 			  <h1 class="logo"></h1>				  
@@ -63,8 +62,11 @@
 		  <div class="span2">&nbsp;</div> 
 		</div>
 	  </div>
-	</div>	
+	</div>
+</div>	
 </body>
+
+<!-- TEMPLATE NAVBAR-->
 <template name="navbar">
   <ul class="nav">
 	{{#if currentUser}}
@@ -84,6 +86,8 @@
 	{{/if}}
   </ul>  
 </template>
+
+<!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
 	{{> currentvideo}}
 	<div id="wrap-playlist">
@@ -94,15 +98,17 @@
 	  </ul>
 	</div>
 </template>
+
+<!-- TEMPLATE SONG-->
 <template name="song">
   <div class="song">
-	  {{#if fbid}}
+	{{#if fbid}}
 		<img src="http://graph.facebook.com/{{fbid}}/picture"/>
-      {{else}}
+	{{else}}
 		{{#if goid}}
 		  	<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
 		{{/if}}
-	  {{/if}}
+	{{/if}}
 	<span class="title">{{title}}</span>
 	<div class="votes"><strong>Votes:</strong> {{score}}</div>
     <div class="actions">
@@ -111,21 +117,26 @@
 	</div>
   </div>
 </template>
+
+<!-- TEMPLATE CURRENT VIDEO-->
 <template name="currentvideo">
-  {{#if fbid}}
-	<img src="http://graph.facebook.com/{{fbid}}/picture"/>
-  {{else}}
-	{{#if goid}}
-		<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
-	{{/if}}
-  {{/if}}  
-  {{#if currentVideo}}
+
+  {{#if currentVideo}}  
   <div id="currentVideo" class="current">	
+	  {{#if currentVideo.fbid}}
+		<img src="http://graph.facebook.com/{{currentVideo.fbid}}/picture"/>
+	  {{else}}
+		{{#if currentVideo.goid}}
+			<img src="https://plus.google.com/s2/photos/profile/{{currentVideo.goid}}?sz=30"/>
+		{{/if}}
+	  {{/if}}  	  
 	  {{currentVideo.title}}	
   </div>
   {{on_current_video_ready}}
   {{/if}}
 </template>
+
+<!-- TEMPLATE SHARES-->
 <template name="shares">
   <div id="shares">
 	{{#if playlist_url}}	  
@@ -149,6 +160,8 @@
   </div>
   {{on_ready_search}}
 </template>
+
+<!-- TEMPLATE PLAYLISTS-->
 <template name="playlists">
 	<div class="hidden-phone">
 	  {{#if signedup}}
@@ -170,6 +183,7 @@
 	</div>
 </template>
 
+<!-- TEMPLATE PLAYLIST-->
 <template name="playlist">
   <div class="item-playlist">
 	<span class="{{is_current}}">{{name}}</span>
@@ -180,6 +194,7 @@
   </div>
 </template>
 
+<!-- TEMPLATE MODIFIERS-->
 <template name="modifiers">
 	<div class="modifiers">
 	  <div class="navbar">

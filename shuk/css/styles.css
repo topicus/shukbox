@@ -90,11 +90,19 @@ ul.playlist li {
 	background: #EEE;
 	padding: 15px;
 	color: #666;
-	font-size: 14px;
+	font-size: 1.3em;
 	position: relative;
 	padding-right:40px;
 }
-
+ul.playlist li span.title{
+	font-weight: bold;
+	font-size: 0.97em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;	
+	display:block !important;
+	margin-top: 5px;
+}
 ul.playlist li:hover {
 	border-bottom: 1px solid #C1C1C1;
 	background: #E1E1E1;
@@ -105,7 +113,25 @@ ul.playlist li img{
 	background:white;
 	border:1px solid #DDD;
 }
-
+.actions{
+  width:60px;
+  height: 40px;
+  position:absolute;
+  top:20px;
+  right:0px;
+  overflow:auto;
+  padding-top: 9px;
+}
+.actions a{
+  float:left;
+  margin-right:5px;
+}
+.vote {
+	background:url('/img/metal.png') no-repeat center;
+	display:block;
+	width:18px;
+	height:18px;
+}
 #currentVideo.current {
 	font-weight: bold;
 	font-size: 1.5em;
@@ -115,7 +141,6 @@ ul.playlist li img{
 	line-height:2em;
 	background: #FFF;
 	box-shadow: 0px 1px 1px #CCC;
-	display: block;
 	position: relative;
 	z-index: 10;
 	color: #000;
@@ -125,9 +150,11 @@ ul.playlist li img{
 #currentVideo{
   /*display:none;*/
 }
-
-ul.playlist li.current a.avatar {
-	opacity: 1;
+#currentVideo img{
+	padding: 6px;
+	background: white !important;
+	margin-right: 10px;
+	border: 1px solid #ddd;
 }
 ul.playlist li.current input,ul.playlist li.current a{
   display:none;
@@ -136,7 +163,6 @@ ul.playlist li.current input,ul.playlist li.current a{
   cursor:pointer;
 }
 #search {
-
   position:relative;
   background: #000 url('/img/icon-search.png') no-repeat 3.5% 13px;
   width:85.7%;
@@ -152,33 +178,11 @@ ul.playlist li.current input,ul.playlist li.current a{
 	width: 100%;
 	overflow: hidden;
 }
-.actions{
-  width:60px;
-  position:absolute;
-  top:20px;
-  right:0px;
-  overflow:auto;
-}
-.actions a{
-  float:left;
-  margin-right:10px;
-  font-weight:bold;
-  color:#000;
-  font-family:sans-serif;
-}
+
 .thumb-search{
   background:url('/img/ajax-loader.gif') no-repeat center;
 }
-.vote {
-	background:url('/img/metal.png') no-repeat center;
-	display:block;
-	width:18px;
-	height:18px;
-}
 
-li:hover .vote-up {
-	display: block;
-}
 #controls{
   padding-left:10px;
 }
@@ -206,10 +210,11 @@ li:hover .vote-up {
 	
 }
 #mylists li{
-	margin-top:10px;
+	padding:10px;
+	padding-left: 0px;
 }
 #mylists li:hover{
-	font-weight:bold;	
+	font-weight: bold;
 }
 #mylists li span.current-list{
 	font-weight:bold;
@@ -238,7 +243,8 @@ li:hover .vote-up {
 	width:50%;
 }
 .votes{
-	font-size:10px;
+	font-size:0.7em;
+	margin-top: 5px;
 }
 .modifiers .navbar div.navbar-inner{
 	margin-left:0px;
