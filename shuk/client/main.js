@@ -62,7 +62,8 @@ var AUTOCOMPLETE_PAGE_SIZE = 5;
 var currentSelected = -1;
 
 checkListKey();
-loginAsAnonym();
+if(Meteor.user() === null)
+  loginAsAnonym();
 getFullUser();
 
 var player;
@@ -275,16 +276,12 @@ Template.playlists.events = {
   },
   'click .savelist':function(){   
     $('#save-control').hide();    
-    var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
-    PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
-    Session.set('edited', null);
+    savelist();
   },
   'keydown #save-control input':function(e){
     if(e.which===13){
       $('#save-control').hide();      
-      var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
-      PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
-      Session.set('edited', null);
+      savelist();
     }
   },
   'click .edit':function(e){
@@ -308,24 +305,24 @@ Template.search.events = {
     removeInputEvent();
   },  
   'keydown input.nextsong':function(e){
-    if(jQuery.inArray(e.keyCode, CONTROL_KEYCODES)!=-1){
+    if(jQuery.inArray(e.which, CONTROL_KEYCODES)!=-1){
       autocompleter = $('#autocompleter li');
       old = currentSelected;
       
-      if(currentSelected==autocompleter.length-1 && e.keyCode == 40){
+      if(currentSelected==autocompleter.length-1 && e.which == 40){
         currentSelected = 0;
-      }else if(!currentSelected && e.keyCode == 38){
+      }else if(!currentSelected && e.which == 38){
         currentSelected = autocompleter.length-1;
       }else{
-        if(e.keyCode == 40)
+        if(e.which == 40)
           currentSelected++;
-        else if(e.keyCode ==38)
+        else if(e.which ==38)
           currentSelected--;
       }
       if(old!=-1) $('#autocompleter li').eq(old).removeClass('selected')
       $('#autocompleter li').eq(currentSelected).addClass('selected')
     }
-    if(e.keyCode==ENTER){
+    if(e.which==ENTER){
       if(currentSelected==autocompleter.length-1){
         autocomple_offset +=AUTOCOMPLETE_PAGE_SIZE;
         search(document.getElementById('nextsong').value, AUTOCOMPLETE_PAGE_SIZE);        
@@ -334,7 +331,7 @@ Template.search.events = {
       }    
       if(currentSelected!==-1) addSong($('#autocompleter li').eq(currentSelected));
     }
-    if(e.keyCode==ESC){
+    if(e.which==ESC){
       currentSelected = -1;
       autocomple_offset = 1;
       $("#autocompleter").hide();    
@@ -426,21 +423,6 @@ Template.modifiers.events = {
       PlayLists.update({_id:Session.get('listkey')}, {$set:{blocked:blocked}});
     }
   },
-  'click .addlist':function(e){
-
-    var plo = PlayLists.findOne({_id:Session.get('listkey')});
-
-    delete plo._id;
-    plo.user = Meteor.user()._id;
-    plo.saved = true;
-    
-    var new_id = PlayLists.insert(plo);
-    Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
-      delete item._id;
-      item.listkey = new_id;
-      Songs.insert(item);
-    });
-  },  
   'click .sync': function (e) {
     Session.set('synced', !Session.get('synced'));
   },
@@ -448,7 +430,28 @@ Template.modifiers.events = {
     Session.set('repeat', !Session.get('repeat'));
   }    
 };
-
+function savelist(e) {
+    Meteor.flush();
+    var plo = PlayLists.findOne({_id:Session.get('listkey')});
+    if(plo.user === Meteor.user()._id){
+      var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
+      PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
+      Session.set('edited', null);
+    }else{
+      delete plo._id;
+      delete plo.name;
+      plo.user = Meteor.user()._id;
+      plo.saved = true;
+      plo.name = $('#listname').val();
+      
+      var new_id = PlayLists.insert(plo);
+      Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
+        delete item._id;
+        item.listkey = new_id;
+        Songs.insert(item);
+      });      
+    }
+}
 function addSong(jselector){
   Meteor.flush();
   var vid = get_youtube_id(jselector.children('a').attr("href"));
@@ -499,15 +502,7 @@ if (window.Handlebars) {
     if(Meteor.user())
       return Session.get('owner') === Meteor.user()._id;
     return false;
-  });
-  Handlebars.registerHelper('salvable', function(){
-    if(Meteor.user()){
-      var plo = PlayLists.findOne({_id:Session.get('listkey')});
-      if(typeof(plo) !== 'undefined')
-        return Session.get('owner') === Meteor.user()._id && !plo.saved;
-    }
-    return false;
-  });  
+  }); 
 }
 /*END HANDLEBARS HELPER*/
 

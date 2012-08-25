@@ -164,9 +164,7 @@
 		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
 		  <a href="javascript:void(0);"><i class="cancel-edit-list icon-remove"></i></a>
 		</div>
-		{{#if salvable}}
-		  <a href="javascript:void(0);" class="btn update">Save List</a>
-		{{/if}}
+		<a href="javascript:void(0);" class="btn update">Save List</a>
 		<a href="javascript:void(0);" class="btn create">Create List</a> 
 	  {{/if}}
 	</div>
@@ -202,7 +200,6 @@
 				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{else}}
-				<li><a class="addlist reseteable tip" title="Save List. Clone current list and save in your lists" href="javascript:void(0);"><i class="icon-list-alt icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
