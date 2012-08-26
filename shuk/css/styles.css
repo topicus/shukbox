@@ -87,7 +87,7 @@ ul.playlist {
 ul.playlist li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;
-	background: #EEE;
+	background: #FEFEFE;
 	padding: 15px;
 	color: #666;
 	font-size: 1.3em;

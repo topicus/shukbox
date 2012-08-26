@@ -14,7 +14,6 @@ Session.set('edited', null);
 Session.set('synced', null);
 Session.set('repeat', null);
 
-
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
     Meteor.subscribe('playchannels', Session.get('playchannel'));
@@ -41,7 +40,6 @@ var ShukboxRouter = Backbone.Router.extend({
     this.navigate(playchannel, true);
   }
 });
-
 Router = new ShukboxRouter;
 
 Meteor.startup(function () {
@@ -144,7 +142,6 @@ function onYouTubeIframeAPIReady() {
   }
 };
 function playSong(vid){
-    console.log(player);
     if(typeof(player)==='undefined' || !player){
       player = new YT.Player('player-div', {
         height: '300',
@@ -152,16 +149,16 @@ function playSong(vid){
         videoId: vid,
         playerVars: { 'autoplay': 0, 'wmode': 'opaque' }, 
         events: {
-          'onReady': onPlayerReady,
+          'onReady': function(event){
+            player.playVideo();
+          },
           'onStateChange': onPlayerStateChange
         }
       });
+    }else if(player){
+      player.loadVideoById(vid);
+      player.playVideo();      
     }
-    player.loadVideoById(vid);
-    player.playVideo();
-};
-function onPlayerReady(event) {
-  player.playVideo();
 };
 function onPlayerStateChange(event) {
   if(event.data==YT.PlayerState.ENDED){
@@ -361,15 +358,16 @@ Template.musiclist.songs = function () {
   return false;
 };
 Template.musiclist.events = {
-  'click .vote': function () {
+  'click .vote': function (e) {
     var vote = Songs.find({_id:this._id, voters:{$in:[Meteor.user()._id]}}).count();
     if(!vote)
       Songs.update({_id: this._id},{$inc:{score:1}, $push:{voters:Meteor.user()._id}});
   },
-  'click .delete': function () { 
+  'click .delete': function (e) { 
     Songs.remove(this._id);
   },
-  'click li': function () {
+  'click li': function (e) {
+    e.stopPropagation();
     checkPlayChannel();
     var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
     for(k=0,l=c.length;k<l;k++){
