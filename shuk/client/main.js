@@ -12,7 +12,7 @@ Session.set('fulluser', null);
 Session.set('owner', null);
 Session.set('edited', null);
 Session.set('synced', null);
-Session.set('repeat', null);
+Session.set('repeat', true);
 
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
@@ -66,7 +66,6 @@ var old_current = -1;
 var weight = 1000;  
 var tag = document.createElement('script');
 var login_interval;
-var logout_interval;
 tag.src = "//www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
