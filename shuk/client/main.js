@@ -13,6 +13,7 @@ Session.set('owner', null);
 Session.set('edited', null);
 Session.set('synced', null);
 Session.set('repeat', true);
+Session.set('current', null);
 
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
@@ -31,7 +32,8 @@ var ShukboxRouter = Backbone.Router.extend({
     PlayChannels.find({_id:Session.get('playchannel')}).observe({
       added: function (item) {        
         Session.set('listkey', item.playlist);
-        setCurrent('set',Session.get('current'));
+        console.log(item);
+        setCurrent('set',item.current);
         Session.set('owner', item.user);
       } 
     });  
@@ -195,27 +197,6 @@ function setCurrent(m,i){
     PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} );    
   }
 };
-Template.currentvideo.currentVideo = function(){
-  var pco = PlayChannels.findOne(Session.get('playchannel'));
-  if(typeof(pco) !== 'undefined'){
-    var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
-    return c;
-  }
-  return false;
-};
-Template.currentvideo.on_current_video_ready = function(){
-  if(Session.get('synced')){
-    Meteor.flush();
-    Meteor.defer(function(){
-      if(PlayChannels.findOne(Session.get('playchannel'))){
-        var currentPlayChannel = PlayChannels.findOne(Session.get('playchannel'))
-        var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[currentPlayChannel.current];
-        if(c) playSong(c.name);
-      }
-      return false;    
-    });
-  }
-};
 Template.shares.playlist_url = function(){
   return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
 }
@@ -229,7 +210,7 @@ Template.shares.on_playchannel_ready = function(){
   if(typeof(FB)!=='undefined'){
     Meteor.flush();
     Meteor.defer(function(){
-      //FB.XFBML.parse();    
+      FB.XFBML.parse();    
     });
   }
 };
@@ -348,11 +329,7 @@ Template.musiclist.songs = function () {
     checkPlayChannel();
     return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}});
   }else{
-    var cur = PlayChannels.findOne({_id:Session.get('playchannel')});
-    if(cur){
-      var elements = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch();
-      return elements.slice(cur.current+1, elements.length);
-    }
+    return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch();
   }
   return false;
 };
@@ -368,14 +345,28 @@ Template.musiclist.events = {
   'click li': function (e) {
     e.stopPropagation();
     checkPlayChannel();
-    var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
-    for(k=0,l=c.length;k<l;k++){
-      if(c[k]._id == this._id){
+    var s = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
+    for(k=0,l=s.length;k<l;k++){
+      if(s[k]._id == this._id){
         setCurrent('set',k);
-        playSong(c[k].name);
+        playSong(s[k].name);
       }
     }
    }  
+};
+Template.song.is_current = function(){
+    var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
+    var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
+    if(typeof(so) !== 'undefined' && so._id===this._id){
+      if(Session.get('synced')){
+        Meteor.flush();
+        Meteor.defer(function(){
+          playSong(so.name);
+        });
+      }
+      return ' current'; 
+    }
+    return '';
 };
 Template.modifiers.on_modifiers_loaded = function () {
   Meteor.defer(function () {

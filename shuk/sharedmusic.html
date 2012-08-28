@@ -27,43 +27,43 @@
 </head>
 
 <body>
-<div class="container">
-	<div id="mainnav" class="navbar navbar-fixed-top">
-	  <div class="navbar-inner">
-		<div class="container">
-		  <div class="span1">&nbsp;</div>
-		  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		  </a>
-		  <div class="nav-collapse">
-		  {{> navbar}}
-		  </div><!--/.nav-collapse -->
-		</div>
-	  </div>
-	</div>
-	<div class="row">
-	  <div class="span12">
-	    <div class="row">
-		  <div class="span1">&nbsp;</div>
-		  <div class="span3">
-			  <h1 class="logo"></h1>				  
-			  {{> playlists}}
+	<div class="container">
+		<div id="mainnav" class="navbar navbar-fixed-top">
+		  <div class="navbar-inner">
+			<div class="container">
+			  <div class="span1">&nbsp;</div>
+			  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </a>
+			  <div class="nav-collapse">
+			  {{> navbar}}
+			  </div><!--/.nav-collapse -->
+			</div>
 		  </div>
-		  <div class="span6" style="padding-top:20px;">
-			{{> search}}
-			<iframe id="player" width="100%" height="0" src="" frameBorder="0" scrolling="no" allowfullscreen></iframe>
-			<div id="player-div"></div>			  
-			{{> modifiers}}
-			{{> shares}}
-			{{> musiclist}}
-		  </div>
-		  <div class="span2">&nbsp;</div> 
 		</div>
-	  </div>
-	</div>
-</div>	
+		<div class="row">
+		  <div class="span12">
+		    <div class="row">
+			  <div class="span1">&nbsp;</div>
+			  <div class="span3">
+				  <h1 class="logo"></h1>				  
+				  {{> playlists}}
+			  </div>
+			  <div class="span6" style="padding-top:20px;">
+				{{> search}}
+				<iframe id="player" width="100%" height="0" src="" frameBorder="0" scrolling="no" allowfullscreen></iframe>
+				<div id="player-div"></div>			  
+				{{> modifiers}}
+				{{> shares}}
+				{{> musiclist}}
+			  </div>
+			  <div class="span2">&nbsp;</div> 
+			</div>
+		  </div>
+		</div>
+	</div>	
 </body>
 
 <!-- TEMPLATE NAVBAR-->
@@ -89,11 +89,10 @@
 
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
-	{{> currentvideo}}
 	<div id="wrap-playlist">
 	  <ul class="playlist">
 	  {{#each songs}}
-		<li>{{>song}}</li>
+		{{>song}}
 	  {{/each}}
 	  </ul>
 	</div>
@@ -101,6 +100,7 @@
 
 <!-- TEMPLATE SONG-->
 <template name="song">
+  <li class='{{is_current}}'>
   <div class="song">
 	{{#if fbid}}
 		<img src="http://graph.facebook.com/{{fbid}}/picture"/>
@@ -116,24 +116,7 @@
 	  <a href="javascript:void(0);" class="vote"></a>
 	</div>
   </div>
-</template>
-
-<!-- TEMPLATE CURRENT VIDEO-->
-<template name="currentvideo">
-
-  {{#if currentVideo}}  
-  <div id="currentVideo" class="current">	
-	  {{#if currentVideo.fbid}}
-		<img src="http://graph.facebook.com/{{currentVideo.fbid}}/picture"/>
-	  {{else}}
-		{{#if currentVideo.goid}}
-			<img src="https://plus.google.com/s2/photos/profile/{{currentVideo.goid}}?sz=30"/>
-		{{/if}}
-	  {{/if}}  	  
-	  {{currentVideo.title}}	
-  </div>
-  {{on_current_video_ready}}
-  {{/if}}
+  </li>
 </template>
 
 <!-- TEMPLATE SHARES-->

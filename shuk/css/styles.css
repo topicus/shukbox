@@ -87,7 +87,7 @@ ul.playlist {
 ul.playlist li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;
-	background: #FEFEFE;
+	background: #ECECEC;
 	padding: 15px;
 	color: #666;
 	font-size: 1.3em;
@@ -95,8 +95,7 @@ ul.playlist li {
 	padding-right:40px;
 }
 ul.playlist li span.title{
-	font-weight: bold;
-	font-size: 0.97em;
+	font-size: 0.7em;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;	
@@ -132,13 +131,16 @@ ul.playlist li img{
 	width:18px;
 	height:18px;
 }
-#currentVideo.current {
+
+ul.playlist li.current input,ul.playlist li.current a{
+  display: none;
+}
+ul.playlist li.current{
 	font-weight: bold;
 	font-size: 1.5em;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	line-height:2em;
 	background: #FFF;
 	box-shadow: 0px 1px 1px #CCC;
 	position: relative;
@@ -146,18 +148,6 @@ ul.playlist li img{
 	color: #000;
 	padding: 20px;
 	display:block !important;
-}
-#currentVideo{
-  /*display:none;*/
-}
-#currentVideo img{
-	padding: 6px;
-	background: white !important;
-	margin-right: 10px;
-	border: 1px solid #ddd;
-}
-ul.playlist li.current input,ul.playlist li.current a{
-  display:none;
 }
 .clearlist, .playsong, .skip{
   cursor:pointer;
