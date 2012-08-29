@@ -27,6 +27,20 @@
 </head>
 
 <body>
+	<div class="modal hide fade">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h3>Modal header</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p>One fine body…</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn">Close</a>
+	    <a href="#" class="btn btn-primary">Save changes</a>
+	  </div>
+	</div>
+	
 	<div class="container">
 		<div id="mainnav" class="navbar navbar-fixed-top">
 		  <div class="navbar-inner">
@@ -90,11 +104,13 @@
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
 	<div id="wrap-playlist">
-	  <ul class="playlist">
-	  {{#each songs}}
-		{{>song}}
-	  {{/each}}
-	  </ul>
+	  	{{#if songs}}
+		  <ul class="playlist">
+		  {{#each songs}}
+			{{>song}}
+		  {{/each}}
+		  </ul>
+		{{/if}}
 	</div>
 </template>
 
@@ -147,12 +163,12 @@
 <!-- TEMPLATE PLAYLISTS-->
 <template name="playlists">
 	<div class="hidden-phone">
-	  {{#if signedup}}
-		<h3>My lists</h3>	  
-		<ul id="mylists">
-		{{#each mylists}}
-		  <li>{{>playlist}}</li>
-		{{/each}}
+	  {{#if signedup}}			  
+		<ul class="nav nav-list" id="mylists">
+			<li class="nav-header">My lists</li>
+			{{#each mylists}}
+			  {{>playlist}}
+			{{/each}}
 		</ul>
 		<br/>
 		<div id="save-control">
@@ -160,21 +176,30 @@
 		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
 		  <a href="javascript:void(0);"><i class="cancel-edit-list icon-remove"></i></a>
 		</div>
-		<a href="javascript:void(0);" class="btn update">Save List</a>
-		<a href="javascript:void(0);" class="btn create">Create List</a> 
+		<div class="save-create-buttons"> 
+			<a href="javascript:void(0);" class="btn update">Save List</a>
+			<a href="javascript:void(0);" class="btn create">Create List</a> 
+	  	</div>
 	  {{/if}}
 	</div>
 </template>
 
 <!-- TEMPLATE PLAYLIST-->
 <template name="playlist">
-  <div class="item-playlist">
-	<span class="{{is_current}}">{{name}}</span>
-	<div class="playlist-actions">
-	  <a href="javascript:void(0);" class="edit"><i class="icon-edit"></i><a/>
-	  <a href="javascript:void(0);" class="delete"><i class="icon-remove"></i><a/>
-	</div>
-  </div>
+	<li class="{{is_current}}">
+		<a href="#">
+			<span>{{name}}</span>
+			<div class="playlist-actions">
+			  	{{#if is_current}}
+			  		<div class="edit"><i class="icon-edit icon-white"></i></div>
+			  		<div class="delete"><i class="icon-remove icon-white"></i></div>
+			  	{{else}}
+			  		<div class="edit"><i class="icon-edit"></i></div>
+			  		<div class="delete"><i class="icon-remove"></i></div>
+			  	{{/if}}		  
+			</div>
+		</a>
+	</li>
 </template>
 
 <!-- TEMPLATE MODIFIERS-->
@@ -186,13 +211,17 @@
 			<ul class="nav">
 			  <li><a class="playsong reseteable tip" title="Play List" href="javascript:void(0);"><i class="icon-play icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward icon-white"></i></a></li>
-			  <li class="divider-vertical"></li>
+			  {{#if owner}}
+			  	<li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward icon-white"></i></a></li>
+			  	<li class="divider-vertical"></li>
+				<li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash icon-white"></i></a></li>
+				<li class="divider-vertical"></li>				  
+			  {{/if}}
+			  
 			  <li><a class="share reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
-			  <li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash icon-white"></i></a></li>
-			  <li class="divider-vertical"></li>			  
-			  {{# if owner}}
+		  
+			  {{#if owner}}
 				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>

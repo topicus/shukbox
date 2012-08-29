@@ -32,7 +32,6 @@ var ShukboxRouter = Backbone.Router.extend({
     PlayChannels.find({_id:Session.get('playchannel')}).observe({
       added: function (item) {        
         Session.set('listkey', item.playlist);
-        console.log(item);
         setCurrent('set',item.current);
         Session.set('owner', item.user);
       } 
@@ -49,6 +48,7 @@ Meteor.startup(function () {
   Router.setList(Session.get('playchannel'));
 });
 //////////////// END ROUTER /////////////////
+
 /*
 var insertedNodes = [];
 document.addEventListener("DOMNodeInserted", function(e) {
@@ -105,7 +105,6 @@ function logout(){
 };
 function getFullUser(){
     Meteor.call('getUserServiceId', function(error, result){
-      console.log(result);
       if(typeof(error) ==='undefined') Session.set('fulluser',result);
     });
 };
@@ -204,7 +203,7 @@ Template.shares.playchannel_url = function(){
   if(typeof Session.get('playchannel')==="undefined")
     return false;
   else
-    return window.location.protocol+'//'+window.location.host+"/?playchannel="+Session.get('playchannel');
+    return window.location.protocol+'//'+window.location.host+"/"+Session.get('playchannel');
 };
 Template.shares.on_playchannel_ready = function(){  
   if(typeof(FB)!=='undefined'){
@@ -229,7 +228,7 @@ Template.playlists.mylists = function(){
 };
 Template.playlist.is_current = function(){
   if(Session.equals('listkey', this._id)){
-    return 'current-list';
+    return 'active';
   }
   return '';
 };
@@ -244,6 +243,7 @@ Template.playlists.events = {
   },
   'click .create':function(){
     Meteor.flush();
+    Session.set('playchannel', null);
     checkListKey(true);
     Meteor.defer(function(){
       $('#save-control').show();
@@ -276,11 +276,13 @@ Template.playlists.events = {
     $('#listname').select();
     $('.savelist').html('Edit');
     Session.set('edited', this._id);
+    return false;
   },
   'click .delete': function () {
     Session.set('listkey', undefined);
     PlayLists.remove(this._id);
     checkListKey();
+    return false;
   }
 };
 Template.search.events = {
@@ -338,12 +340,20 @@ Template.musiclist.events = {
     var vote = Songs.find({_id:this._id, voters:{$in:[Meteor.user()._id]}}).count();
     if(!vote)
       Songs.update({_id: this._id},{$inc:{score:1}, $push:{voters:Meteor.user()._id}});
+    return false;
   },
   'click .delete': function (e) { 
+    var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
+    var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
+    if(so._id === this._id){
+      stopVideo();
+    }
     Songs.remove(this._id);
+    setCurrent('modify', -1);
+    nextSong();
+    return false;
   },
   'click li': function (e) {
-    e.stopPropagation();
     checkPlayChannel();
     var s = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
     for(k=0,l=s.length;k<l;k++){
@@ -352,7 +362,7 @@ Template.musiclist.events = {
         playSong(s[k].name);
       }
     }
-   }  
+  }  
 };
 Template.song.is_current = function(){
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
@@ -428,26 +438,26 @@ Template.modifiers.events = {
   }    
 };
 function savelist(e) {
-    Meteor.flush();
-    var plo = PlayLists.findOne({_id:Session.get('listkey')});
-    if(plo.user === Meteor.user()._id){
-      var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
-      PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
-      Session.set('edited', null);
-    }else{
-      delete plo._id;
-      delete plo.name;
-      plo.user = Meteor.user()._id;
-      plo.saved = true;
-      plo.name = $('#listname').val();
-      
-      var new_id = PlayLists.insert(plo);
-      Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
-        delete item._id;
-        item.listkey = new_id;
-        Songs.insert(item);
-      });      
-    }
+  Meteor.flush();
+  var plo = PlayLists.findOne({_id:Session.get('listkey')});
+  if(plo.user === Meteor.user()._id){
+    var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
+    PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
+    Session.set('edited', null);
+  }else{
+    delete plo._id;
+    delete plo.name;
+    plo.user = Meteor.user()._id;
+    plo.saved = true;
+    plo.name = $('#listname').val();
+    
+    var new_id = PlayLists.insert(plo);
+    Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
+      delete item._id;
+      item.listkey = new_id;
+      Songs.insert(item);
+    });      
+  }
 }
 function addSong(jselector){
   Meteor.flush();
@@ -478,14 +488,14 @@ function addSong(jselector){
   $('.nextsong').val('');  
 }
 Template.navbar.profile_image_url = function(){
-    var f = Session.get('fulluser');
-    if(f){
-      var s = f.services;
-      var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
-      return service_id;
-    }else{
-      return '';
-    }  
+  var f = Session.get('fulluser');
+  if(f){
+    var s = f.services;
+    var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
+    return service_id;
+  }else{
+    return '';
+  }  
 };
 /*HELPERS HANDLEBARS*/
 if (window.Handlebars) {
