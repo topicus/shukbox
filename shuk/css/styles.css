@@ -20,6 +20,14 @@
 h3{
 	margin-top:20px;
 }
+.left{
+	float: left;
+	overflow: auto;
+}
+.right{
+	float: right;
+	overflow: auto;
+}
 #autocompleter{
   margin: 0 0 0 0px;
   border-radius: 0;
@@ -80,12 +88,12 @@ h3{
 #wrap-playlist{
   overflow:hidden;
 }
-ul.playlist {
+ul#playlist {
 	list-style: none;
 	border: 1px solid #DCDCDC;
 	margin: 0;
 }
-ul.playlist li {
+ul#playlist li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;
 	background: #ECECEC;
@@ -95,7 +103,7 @@ ul.playlist li {
 	position: relative;
 	padding-right:40px;
 }
-ul.playlist li span.title{
+ul#playlist li span.title{
 	font-size: 0.7em;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -103,12 +111,12 @@ ul.playlist li span.title{
 	display:block !important;
 	margin-top: 5px;
 }
-ul.playlist li:hover {
+ul#playlist li:hover {
 	border-bottom: 1px solid #C1C1C1;
 	background: #E1E1E1;
 	cursor: pointer;
 }
-ul.playlist li img{
+ul#playlist li img{
 	padding:5px;
 	background:white;
 	border:1px solid #DDD;
@@ -133,10 +141,10 @@ ul.playlist li img{
 	height:18px;
 }
 
-ul.playlist li.current input{
+ul#playlist li.current input{
   display: none;
 }
-ul.playlist li.current{
+ul#playlist li.current{
 	font-weight: bold;
 	font-size: 1.5em;
 	overflow: hidden;
@@ -181,13 +189,31 @@ ul.playlist li.current{
   cursor:pointer;
 }
 #shares{
-  margin-top:20px;
+  margin-top:30px;
   display:none;
+  overflow: hidden;
+  padding-bottom: 10px
+  border-bottom: 1px solid #dedede;
+  margin-bottom:20px;
 }
-#likewrap{
-	width:120px;
-	height:35px;
-	overflow:hidden;
+#shares .left{
+	width: 62%;
+	overflow: visible;
+}
+#shares .right{
+	width: 35%;
+	overflow: visible;
+}
+#shares .qr-wrap{
+	width: 170px;
+	height: 170px;
+	background-position: -15px -15px;	
+	border: 1px solid #ddd;
+	display: none;
+	margin-top: 20px;
+}
+#shares #share-buttons li{
+	display: inline-block;
 }
 .song{
 	overflow:auto;
@@ -211,7 +237,7 @@ ul.playlist li.current{
 	float: right;
 
 }
-#mylists li a .edit{
+#mylists li a .edit-button{
 	width: 14px;
 	height: 14px;
 	float: right;

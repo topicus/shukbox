@@ -108,3 +108,7 @@ function removeInputEvent(){
   Meteor.clearInterval(timer_input_event);
 }
 /*END SIMULATE INPUT EVENT*/
+
+function popup(link, obj){
+  window.open(link, 'popup', 'height='+obj.height+',width='+obj.width+',toolbar=1');
+}

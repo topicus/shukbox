@@ -81,14 +81,15 @@ function init(){
   if(Meteor.user() === null) loginAsAnonym();
   getFullUser();
 }
+//NO SE COMO ESTO FUNCIONA PERO EVITA LOS POP UPS
 function login(type){
+  if(type==='facebook'){
+    Meteor.loginWithFacebook(); 
+  }else if(type==='google'){
+    Meteor.loginWithGoogle();
+  }  
   Meteor.logout(function(){
     login_interval = Meteor.setInterval(waitForLogin, 500);
-    if(type==='facebook'){
-      Meteor.loginWithFacebook(); 
-    }else if(type==='google'){
-      Meteor.loginWithGoogle();
-    }
   });
 };
 /*TIMER WAITING FOR SERVICE LOGIN*/
@@ -221,6 +222,10 @@ Template.shares.events = {
   'click #playchannel_url': function(e){
     Meteor.flush();
     $(e.target).select();  
+  },
+  'click .qrcode':function(e){
+    Meteor.flush();
+    $('.qr-wrap').slideToggle('medium'); 
   }
 };
 Template.playlists.mylists = function(){
@@ -270,7 +275,7 @@ Template.playlists.events = {
       savelist();
     }
   },
-  'click .edit':function(e){
+  'click .edit-button':function(e){
     $('#save-control').show();
     $('#listname').val(this.name);
     $('#listname').select();
@@ -279,9 +284,17 @@ Template.playlists.events = {
     return false;
   },
   'click .delete': function () {
-    Session.set('listkey', undefined);
-    PlayLists.remove(this._id);
-    checkListKey();
+    Meteor.flush();
+    setModalMessage("Delete playlist?", "Do you want to delete the Playlist "+this.name+"?")
+    var that = this;
+    $('#alert-window').modal('show');
+    $('#alert-window .confirm').on('click', function () {
+      deleteList(that);
+      $('#alert-window').modal('hide');
+    }); 
+    $('#alert-window .discard').on('click', function () {
+      $('#alert-window').modal('hide');
+    });        
     return false;
   }
 };
@@ -414,9 +427,12 @@ Template.modifiers.events = {
   'click .skip': function () {
      nextSong();
   },
-  'click .share':function(e){
-    Meteor.flush();
-    $('#shares').toggle();
+  'click .share-button':function(e){
+    Meteor.flush(); 
+    $('#shares').slideToggle('medium',function(){
+      $('#playchannel_url').select();
+    });
+    
     Meteor.defer(function(){
       FB.XFBML.parse();    
     }); 
@@ -433,9 +449,15 @@ Template.modifiers.events = {
   'click .sync': function (e) {
     Session.set('synced', !Session.get('synced'));
   },
-  'click .repeat': function (e) {
+  'click .repeat-button': function (e) {
     Session.set('repeat', !Session.get('repeat'));
   }    
+};
+function deleteList(t){
+    Session.set('listkey', undefined);
+    PlayLists.remove(t._id);
+    checkListKey();
+
 };
 function savelist(e) {
   Meteor.flush();
@@ -486,6 +508,10 @@ function addSong(jselector){
   $("#autocompleter").hide();
   currentSelected = -1;
   $('.nextsong').val('');  
+}
+function setModalMessage(title, body){
+  $('.modal-header h3').html(title);
+  $('.modal-body p').html(body);
 }
 Template.navbar.profile_image_url = function(){
   var f = Session.get('fulluser');

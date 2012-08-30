@@ -24,10 +24,12 @@
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->  
+
 </head>
 
 <body>
-	<div class="modal hide fade">
+ 	{{>metas}}
+	<div id="alert-window" class="modal hide fade">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	    <h3>Modal header</h3>
@@ -36,8 +38,8 @@
 	    <p>One fine body…</p>
 	  </div>
 	  <div class="modal-footer">
-	    <a href="#" class="btn">Close</a>
-	    <a href="#" class="btn btn-primary">Save changes</a>
+	    <a href="#" class="btn discard">Close</a>
+	    <a href="#" class="btn btn-primary confirm">Save changes</a>
 	  </div>
 	</div>
 	
@@ -80,6 +82,16 @@
 	</div>	
 </body>
 
+<!-- TEMPLATE METAS-->
+<template name="metas">
+	<meta property="og:url" content="{{playchannel_url}}">
+	<meta property="og:title" content="SHUKBOX .:.:.">	
+	<meta property="og:description" content="Search for free music to stream.  Listen to free music recommended by real people.  Create your own free internet radio station.">
+	<meta property="og:type" content="playlist">
+	<meta name="description" content="Search for free music to stream.  Listen to free music recommended by real people.  Create your own free internet radio station.">	
+	<meta name="keywords" content="free music, listen to music online, listen to free music, search music, discover music, music search, internet radio, online radio, free mp3, music search engine, streaming music, music playlist, shukbox, shukbox.com">	
+</template>
+
 <!-- TEMPLATE NAVBAR-->
 <template name="navbar">
   <ul class="nav">
@@ -105,7 +117,7 @@
 <template name="musiclist">
 	<div id="wrap-playlist">
 	  	{{#if songs}}
-		  <ul class="playlist">
+		  <ul id="playlist">
 		  {{#each songs}}
 			{{>song}}
 		  {{/each}}
@@ -140,14 +152,22 @@
   <div id="shares">
 	{{#if playlist_url}}	  
 	  <p style="display:none;"><strong>Share the playlist:</strong></p>
-	  <div style="display:none;" id="listurl"><input id="playlist_url" style="width:50%" type="text" value="{{playlist_url}}" /></div>
+	  <div style="display:none;" id="listurl"><input id="playlist_url" type="text" value="{{playlist_url}}" /></div>
 	{{/if}}
 	{{#if playchannel_url}}	  
-	  <p><strong>Share Playlist</strong></p>
-	  <div id="playchannelurl"><input id="playchannel_url" style="width:320px" type="text" value="{{playchannel_url}}" /></div>
-	  <div id="likewrap">
-		<div class="fb-like" data-width="350" data-href="{{playchannel_url}}" data-layout="standard" data-send="true" data-show-faces="false"></div>
-	  </div>	  
+	  <div class="left"> 
+		  <div id="playchannelurl"><input id="playchannel_url" style="width:320px" type="text" value="{{playchannel_url}}" /></div>
+	  </div>
+
+	  <div class="right">
+		  <ul id="share-buttons">
+		  	<li><button onclick="popup('https://twitter.com/share?url={{playchannel_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="twitter"></button></li>
+		  	<li><button onclick="popup('https://facebook.com/sharer.php?u={{playchannel_url}}', {width:620, height:440});return false;" class="facebook"></button></li>
+		  	<li><button onclick="popup('https://plus.google.com/share?url=?url={{playchannel_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="google_plus"></button></li>
+		  	<li><button class="qrcode"></button> </li>
+		  </ul>	  	
+	  	<div class="qr-wrap" style="background-image:url(http://chart.apis.google.com/chart?cht=qr&chl={{playchannel_url}}&chs=200x200);"></div>	  	
+	  </div>	    
 	  {{on_playchannel_ready}}
 	{{/if}}
   </div>
@@ -191,10 +211,10 @@
 			<span>{{name}}</span>
 			<div class="playlist-actions">
 			  	{{#if is_current}}
-			  		<div class="edit"><i class="icon-edit icon-white"></i></div>
+			  		<div class="edit-button"><i class="icon-edit icon-white"></i></div>
 			  		<div class="delete"><i class="icon-remove icon-white"></i></div>
 			  	{{else}}
-			  		<div class="edit"><i class="icon-edit"></i></div>
+			  		<div class="edit-button"><i class="icon-edit"></i></div>
 			  		<div class="delete"><i class="icon-remove"></i></div>
 			  	{{/if}}		  
 			</div>
@@ -218,13 +238,13 @@
 				<li class="divider-vertical"></li>				  
 			  {{/if}}
 			  
-			  <li><a class="share reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
+			  <li><a class="share-button reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
 		  
 			  {{#if owner}}
 				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
-				<li class="{{repeated}}"><a class="repeat reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
+				<li class="{{repeated}}"><a class="repeat-button reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{else}}
 				<li class="divider-vertical"></li>
