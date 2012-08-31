@@ -15,6 +15,7 @@ Session.set('synced', null);
 Session.set('repeat', true);
 Session.set('current', null);
 
+
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
     Meteor.subscribe('playchannels', Session.get('playchannel'));
@@ -80,6 +81,7 @@ function init(){
   checkListKey();
   if(Meteor.user() === null) loginAsAnonym();
   getFullUser();
+
 }
 //NO SE COMO ESTO FUNCIONA PERO EVITA LOS POP UPS
 function login(type){
@@ -123,17 +125,19 @@ function checkListKey(force_create){
   if(Meteor.user() && !Session.get('listkey') || Meteor.user() && force_create){
     name = 'Untitled-list';
     var saved = (force_create)? true : false;
-    var list =  PlayLists.insert({name:name, user:Meteor.user()._id, timestamp:timestamp(),saved:saved, blocked:false});
-    Session.set('listkey',list);
-    checkPlayChannel();
+    Meteor.call('addPlaylist', {name:name, user:Meteor.user()._id,saved:saved, blocked:false}, function(error,response){
+      Session.set('listkey',response);
+      checkPlayChannel();
+    });    
   }
 };
 function checkPlayChannel(){
   if(Meteor.user() && Session.get('listkey') && !Session.get('playchannel')){
-    pchannel =  PlayChannels.insert({playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current'), timestamp:timestamp()});
-    Session.set('playchannel',pchannel);
-    Session.set('owner', Meteor.user()._id);
-    Router.setList(pchannel);
+    Meteor.call('addPlaychannel', {playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current')}, function(error,response){
+      Session.set('playchannel',response);
+      Session.set('owner', Meteor.user()._id);
+      Router.setList(response);
+    });  
   }
 };
 function onYouTubeIframeAPIReady() {
@@ -229,7 +233,7 @@ Template.shares.events = {
   }
 };
 Template.playlists.mylists = function(){
-  return PlayLists.find({user:Meteor.user()._id, saved:true})
+  return PlayLists.find({user:Meteor.user()._id, saved:true},{sort: {when: -1}})
 };
 Template.playlist.is_current = function(){
   if(Session.equals('listkey', this._id)){
@@ -453,6 +457,17 @@ Template.modifiers.events = {
     Session.set('repeat', !Session.get('repeat'));
   }    
 };
+Template.navbar.profile_image_url = function(){
+  var f = Session.get('fulluser');
+  if(f){
+    var s = f.services;
+    var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
+    return service_id;
+  }else{
+    return '';
+  }  
+};
+
 function deleteList(t){
     Session.set('listkey', undefined);
     PlayLists.remove(t._id);
@@ -472,13 +487,14 @@ function savelist(e) {
     plo.user = Meteor.user()._id;
     plo.saved = true;
     plo.name = $('#listname').val();
+    Meteor.call('addPlaylist', plo, function(error,response){
+      Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
+        delete item._id;
+        item.listkey = response;
+        Songs.insert(item);
+      });  
+    });
     
-    var new_id = PlayLists.insert(plo);
-    Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
-      delete item._id;
-      item.listkey = new_id;
-      Songs.insert(item);
-    });      
   }
 }
 function addSong(jselector){
@@ -493,7 +509,7 @@ function addSong(jselector){
   if(typeof(so)!=='undefined'){
     var last_weight = (!so.weight || typeof(so.weight) ==='undefined')? 0:so.weight+1;
   }
-  Songs.insert({
+  var song = {
     name: vid,
     fbid:fbid,
     goid:goid,
@@ -501,10 +517,9 @@ function addSong(jselector){
     title:title,
     listkey:Session.get('listkey'),
     added_by:Meteor.user()._id,
-    weight:last_weight,
-    timestamp:timestamp()
-  });
-  
+    weight:last_weight
+  };
+  Meteor.call('addSong', song);
   $("#autocompleter").hide();
   currentSelected = -1;
   $('.nextsong').val('');  
@@ -513,16 +528,8 @@ function setModalMessage(title, body){
   $('.modal-header h3').html(title);
   $('.modal-body p').html(body);
 }
-Template.navbar.profile_image_url = function(){
-  var f = Session.get('fulluser');
-  if(f){
-    var s = f.services;
-    var service_id = (s.facebook) ? "http://graph.facebook.com/"+s.facebook.id+"/picture" : (s.google) ? "https://plus.google.com/s2/photos/profile/"+s.google.id+"?sz=30" : false;
-    return service_id;
-  }else{
-    return '';
-  }  
-};
+
+
 /*HELPERS HANDLEBARS*/
 if (window.Handlebars) {
   Handlebars.registerHelper("signedup", function() {

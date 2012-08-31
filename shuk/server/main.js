@@ -7,7 +7,7 @@ Meteor.publish('songs', function (listkey) {
   return Songs.find({listkey:listkey});
 });
 Meteor.publish('playlists', function (playlist) {
-  return PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]});
+  return  PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}, {saved:true} ]}); 
 });
 Meteor.publish('playchannels', function (playchannel) {
   return PlayChannels.find({_id:playchannel});
@@ -15,8 +15,24 @@ Meteor.publish('playchannels', function (playchannel) {
 Meteor.methods({
   getUserServiceId: function () {
     return Meteor.users.find({_id:this.userId()}).fetch()[0];
-  }
+  },
+  getRecentsLists: function(){
+    return PlayLists.find({saved:true}, {sort:{when:-1}, limit:5}).fetch(); 
+  },  
+  addPlaylist: function(doc){
+    doc.when = Date.now(); // ms since epoch
+    return PlayLists.insert(doc);
+  },
+  addPlaychannel: function(doc){
+    doc.when = Date.now(); // ms since epoch
+    return PlayChannels.insert(doc);
+  },  
+  addSong: function(doc){
+    doc.when = Date.now(); // ms since epoch
+    return Songs.insert(doc);
+  },    
 });
+
 Meteor.startup(function () {
   Songs.allow({
     insert: function (uid, doc) {
@@ -72,6 +88,7 @@ Meteor.startup(function () {
         return false;
     },
     remove: function (uid, doc) {
+      console.log(doc);
       var plo = PlayLists.findOne({_id:doc[0]._id});
       if(plo && uid === plo.user){
         Songs.remove({listkey:doc[0]._id});

@@ -29,6 +29,9 @@
 
 <body>
  	{{>metas}}
+ 	<div id="sidebar">
+ 	{{>sidebar}}
+ 	</div>
 	<div id="alert-window" class="modal hide fade">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -39,7 +42,7 @@
 	  </div>
 	  <div class="modal-footer">
 	    <a href="#" class="btn discard">Close</a>
-	    <a href="#" class="btn btn-primary confirm">Save changes</a>
+	    <a href="#" class="btn btn-primary confirm">Delete</a>
 	  </div>
 	</div>
 	
@@ -90,6 +93,27 @@
 	<meta property="og:type" content="playlist">
 	<meta name="description" content="Search for free music to stream.  Listen to free music recommended by real people.  Create your own free internet radio station.">	
 	<meta name="keywords" content="free music, listen to music online, listen to free music, search music, discover music, music search, internet radio, online radio, free mp3, music search engine, streaming music, music playlist, shukbox, shukbox.com">	
+</template>
+
+<!--/////////////////-->
+<!--TEMPLATE SIDEBAR-->
+<template name="sidebar">
+	{{>recentlist}}
+</template>
+
+<!-- TEMPLATE RECENTLIST-->
+<template name="recentlist">
+	<ul id="recentlist">
+		<li class="list-header">Recents Lists</li>
+		{{#each recents}}
+		{{>recentitem}}
+		{{/each}}
+	</ul>
+</template>
+
+<!-- TEMPLATE RECENTITEM-->
+<template name="recentitem">
+<li><a href="#">{{name}}</a></li>
 </template>
 
 <!-- TEMPLATE NAVBAR-->

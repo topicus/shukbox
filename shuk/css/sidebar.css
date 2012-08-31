@@ -1,0 +1,32 @@
+#sidebar{
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	width: 205px;
+	border-left: 1px solid #ddd;
+	height: 100%;
+	z-index: 999999;
+	background-color: #FFF;
+}
+#recentlist{
+	list-style: none;
+	padding: 5px;
+}
+#recentlist li{
+	padding: 5px;
+	text-transform: uppercase;
+	font-size: 11px;
+}
+#recentlist li.list-header{
+	display: block;
+	padding: 3px 10px;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 18px;
+	color: #999;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	text-transform: uppercase;
+}
+#recentlist li a{
+	color: #333;
+}
