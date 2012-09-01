@@ -30,7 +30,7 @@ var ShukboxRouter = Backbone.Router.extend({
   },
   main: function (playchannel) {
     Session.set('playchannel', playchannel);
-    PlayChannels.find({_id:Session.get('playchannel')}).observe({
+    PlayChannels.find({_id:playchannel}).observe({
       added: function (item) {        
         Session.set('listkey', item.playlist);
         setCurrent('set',item.current);
@@ -50,12 +50,6 @@ Meteor.startup(function () {
 });
 //////////////// END ROUTER /////////////////
 
-/*
-var insertedNodes = [];
-document.addEventListener("DOMNodeInserted", function(e) {
- console.log(e.target);
-}, false);
-*/
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
 var ESC = 27;
@@ -74,57 +68,16 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var playManager = new PlaylistManager();
+var userManager = new UserManager();
 
-//INIT ALL
+
 init();
-
 function init(){
   //INIT PROCCESS
   playManager.newList();
-  if(Meteor.user() === null) loginAsAnonym();
-  getFullUser();
-
-}
-//NO SE COMO ESTO FUNCIONA PERO EVITA LOS POP UPS
-function login(type){
-  if(type==='facebook'){
-    Meteor.loginWithFacebook(); 
-  }else if(type==='google'){
-    Meteor.loginWithGoogle();
-  }  
-  Meteor.logout(function(){
-    login_interval = Meteor.setInterval(waitForLogin, 500);
-  });
-};
-/*TIMER WAITING FOR SERVICE LOGIN*/
-function waitForLogin(){
-  if(Meteor.user() && typeof(Meteor.user().anonym)==='undefined'){
-    Meteor.clearInterval(login_interval);
-    getFullUser();
-  }
-};
-function logout(){
-  Meteor.logout(function(){
-    Session.get('fulluser', null)    
-  });
-};
-function getFullUser(){
-    Meteor.call('getUserServiceId', function(error, result){
-      if(typeof(error) ==='undefined') Session.set('fulluser',result);
-    });
-};
-function loginAsAnonym(){
-  if(!Meteor.user()){
-    var username = 'anonym'+Meteor.uuid();
-    var password = Meteor.uuid()
-    Meteor.createUser({username:username, password:password}, {anonym:true}, function(r){
-      Meteor.loginWithPassword(username, password);
-      playManager.newList();
-    });
-  }  
-};
-function onYouTubeIframeAPIReady() {
-
+  if(Meteor.user() === null) 
+    userManager.loginAsAnonym();
+  userManager.getFullUser();
 }
 function playSong(vid){
     if(typeof(player)==='undefined' || !player){
@@ -226,12 +179,10 @@ Template.playlists.events = {
     stopVideo();
     playManager.setList(this._id);
     Meteor.flush();
-    var pl = PlayLists.findOne({_id:this._id});
     $('.reseteable').button('toggle');
   },
   'click .create':function(){
     Meteor.flush();
-    Session.set('playchannel', null);
     playManager.newList(true);
     Meteor.defer(function(){
       $('#save-control').show();
@@ -363,16 +314,19 @@ Template.musiclist.events = {
 };
 Template.song.is_current = function(){
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
-    var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
-    if(typeof(so) !== 'undefined' && so._id===this._id){
-      if(Session.get('synced')){
-        Meteor.flush();
-        Meteor.defer(function(){
-          playSong(so.name);
-        });
+    if(pco){
+      var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
+      if(typeof(so) !== 'undefined' && so._id===this._id){
+        if(Session.get('synced')){
+          Meteor.flush();
+          Meteor.defer(function(){
+            playSong(so.name);
+          });
+        }
+        return ' current'; 
       }
-      return ' current'; 
     }
+
     return '';
 };
 Template.modifiers.on_modifiers_loaded = function () {

@@ -30,7 +30,7 @@
 <body>
  	{{>metas}} 	
  	{{>sidebar}}
- 	
+
 	<div id="alert-window" class="modal hide fade">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -126,14 +126,14 @@
 		  <li><img width="25" height="25" src="{{profile_image_url}}" /></li>
 		{{/if}}
 		<li><a href="javascript:void(0);">{{currentUser.name}}</a></li>
-		<li><a href="javascript:logout();">Logout</a></li>
+		<li><a href="javascript:userManager.logout();">Logout</a></li>
 	  {{else}}
-		<li><a href="javascript:login('facebook');">Login with facebook</a></li>
-		<li><a href="javascript:login('google');">Login with google</a></li>	  
+		<li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>
+		<li><a href="javascript:userManager.login('google');">Login with google</a></li>	  
 	  {{/if}}		
 	{{else}}
-	  <li><a href="javascript:login('facebook');">Login with facebook</a></li>
-	  <li><a href="javascript:login('google');">Login with google</a></li>
+	  <li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>
+	  <li><a href="javascript:userManager.login('google');">Login with google</a></li>
 	{{/if}}
   </ul>  
 </template>

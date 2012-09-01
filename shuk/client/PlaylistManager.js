@@ -4,7 +4,7 @@
 		var that = this;
 		this.newList = function(temp){
 			saved = typeof temp !== 'undefined' ? temp : false;
-			if(Meteor.user() && !Session.get('listkey')){
+			if(Meteor.user()){
 			    var name = 'Untitled-list';
 			    Meteor.call('addPlaylist', {name:name, user:Meteor.user()._id,saved:saved, blocked:false}, function(error,response){
 			      Session.set('listkey',response);
@@ -21,6 +21,7 @@
 			      Session.set('listkey', listkey);
 			      Session.set('owner', Meteor.user()._id);
 			      Router.setList(response);
+
 			    });
 			}			
 		};			
