@@ -28,10 +28,9 @@
 </head>
 
 <body>
- 	{{>metas}}
- 	<div id="sidebar">
+ 	{{>metas}} 	
  	{{>sidebar}}
- 	</div>
+ 	
 	<div id="alert-window" class="modal hide fade">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -98,7 +97,9 @@
 <!--/////////////////-->
 <!--TEMPLATE SIDEBAR-->
 <template name="sidebar">
-	{{>recentlist}}
+	<div id="sidebar">
+		{{>recentlist}}
+	</div>
 </template>
 
 <!-- TEMPLATE RECENTLIST-->

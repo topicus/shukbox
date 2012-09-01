@@ -73,12 +73,14 @@ tag.src = "//www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+var playManager = new PlaylistManager();
+
 //INIT ALL
 init();
 
 function init(){
   //INIT PROCCESS
-  checkListKey();
+  playManager.newList();
   if(Meteor.user() === null) loginAsAnonym();
   getFullUser();
 
@@ -117,35 +119,13 @@ function loginAsAnonym(){
     var password = Meteor.uuid()
     Meteor.createUser({username:username, password:password}, {anonym:true}, function(r){
       Meteor.loginWithPassword(username, password);
-      checkListKey();
+      playManager.newList();
     });
   }  
 };
-function checkListKey(force_create){
-  if(Meteor.user() && !Session.get('listkey') || Meteor.user() && force_create){
-    name = 'Untitled-list';
-    var saved = (force_create)? true : false;
-    Meteor.call('addPlaylist', {name:name, user:Meteor.user()._id,saved:saved, blocked:false}, function(error,response){
-      Session.set('listkey',response);
-      checkPlayChannel();
-    });    
-  }
-};
-function checkPlayChannel(){
-  if(Meteor.user() && Session.get('listkey') && !Session.get('playchannel')){
-    Meteor.call('addPlaychannel', {playlist:Session.get('listkey'), user:Meteor.user()._id, current:Session.get('current')}, function(error,response){
-      Session.set('playchannel',response);
-      Session.set('owner', Meteor.user()._id);
-      Router.setList(response);
-    });  
-  }
-};
 function onYouTubeIframeAPIReady() {
-  cursor = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}});
-  if(cursor.count()){
-    playSong(cursor.fetch()[0].name);    
-  }
-};
+
+}
 function playSong(vid){
     if(typeof(player)==='undefined' || !player){
       player = new YT.Player('player-div', {
@@ -244,8 +224,7 @@ Template.playlist.is_current = function(){
 Template.playlists.events = {
   'click li':function(e){
     stopVideo();
-    Session.set("playchannel",undefined);
-    Session.set("listkey",this._id);
+    playManager.setList(this._id);
     Meteor.flush();
     var pl = PlayLists.findOne({_id:this._id});
     $('.reseteable').button('toggle');
@@ -253,7 +232,7 @@ Template.playlists.events = {
   'click .create':function(){
     Meteor.flush();
     Session.set('playchannel', null);
-    checkListKey(true);
+    playManager.newList(true);
     Meteor.defer(function(){
       $('#save-control').show();
       $('#listname').select();         
@@ -344,8 +323,8 @@ Template.search.events = {
   }  
 };
 Template.musiclist.songs = function () {
-  if(typeof Session.get('playchannel')=== "undefined"){
-    checkPlayChannel();
+  if(typeof(Session.get('playchannel'))=== "undefined"){
+    playManager.newChannel();
     return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}});
   }else{
     return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch();
@@ -363,15 +342,16 @@ Template.musiclist.events = {
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
     var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
     if(so._id === this._id){
-      stopVideo();
+      stopVideo();      
+      setCurrent('modify', -1);
+      nextSong();
+    }else{
+      Songs.remove(this._id);
     }
-    Songs.remove(this._id);
-    setCurrent('modify', -1);
-    nextSong();
     return false;
   },
   'click li': function (e) {
-    checkPlayChannel();
+    playManager.newChannel();
     var s = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
     for(k=0,l=s.length;k<l;k++){
       if(s[k]._id == this._id){
@@ -420,7 +400,7 @@ Template.modifiers.events = {
   'click .playsong': function () {    
     c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[0];          
     if(typeof c !== "undefined"){
-      checkPlayChannel();
+      playManager.newChannel();
       setCurrent('set',0);
       playSong(c.name);
     }
@@ -471,8 +451,7 @@ Template.navbar.profile_image_url = function(){
 function deleteList(t){
     Session.set('listkey', undefined);
     PlayLists.remove(t._id);
-    checkListKey();
-
+    playManager.newList();
 };
 function savelist(e) {
   Meteor.flush();

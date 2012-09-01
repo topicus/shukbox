@@ -7,7 +7,7 @@ Meteor.publish('songs', function (listkey) {
   return Songs.find({listkey:listkey});
 });
 Meteor.publish('playlists', function (playlist) {
-  return  PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}, {saved:true} ]}); 
+  return  PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]}); 
 });
 Meteor.publish('playchannels', function (playchannel) {
   return PlayChannels.find({_id:playchannel});
