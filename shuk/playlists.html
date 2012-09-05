@@ -1,0 +1,78 @@
+<!-- TEMPLATE PLAYLISTS-->
+<template name="playlists">
+	<div class="hidden-phone">
+	  {{#if signedup}}			  
+		<ul class="nav nav-list" id="mylists">
+			<li class="nav-header">My lists</li>
+			{{#each mylists}}
+			  {{>playlist}}
+			{{/each}}
+		</ul>
+		<br/>
+		<div id="save-control">
+		  <a class="btn savelist btn-primary" href="javascript:void(0);">Save</a>
+		  <input type="text" id="listname" name="listname" value="Untitled-list"/>
+		  <a href="javascript:void(0);"><i class="cancel-edit-list icon-remove"></i></a>
+		</div>
+		<div class="save-create-buttons"> 
+			<a href="javascript:void(0);" class="btn update">Save List</a>
+			<a href="javascript:void(0);" class="btn create">Create List</a> 
+	  	</div>
+	  {{/if}}
+	</div>
+</template>
+
+<!-- TEMPLATE PLAYLIST-->
+<template name="playlist">
+	<li class="{{is_current}}">
+		<a href="#">
+			<span>{{name}}</span>
+			<div class="playlist-actions">
+			  	{{#if is_current}}
+			  		<div class="edit-button"><i class="icon-edit icon-white"></i></div>
+			  		<div class="delete"><i class="icon-remove icon-white"></i></div>
+			  	{{else}}
+			  		<div class="edit-button"><i class="icon-edit"></i></div>
+			  		<div class="delete"><i class="icon-remove"></i></div>
+			  	{{/if}}		  
+			</div>
+		</a>
+	</li>
+</template>
+
+<!-- TEMPLATE MODIFIERS-->
+<template name="modifiers">
+	<div class="modifiers">
+	  <div class="navbar">
+		<div class="navbar-inner">
+		  <div class="container">
+			<ul class="nav">
+			  <li><a class="playsong reseteable tip" title="Play List" href="javascript:void(0);"><i class="icon-play icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+			  {{#if owner}}
+			  	<li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward icon-white"></i></a></li>
+			  	<li class="divider-vertical"></li>
+				<li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash icon-white"></i></a></li>
+				<li class="divider-vertical"></li>				  
+			  {{/if}}
+			  
+			  <li><a class="share-button reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
+			  <li class="divider-vertical"></li>
+		  
+			  {{#if owner}}
+				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+				<li class="{{repeated}}"><a class="repeat-button reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+			  {{else}}
+				<li class="divider-vertical"></li>
+				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet icon-white"></i></a></li>
+				<li class="divider-vertical"></li>
+			  {{/if}}	
+			</ul>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	{{on_modifiers_loaded}}
+</template>

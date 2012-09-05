@@ -1,0 +1,21 @@
+<!--TEMPLATE SIDEBAR-->
+<template name="sidebar">
+	<div id="sidebar">
+		{{>latestlist}}
+	</div>
+</template>
+
+<!-- TEMPLATE LATESTLIST-->
+<template name="latestlist">
+	<ul id="latestlist">
+		<li class="list-header">Recents Lists</li>
+		{{#each latest}}
+			{{>latestitem}}
+		{{/each}}
+	</ul>
+</template>
+
+<!-- TEMPLATE LATESTITEM-->
+<template name="latestitem">
+	<li><a href="#">{{name}}</a></li>
+</template>

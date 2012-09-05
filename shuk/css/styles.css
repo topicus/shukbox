@@ -93,17 +93,18 @@ ul#playlist {
 	border: 1px solid #DCDCDC;
 	margin: 0;
 }
-ul#playlist li {
+ul#playlist>li {
 	list-style: none;
 	border-bottom: 1px solid #CCC;
-	background: #ECECEC;
+	background: whiteSmoke;
 	padding: 15px;
 	color: #666;
 	font-size: 1.3em;
 	position: relative;
 	padding-right:40px;
+	cursor: pointer;
 }
-ul#playlist li span.title{
+ul#playlist>li span.title{
 	font-size: 0.7em;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -111,40 +112,19 @@ ul#playlist li span.title{
 	display:block !important;
 	margin-top: 5px;
 }
-ul#playlist li:hover {
-	border-bottom: 1px solid #C1C1C1;
-	background: #E1E1E1;
-	cursor: pointer;
-}
-ul#playlist li img{
+ul#playlist>li img{
 	padding:5px;
 	background:white;
 	border:1px solid #DDD;
 }
-.actions{
-  width:60px;
-  height: 40px;
-  position:absolute;
-  top:20px;
-  right:0px;
-  overflow:auto;
-  padding-top: 9px;
-}
-.actions a{
-  float:left;
-  margin-right:5px;
-}
-.vote {
-	background:url('/img/metal.png') no-repeat center;
-	display:block;
-	width:18px;
-	height:18px;
+ul#playlist>li:hover .actions{
+	display: block;
 }
 
-ul#playlist li.current input{
+ul#playlist>li.current input{
   display: none;
 }
-ul#playlist li.current{
+ul#playlist>li.current{
 	font-weight: bold;
 	font-size: 1.5em;
 	overflow: hidden;
@@ -157,6 +137,24 @@ ul#playlist li.current{
 	color: #000;
 	padding: 20px;
 	display:block !important;
+}
+.song .actions{
+  width:100px;
+  height: 40px;
+  position:absolute;
+  top:20px;
+  right:0px;
+  overflow:auto;
+  padding-top: 9px;
+  display: none;
+}
+.song>ul>li{
+	display:inline-block;
+	list-style: none;
+	background-color: white;
+	width: 18px;
+	height: 18px;
+	border-radius: 3px;
 }
 .clearlist, .playsong, .skip{
   cursor:pointer;

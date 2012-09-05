@@ -1,0 +1,49 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHUKBOX .:.:.</title>
+  <style>
+  @media (min-width: 981px) {
+    body {
+      padding-top: 60px;
+    }
+  } 
+  </style>
+  <link rel="stylesheet" type="text/css" href="css/styles.css" media="screen" />
+  <script type="text/javascript">  
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33581403-1']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();  
+  </script>
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->  
+
+</head>
+
+<body>
+{{#if page_is "home"}}
+	{{> home}}
+{{/if}}	
+{{#if page_is "profile"}}
+	{{> profile}}
+{{/if}}	
+</body>
+
+<!-- TEMPLATE METAS-->
+<template name="metas">
+	<meta property="og:url" content="{{playchannel_url}}">
+	<meta property="og:title" content="SHUKBOX .:.:.">	
+	<meta property="og:description" content="Search for free music to stream.  Listen to free music recommended by real people.  Create your own free internet radio station.">
+	<meta property="og:type" content="playlist">
+	<meta name="description" content="Search for free music to stream.  Listen to free music recommended by real people.  Create your own free internet radio station.">	
+	<meta name="keywords" content="free music, listen to music online, listen to free music, search music, discover music, music search, internet radio, online radio, free mp3, music search engine, streaming music, music playlist, shukbox, shukbox.com">	
+</template>
+
+

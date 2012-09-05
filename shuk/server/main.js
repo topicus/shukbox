@@ -2,21 +2,32 @@ Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
+LatestLists = new Meteor.Collection("latestlists");
 
 Meteor.publish('songs', function (listkey) {
   return Songs.find({listkey:listkey});
 });
 Meteor.publish('playlists', function (playlist) {
-  return  PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]}); 
+  return PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]}); 
 });
 Meteor.publish('playchannels', function (playchannel) {
   return PlayChannels.find({_id:playchannel});
+});
+Meteor.publish('latestlists', function(){
+  var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:5})
+  this._publishCursor(cursor, 'latestlists');
+  return ; 
+});
+Meteor.publish('profiles', function(profile){
+  var cursor = Users.find(profile)
+  this._publishCursor(cursor, 'profiles');
+  return ; 
 });
 Meteor.methods({
   getUserServiceId: function () {
     return Meteor.users.find({_id:this.userId()}).fetch()[0];
   },
-  getRecentsLists: function(){
+  getLatestLists: function(){
     return PlayLists.find({saved:true}, {sort:{when:-1}, limit:5}).fetch(); 
   },  
   addPlaylist: function(doc){

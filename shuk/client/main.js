@@ -3,52 +3,27 @@ Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
+LatestLists = new Meteor.Collection("latestlists");
+profiles = new Meteor.Collection("profiles");
 
 Session.set('listkey', null);
 Session.set('playchannel', null);
-Session.set('synced', null);
-Session.set('repeat', null);
 Session.set('fulluser', null);
 Session.set('owner', null);
 Session.set('edited', null);
 Session.set('synced', null);
 Session.set('repeat', true);
 Session.set('current', null);
-
+Session.set('page', null);
+Session.set('profile', null);
 
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
     Meteor.subscribe('playchannels', Session.get('playchannel'));
     Meteor.subscribe('playlists', Session.get('listkey'));
-  
+    Meteor.subscribe('latestlists');
+    
 });
-
-//////////////// ROUTER | TRACKING PLAYCHANNEL IN THE URL /////////////////
-var ShukboxRouter = Backbone.Router.extend({
-  routes: {
-    ":playchannel": "main"
-  },
-  main: function (playchannel) {
-    Session.set('playchannel', playchannel);
-    PlayChannels.find({_id:playchannel}).observe({
-      added: function (item) {        
-        Session.set('listkey', item.playlist);
-        setCurrent('set',item.current);
-        Session.set('owner', item.user);
-      } 
-    });  
-  },
-  setList: function (playchannel) {
-    this.navigate(playchannel, true);
-  }
-});
-Router = new ShukboxRouter;
-
-Meteor.startup(function () {
-  Backbone.history.start({pushState: true});
-  Router.setList(Session.get('playchannel'));
-});
-//////////////// END ROUTER /////////////////
 
 var CONTROL_KEYCODES = new Array(40,38,37,39)
 var ENTER = 13;
@@ -69,71 +44,15 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var playManager = new PlaylistManager();
 var userManager = new UserManager();
-
+var controls = new Controls();
 
 init();
 function init(){
-  //INIT PROCCESS
-  playManager.newList();
+  Backbone.history.start({pushState: true});
   if(Meteor.user() === null) 
     userManager.loginAsAnonym();
   userManager.getFullUser();
 }
-function playSong(vid){
-    if(typeof(player)==='undefined' || !player){
-      player = new YT.Player('player-div', {
-        height: '300',
-        width: '100%',
-        videoId: vid,
-        playerVars: { 'autoplay': 0, 'wmode': 'opaque' }, 
-        events: {
-          'onReady': function(event){
-            player.playVideo();
-          },
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    }else if(player){
-      player.loadVideoById(vid);
-      player.playVideo();      
-    }
-};
-function onPlayerStateChange(event) {
-  if(event.data==YT.PlayerState.ENDED){
-    nextSong();  
-  }
-};
-function stopVideo() {
-  if(player){
-    player.stopVideo();
-    player.destroy();    
-  }
-  player = null;
-};  
-function nextSong(){
-  setCurrent('modify',1);
-  c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[Session.get('current')];
-  if(c)
-    playSong(c.name);
-  else {
-    if(Session.get('repeat')){
-      setCurrent('set',0);
-      c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[Session.get('current')];
-      playSong(c.name);
-    }
-  }
-};
-function setCurrent(m,i){
-  old_current = current;
-  if(m=='modify'){
-    Session.set('current', Session.get('current') + i);
-  }else if(m=='set'){
-    Session.set('current', i);
-  } 
-  if(Session.get('playchannel') ){
-    PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} );    
-  }
-};
 Template.shares.playlist_url = function(){
   return window.location.protocol+'//'+window.location.host+"/?listkey="+Session.get('listkey');
 }
@@ -176,7 +95,7 @@ Template.playlist.is_current = function(){
 };
 Template.playlists.events = {
   'click li':function(e){
-    stopVideo();
+    controls.stopVideo();
     playManager.setList(this._id);
     Meteor.flush();
     $('.reseteable').button('toggle');
@@ -293,21 +212,24 @@ Template.musiclist.events = {
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
     var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
     if(so._id === this._id){
-      stopVideo();      
-      setCurrent('modify', -1);
-      nextSong();
+      controls.stopVideo();      
+      controls.setCurrent('modify', -1);
+      controls.nextSong();
     }else{
       Songs.remove(this._id);
     }
     return false;
+  },
+  'click .subactions': function(e){
+    e.stopPropagation();
   },
   'click li': function (e) {
     playManager.newChannel();
     var s = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
     for(k=0,l=s.length;k<l;k++){
       if(s[k]._id == this._id){
-        setCurrent('set',k);
-        playSong(s[k].name);
+        controls.setCurrent('set',k);
+        controls.playSong(s[k].name);
       }
     }
   }  
@@ -320,7 +242,7 @@ Template.song.is_current = function(){
         if(Session.get('synced')){
           Meteor.flush();
           Meteor.defer(function(){
-            playSong(so.name);
+            controls.playSong(so.name);
           });
         }
         return ' current'; 
@@ -355,15 +277,15 @@ Template.modifiers.events = {
     c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[0];          
     if(typeof c !== "undefined"){
       playManager.newChannel();
-      setCurrent('set',0);
-      playSong(c.name);
+      controls.setCurrent('set',0);
+      controls.playSong(c.name);
     }
   },
   'click .clearlist': function () {         
     Songs.remove({listkey:Session.get('listkey')});
   },      
   'click .skip': function () {
-     nextSong();
+    controls.nextSong();
   },
   'click .share-button':function(e){
     Meteor.flush(); 
@@ -476,6 +398,10 @@ if (window.Handlebars) {
       return Session.get('owner') === Meteor.user()._id;
     return false;
   }); 
+  Handlebars.registerHelper('page_is', function(page){
+    console.log(Session.get('page'));
+    return Session.get('page') === page;
+  });   
 }
 /*END HANDLEBARS HELPER*/
 

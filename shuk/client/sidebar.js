@@ -1,17 +1,17 @@
-Session.set('recents', null);
 
-Template.recentlist.recents = function(argument) {
-	if(typeof(error) ==='undefined') return Session.get('recents');
-	return false;
+Session.set('latestlists', null);
+
+Template.latestlist.latest = function(argument) {
+	return LatestLists.find({});
 };
-Template.recentlist.events = {
+Template.latestlist.events = {
 	'click li':function(e){
 		playManager.setList(this._id);
 	}	
 };
-getRecentsLists();
-function getRecentsLists(){
-	Meteor.call('getRecentsLists', function(error, response){
-		Session.set('recents', response);
+getLatestLists();
+function getLatestLists(){
+	Meteor.call('getLatestLists', function(error, response){
+		Session.set('latestlists', response);
 	});
 };
