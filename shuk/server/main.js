@@ -19,7 +19,7 @@ Meteor.publish('latestlists', function(){
   return ; 
 });
 Meteor.publish('profiles', function(profile){
-  var cursor = Users.find(profile)
+  var cursor = Users.find(profile);
   this._publishCursor(cursor, 'profiles');
   return ; 
 });

@@ -138,6 +138,9 @@ ul#playlist>li.current{
 	padding: 20px;
 	display:block !important;
 }
+ul#playlist>li.current .actions{
+	display: none;
+}
 .song .actions{
   width:100px;
   height: 40px;
@@ -151,11 +154,16 @@ ul#playlist>li.current{
 .song>ul>li{
 	display:inline-block;
 	list-style: none;
+	line-height: 1px;
 	background-color: white;
-	width: 18px;
-	height: 18px;
+	padding:4px;
+	border: #ccc 1px solid;
 	border-radius: 3px;
 }
+.song>ul>li:hover{
+	background-color: #DEDEDE;
+}
+
 .clearlist, .playsong, .skip{
   cursor:pointer;
 }
