@@ -34,14 +34,15 @@
       player = null;
     };  
     this.nextSong = function(){
+      console.log("nextSong");
       that.setCurrent('modify',1);
-      var c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[Session.get('current')];
+      var c = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
       if(c)
         that.playSong(c.name);
       else {
         if(Session.get('repeat')){
           that.setCurrent('set',0);
-          c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[Session.get('current')];
+          c = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
           that.playSong(c.name);
         }
       }

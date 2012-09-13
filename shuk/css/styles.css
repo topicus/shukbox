@@ -139,7 +139,6 @@ ul#playlist>li.current{
 	display:block !important;
 }
 ul#playlist>li.current .actions{
-	display: none;
 }
 .song .actions{
   width:100px;

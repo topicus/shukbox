@@ -35,7 +35,6 @@ var currentSelected = -1;
 var player;
 var current = 0;
 var old_current = -1;
-var weight = 1000;  
 var tag = document.createElement('script');
 var login_interval;
 tag.src = "//www.youtube.com/iframe_api";
@@ -195,53 +194,57 @@ Template.search.events = {
 Template.musiclist.songs = function () {
   if(typeof(Session.get('playchannel'))=== "undefined"){
     playManager.newChannel();
-    return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}});
+    return Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}});
   }else{
-    return Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch();
+    return Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch();
   }
   return false;
 };
 Template.musiclist.events = {
   'click .vote': function (e) {
+    console.log("click on vote");
     var vote = Songs.find({_id:this._id, voters:{$in:[Meteor.user()._id]}}).count();
     if(!vote)
       Songs.update({_id: this._id},{$inc:{score:1}, $push:{voters:Meteor.user()._id}});
+    e.stopImmediatePropagation();
     return false;
   },
   'click .delete': function (e) { 
+    console.log("click on delete");
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
-    var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
+    var so = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[pco.current];
     if(so._id === this._id){
+      Songs.remove(this._id);
       controls.stopVideo();      
-      controls.setCurrent('modify', -1);
-      controls.nextSong();
+      controls.setCurrent('set', -1);
     }else{
       Songs.remove(this._id);
     }
+    e.stopImmediatePropagation();
     return false;
   },
-  'click .subactions': function(e){
-    e.stopPropagation();
-  },
   'click li': function (e) {
+    console.log("click on li");
     playManager.newChannel();
-    var s = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch(); 
+    var s = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch(); 
     for(k=0,l=s.length;k<l;k++){
       if(s[k]._id == this._id){
         controls.setCurrent('set',k);
         controls.playSong(s[k].name);
       }
     }
+    return false;
   }  
 };
 Template.song.is_current = function(){
     var pco = PlayChannels.findOne({_id:Session.get('playchannel')});
     if(pco){
-      var so = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[pco.current];
+      var so = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[pco.current];
       if(typeof(so) !== 'undefined' && so._id===this._id){
         if(Session.get('synced')){
           Meteor.flush();
           Meteor.defer(function(){
+            console.log("synced");
             controls.playSong(so.name);
           });
         }
@@ -274,7 +277,7 @@ Template.modifiers.repeated = function(){
 };
 Template.modifiers.events = {
   'click .playsong': function () {    
-    c = Songs.find({listkey:Session.get('listkey')},{sort: {weight: 1}}).fetch()[0];          
+    c = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[0];          
     if(typeof c !== "undefined"){
       playManager.newChannel();
       controls.setCurrent('set',0);
@@ -359,11 +362,7 @@ function addSong(jselector){
   var user_logged = Session.get('fulluser');
   var fbid = (user_logged.services.facebook) ? user_logged.services.facebook.id : false;
   var goid = (user_logged.services.google) ? user_logged.services.google.id : false;
-  var so = Songs.findOne({listkey:Session.get('listkey')},{sort: {weight: -1}});
-  
-  if(typeof(so)!=='undefined'){
-    var last_weight = (!so.weight || typeof(so.weight) ==='undefined')? 0:so.weight+1;
-  }
+
   var song = {
     name: vid,
     fbid:fbid,
@@ -371,8 +370,7 @@ function addSong(jselector){
     score: 0,
     title:title,
     listkey:Session.get('listkey'),
-    added_by:Meteor.user()._id,
-    weight:last_weight
+    added_by:Meteor.user()._id
   };
   Meteor.call('addSong', song);
   $("#autocompleter").hide();
