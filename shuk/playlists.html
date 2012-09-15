@@ -58,6 +58,10 @@
 			  
 			  <li><a class="share-button reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
+
+			  <li><a class="vote-button reseteable tip" title="Vote" href="javascript:void(0);"><i class="icon-thumbs-up icon-white"></i></a></li>
+
+			  <li class="divider-vertical"></li>
 		  
 			  {{#if owner}}
 				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
@@ -65,7 +69,6 @@
 				<li class="{{repeated}}"><a class="repeat-button reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{else}}
-				<li class="divider-vertical"></li>
 				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{/if}}	

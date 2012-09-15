@@ -9,3 +9,12 @@ Template.latestlist.events({
 		playManager.setList(this._id);
 	}	
 });
+
+Template.toptenlist.topten = function(argument) {
+	return TopTenLists.find( {},{sort:{score:-1}} );
+};
+Template.toptenlist.events({
+	'click li':function(e){
+		playManager.setList(this._id);
+	}	
+});

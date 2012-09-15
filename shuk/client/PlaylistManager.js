@@ -33,8 +33,15 @@
 			var song = Songs.findOne(PlaylistManager.songToCopy);
 			console.log("SONG TO COPY: " + PlaylistManager.songToCopy);
 			delete song._id;
+			song.added_by = Meteor.user()._id;
 			song.listkey = listkey;
 			Meteor.call('addSong',song);
+		};
+		this.votePlaylist=function(listkey){
+		    var vote = PlayLists.find({_id:listkey, voters:{$in:[Meteor.user()._id]}}).count();
+		    if(!vote)
+		      PlayLists.update({_id:listkey},{$inc:{score:1}, $push:{voters:Meteor.user()._id}});
+		    return false;
 		};			
 	}
 	PlaylistManager.songToCopy = null;

@@ -3,6 +3,7 @@ PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
 LatestLists = new Meteor.Collection("latestlists");
+TopTenLists = new Meteor.Collection("toptenlists");
 
 Meteor.publish('songs', function (listkey) {
   return Songs.find({listkey:listkey});
@@ -16,6 +17,12 @@ Meteor.publish('playchannels', function (playchannel) {
 Meteor.publish('latestlists', function(){
   var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:8})
   this._publishCursor(cursor, 'latestlists');
+  return ; 
+});
+
+Meteor.publish('toptenlists', function(){
+  var cursor = PlayLists.find({saved:true}, {sort:{score:-1}, limit:10})
+  this._publishCursor(cursor, 'toptenlists');
   return ; 
 });
 Meteor.publish('profiles', function(profile){

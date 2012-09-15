@@ -151,14 +151,18 @@ ul#playlist>li.current .actions{
   padding-top: 9px;
   display: none;
 }
+
 .song>ul>li{
 	display:inline-block;
 	list-style: none;
 	line-height: 1px;
 	background-color: white;
-	padding:4px;
 	border: #ccc 1px solid;
 	border-radius: 3px;
+}
+.song>ul>li>a, .song>ul>li> .dropdown>a{
+	padding: 4px;
+	display: block;
 }
 .song>ul>li:hover{
 	background-color: #DEDEDE;
@@ -317,6 +321,9 @@ ul#playlist>li.current .actions{
 #mainnav .navbar-inner{
 	min-height:43px !important;
 }
+
+
+
 
 @media (max-width: 480px) {
 	.modifiers .nav li a{

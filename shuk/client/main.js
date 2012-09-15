@@ -4,6 +4,7 @@ PlayLists = new Meteor.Collection('playlists');
 PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
 LatestLists = new Meteor.Collection("latestlists");
+TopTenLists = new Meteor.Collection("toptenlists");
 profiles = new Meteor.Collection("profiles");
 
 Session.set('listkey', null);
@@ -17,12 +18,15 @@ Session.set('current', null);
 Session.set('page', null);
 Session.set('profile', null);
 
+Meteor.startup(function(){
+ 
+});
 Meteor.autosubscribe(function () {
     Meteor.subscribe('songs',Session.get('listkey'));
     Meteor.subscribe('playchannels', Session.get('playchannel'));
     Meteor.subscribe('playlists', Session.get('listkey'));
     Meteor.subscribe('latestlists');
-    
+    Meteor.subscribe('toptenlists');
 });
 
 var CONTROL_KEYCODES = new Array(40,38,37,39)
@@ -211,7 +215,7 @@ Template.musiclist.events({
       Songs.update({_id: this._id},{$inc:{score:1}, $push:{voters:Meteor.user()._id}});
     return false;
   },
-  'click .dropdown-toggle': function (e) {
+  'click .copyto': function (e) {
     console.log(this._id);
     playManager.setSongToCopy(this._id);
   },
@@ -238,6 +242,9 @@ Template.musiclist.events({
         controls.playSong(s[k].name);
       }
     }
+  },
+  'click .actions':function(e){
+    return false;
   }  
 });
 Template.song.is_current = function(){
@@ -318,7 +325,10 @@ Template.modifiers.events({
   },
   'click .repeat-button': function (e) {
     Session.set('repeat', !Session.get('repeat'));
-  }    
+  },   
+  'click .vote-button': function(e){
+    playManager.votePlaylist(Session.get("listkey"));
+  } 
 });
 Template.navbar.profile_image_url = function(){
   var f = Session.get('fulluser');
@@ -334,8 +344,11 @@ Template.dropdown_playlist.playlist = function(){
   return PlayLists.find({user:Meteor.user()._id, saved:true},{sort: {when: -1}})
 };
 Template.dropdown_playlist.events({
-  'click li':function(e){
+  'click .dropdown-menu li':function(e){
     playManager.copySongToList(this._id);
+    $('.dropdown').removeClass('open');
+    Alerts.show('Video has been saved.');
+    return false;
   }
 });
 function deleteList(t){
@@ -356,9 +369,13 @@ function savelist(e) {
     plo.user = Meteor.user()._id;
     plo.saved = true;
     plo.name = $('#listname').val();
+    plo.voters = [];
+    plo.score = 0;
     Meteor.call('addPlaylist', plo, function(error,response){
       Songs.find({listkey:Session.get('listkey')}).forEach(function(item){      
         delete item._id;
+        item.voters = [];
+        item.score = 0;        
         item.listkey = response;
         Songs.insert(item);
       });  
