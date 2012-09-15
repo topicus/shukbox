@@ -86,12 +86,13 @@ h3{
 
 
 #wrap-playlist{
-  overflow:hidden;
+  overflow:visible;
 }
 ul#playlist {
 	list-style: none;
 	border: 1px solid #DCDCDC;
 	margin: 0;
+	overflow: visible;
 }
 ul#playlist>li {
 	list-style: none;
@@ -127,7 +128,7 @@ ul#playlist>li.current input{
 ul#playlist>li.current{
 	font-weight: bold;
 	font-size: 1.5em;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	background: #FFF;
@@ -146,7 +147,7 @@ ul#playlist>li.current .actions{
   position:absolute;
   top:20px;
   right:0px;
-  overflow:auto;
+  overflow:visible;
   padding-top: 9px;
   display: none;
 }
@@ -162,7 +163,12 @@ ul#playlist>li.current .actions{
 .song>ul>li:hover{
 	background-color: #DEDEDE;
 }
-
+.song>ul>li ul {
+	font-size:0.75em
+}
+.dropdown-menu li > a:hover{
+	background-color: #333;
+}
 .clearlist, .playsong, .skip{
   cursor:pointer;
 }

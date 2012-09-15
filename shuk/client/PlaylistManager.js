@@ -2,6 +2,7 @@
 
 	function PlaylistManager(){
 		var that = this;
+		
 		this.newList = function(temp){
 			saved = typeof temp !== 'undefined' ? temp : false;
 			if(Meteor.user()){
@@ -23,7 +24,19 @@
 			      Router.setList(response);
 			    });
 			}			
+		};
+		this.setSongToCopy = function(id){
+			console.log("CALLING SONG TO COPY");
+			PlaylistManager.songToCopy = id;
+		};
+		this.copySongToList = function(listkey){
+			var song = Songs.findOne(PlaylistManager.songToCopy);
+			console.log("SONG TO COPY: " + PlaylistManager.songToCopy);
+			delete song._id;
+			song.listkey = listkey;
+			Meteor.call('addSong',song);
 		};			
 	}
+	PlaylistManager.songToCopy = null;
 	window.PlaylistManager = PlaylistManager;
 })(window);

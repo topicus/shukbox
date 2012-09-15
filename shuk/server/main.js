@@ -14,7 +14,7 @@ Meteor.publish('playchannels', function (playchannel) {
   return PlayChannels.find({_id:playchannel});
 });
 Meteor.publish('latestlists', function(){
-  var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:5})
+  var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:8})
   this._publishCursor(cursor, 'latestlists');
   return ; 
 });
