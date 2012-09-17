@@ -98,12 +98,14 @@ Meteor.startup(function () {
     insert: function (uid, doc) {
       return true;
     },
-    update: function (uid, doc) {
+    update: function (uid, doc, fields, modifiers) {
       var plo = PlayLists.findOne({_id:doc[0]._id});
-      if(uid === plo.user)
+      var perms = ['score', 'voters'];
+      if(uid === plo.user || publicFields(perms, fields)){
         return true;
-      else
-        return false;
+      }else{
+        return false; 
+      }
     },
     remove: function (uid, doc) {
       console.log(doc);
@@ -119,3 +121,10 @@ Meteor.startup(function () {
     }
   });  
 });
+function publicFields(fields, intent){
+  for(keyfield in intent){
+      var test = fields.indexOf(intent[keyfield]);
+      if(test === -1) return false;
+  }
+  return true;
+}
