@@ -18,7 +18,10 @@
 
 <!-- TEMPLATE LATESTITEM-->
 <template name="latestitem">
-	<li><a href="#">{{name}}</a></li>
+	<li>
+		<img src="{{get_profile_image_url user_obj}}"/>
+		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{name}}</a></p>
+	</li>
 </template>
 
 <!-- TEMPLATE TOPTENLIST-->
@@ -33,5 +36,8 @@
 
 <!-- TEMPLATE TOPTENITEM-->
 <template name="toptenitem">
-	<li><a href="#">{{name}}</a></li>
+	<li>
+		<img src="{{get_profile_image_url user_obj}}"/>
+		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{name}}</a></p>
+	</li>
 </template>

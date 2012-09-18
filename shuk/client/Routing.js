@@ -1,19 +1,22 @@
 var ShukboxRouter = Backbone.Router.extend({
   routes: {
-    ":playchannel": "main",
+    ":playlist": "main",
     "":"init",
     "profile/:userid": "profile"
   },
   init:function(){
+    console.log("init");
     playManager.newList();
   },
-  main: function (playchannel) {
+  main: function (playlist) {
+    console.log("main");
     Session.set('page', 'home');
-    Session.set('playchannel', playchannel);
-    this.navigate(playchannel, true);
-    PlayChannels.find({_id:playchannel}).observe({
+    Session.set('listkey', playlist);
+    this.navigate(playlist, true);
+    
+
+    PlayLists.find({_id:playlist}).observe({
       added: function (item) {        
-        Session.set('listkey', item.playlist);
         controls.setCurrent('set',item.current);
         Session.set('owner', item.user);
       } 
@@ -25,8 +28,8 @@ var ShukboxRouter = Backbone.Router.extend({
       //TODO
     }
   },
-  setList: function (playchannel) {
-    this.navigate(playchannel, true);
+  setList: function (playlist) {
+    this.navigate(playlist, true);
   }
 });
 Router = new ShukboxRouter;

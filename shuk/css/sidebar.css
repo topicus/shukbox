@@ -7,22 +7,22 @@
 	height: 100%;
 	z-index: 999999;
 	background-color: #FFF;
+
+
 }
 #latestlist, #toptenlist{
 	list-style: none;
 	padding: 5px;
 }
-#latestlist li{
+#latestlist li, #toptenlist li{
 	padding: 5px;
-	text-transform: uppercase;
+	text-transform: none;
 	font-size: 11px;
+	overflow: auto;
 }
-#toptenlist li{
-	padding: 5px;
-	text-transform: uppercase;
-	font-size: 11px;	
-	list-style: decimal;
-	list-style-position:inside;
+#sidebar li:hover{
+	background-color: whiteSmoke;
+	cursor: pointer;
 }
 #latestlist li.list-header, #toptenlist li.list-header{
 	display: block;
@@ -36,4 +36,21 @@
 }
 #latestlist li a, #toptenlist li a{
 	color: #333;
+	text-transform: uppercase;
+}
+#toptenlist li p, #latestlist li p{
+	float: right;
+	width: 150px;
+}
+#toptenlist li img, #latestlist li img{
+	float: left;
+	width: 30px;
+	display: block;
+}
+#sidebar .name{
+	font-weight: bold;
+}
+#sidebar #toptenlist li img, #sidebar #latestlist li img{
+	height: 29px;
+	width: 29px;
 }

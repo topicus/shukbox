@@ -57,24 +57,20 @@
 <template name="shares">
   <div id="shares">
 	{{#if playlist_url}}	  
-	  <p style="display:none;"><strong>Share the playlist:</strong></p>
-	  <div style="display:none;" id="listurl"><input id="playlist_url" type="text" value="{{playlist_url}}" /></div>
-	{{/if}}
-	{{#if playchannel_url}}	  
 	  <div class="left"> 
-		  <div id="playchannelurl"><input id="playchannel_url" style="width:320px" type="text" value="{{playchannel_url}}" /></div>
+		  <div id="playlisturl"><input id="playlist_url" style="width:320px" type="text" value="{{playlist_url}}" /></div>
 	  </div>
 
 	  <div class="right">
 		  <ul id="share-buttons">
-		  	<li><button onclick="popup('https://twitter.com/share?url={{playchannel_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="twitter"></button></li>
-		  	<li><button onclick="popup('https://facebook.com/sharer.php?u={{playchannel_url}}', {width:620, height:440});return false;" class="facebook"></button></li>
-		  	<li><button onclick="popup('https://plus.google.com/share?url=?url={{playchannel_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="google_plus"></button></li>
+		  	<li><button onclick="popup('https://twitter.com/share?url={{playlist_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="twitter"></button></li>
+		  	<li><button onclick="popup('https://facebook.com/sharer.php?u={{playlist_url}}', {width:620, height:440});return false;" class="facebook"></button></li>
+		  	<li><button onclick="popup('https://plus.google.com/share?url=?url={{playlist_url}}&text=I\'m listening', {width:1024, height:650});return false;" class="google_plus"></button></li>
 		  	<li><button class="qrcode"></button> </li>
 		  </ul>	  	
-	  	<div class="qr-wrap" style="background-image:url(http://chart.apis.google.com/chart?cht=qr&chl={{playchannel_url}}&chs=200x200);"></div>	  	
+	  	<div class="qr-wrap" style="background-image:url(http://chart.apis.google.com/chart?cht=qr&chl={{playlist_url}}&chs=200x200);"></div>	  	
 	  </div>	    
-	  {{on_playchannel_ready}}
+	  {{on_playlist_ready}}
 	{{/if}}
   </div>
 </template>

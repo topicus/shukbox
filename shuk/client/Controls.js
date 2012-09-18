@@ -54,8 +54,8 @@
       }else if(m=='set'){
         Session.set('current', i);
       } 
-      if(Session.get('playchannel') ){
-        PlayChannels.update({_id:Session.get('playchannel')}, { $set: { current : Session.get('current') }} );    
+      if(Session.get('listkey') ){
+        PlayLists.update({_id:Session.get('listkey')}, { $set: { current : Session.get('current') }} );    
       }
     };
   }

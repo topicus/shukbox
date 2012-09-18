@@ -1,6 +1,5 @@
 Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
-PlayChannels = new Meteor.Collection('playchannels');
 Requests = new Meteor.Collection('requests');
 LatestLists = new Meteor.Collection("latestlists");
 TopTenLists = new Meteor.Collection("toptenlists");
@@ -11,22 +10,68 @@ Meteor.publish('songs', function (listkey) {
 Meteor.publish('playlists', function (playlist) {
   return PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]}); 
 });
-Meteor.publish('playchannels', function (playchannel) {
-  return PlayChannels.find({_id:playchannel});
-});
 Meteor.publish('latestlists', function(){
   var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:8})
-  this._publishCursor(cursor, 'latestlists');
-  return ; 
+  var self = this;
+  var collection = 'latestlists';
+  var observe_handle = cursor.observe({
+    added: function (obj) {
+      obj.user_obj = getFilteredUser(obj.user);
+      self.set(collection, obj._id, obj);
+      self.flush();
+    },
+    changed: function (obj, old_idx, old_obj) {
+      var set = {};
+      _.each(obj, function (v, k) {
+        if (!_.isEqual(v, old_obj[k]))
+          set[k] = v;
+      });
+      self.set(collection, obj._id, set);
+      var dead_keys = _.difference(_.keys(old_obj), _.keys(obj));
+      self.unset(collection, obj._id, dead_keys);
+      self.flush();
+    },
+    removed: function (old_obj, old_idx) {
+      self.unset(collection, old_obj._id, _.keys(old_obj));
+      self.flush();
+    }
+  });  
+  self.complete();
+  self.flush();
 });
 
 Meteor.publish('toptenlists', function(){
-  var cursor = PlayLists.find({saved:true}, {sort:{score:-1}, limit:10})
-  this._publishCursor(cursor, 'toptenlists');
-  return ; 
+  var cursor = PlayLists.find({saved:true}, {sort:{score:-1}, limit:10});
+  var self = this;
+  var collection = 'toptenlists';
+  var observe_handle = cursor.observe({
+    added: function (obj) {
+      obj.user_obj = getFilteredUser(obj.user);
+      self.set(collection, obj._id, obj);
+      self.flush();
+    },
+    changed: function (obj, old_idx, old_obj) {
+      var set = {};
+      _.each(obj, function (v, k) {
+        if (!_.isEqual(v, old_obj[k]))
+          set[k] = v;
+      });
+      self.set(collection, obj._id, set);
+      var dead_keys = _.difference(_.keys(old_obj), _.keys(obj));
+      self.unset(collection, obj._id, dead_keys);
+      self.flush();
+    },
+    removed: function (old_obj, old_idx) {
+      self.unset(collection, old_obj._id, _.keys(old_obj));
+      self.flush();
+    }
+  });  
+  self.complete();
+  self.flush();
+
 });
 Meteor.publish('profiles', function(profile){
-  var cursor = Users.find(profile);
+  var cursor = Meteor.users.find(profile);
   this._publishCursor(cursor, 'profiles');
   return ; 
 });
@@ -40,15 +85,11 @@ Meteor.methods({
   addPlaylist: function(doc){
     doc.when = Date.now(); // ms since epoch
     return PlayLists.insert(doc);
-  },
-  addPlaychannel: function(doc){
-    doc.when = Date.now(); // ms since epoch
-    return PlayChannels.insert(doc);
-  },  
+  }, 
   addSong: function(doc){
     doc.when = Date.now(); // ms since epoch
     return Songs.insert(doc);
-  },    
+  }    
 });
 
 Meteor.startup(function () {
@@ -73,24 +114,6 @@ Meteor.startup(function () {
         return false;
     },
     fetch: function (uid, doc) {      
-      return true;
-    }
-  });
-  PlayChannels.allow({
-    insert: function (uid, doc) {
-      return true;
-    },
-    update: function (uid, doc) {
-      var pco = PlayChannels.findOne({_id:doc[0]._id});
-      if(pco && pco.user===uid) return true;
-      return false;
-    },
-    remove: function (uid, doc) {
-      var pco = PlayChannels.findOne({_id:doc[0]._id});
-      if(pco && pco.user===uid) return true;
-      return false;
-    },
-    fetch: function (uid, doc) {
       return true;
     }
   });
@@ -121,10 +144,19 @@ Meteor.startup(function () {
     }
   });  
 });
+
 function publicFields(fields, intent){
   for(keyfield in intent){
       var test = fields.indexOf(intent[keyfield]);
       if(test === -1) return false;
   }
   return true;
+};
+function getFilteredUser(uid){
+  var service_id;
+  var user = Meteor.users.findOne(uid);  
+  _.each(user.services, function(service_obj, service_key){
+    delete user.services[service_key]["accessToken"];
+  });
+  return user;
 }
