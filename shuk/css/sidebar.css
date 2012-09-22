@@ -10,11 +10,11 @@
 
 
 }
-#latestlist, #toptenlist{
+#activities, #toptenlist{
 	list-style: none;
 	padding: 5px;
 }
-#latestlist li, #toptenlist li{
+#activities li, #toptenlist li{
 	padding: 5px;
 	text-transform: none;
 	font-size: 11px;
@@ -24,7 +24,7 @@
 	background-color: whiteSmoke;
 	cursor: pointer;
 }
-#latestlist li.list-header, #toptenlist li.list-header{
+#activities li.list-header, #toptenlist li.list-header{
 	display: block;
 	padding: 3px 10px;
 	font-size: 11px;
@@ -34,15 +34,15 @@
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	text-transform: uppercase;
 }
-#latestlist li a, #toptenlist li a{
+#activities li a, #toptenlist li a{
 	color: #333;
 	text-transform: uppercase;
 }
-#toptenlist li p, #latestlist li p{
+#toptenlist li p, #activities li p{
 	float: right;
 	width: 150px;
 }
-#toptenlist li img, #latestlist li img{
+#toptenlist li img, #activities li img{
 	float: left;
 	width: 30px;
 	display: block;
@@ -50,7 +50,7 @@
 #sidebar .name{
 	font-weight: bold;
 }
-#sidebar #toptenlist li img, #sidebar #latestlist li img{
+#sidebar #toptenlist li img, #sidebar #activities li img{
 	height: 29px;
 	width: 29px;
 }

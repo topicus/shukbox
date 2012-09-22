@@ -33,7 +33,7 @@ function showMyVideos(data){
         currentSelected=-1;
         $(e.currentTarget).find('span').html('Loading...');
       }else{
-        addSong($(this));
+        playManager.addSong($(this));
       }      
     });
 }

@@ -1,7 +1,7 @@
 Songs = new Meteor.Collection("songs");
 PlayLists = new Meteor.Collection('playlists');
 Requests = new Meteor.Collection('requests');
-LatestLists = new Meteor.Collection("latestlists");
+Activities = new Meteor.Collection("activities");
 TopTenLists = new Meteor.Collection("toptenlists");
 
 Meteor.publish('songs', function (listkey) {
@@ -10,34 +10,8 @@ Meteor.publish('songs', function (listkey) {
 Meteor.publish('playlists', function (playlist) {
   return PlayLists.find({$or:[{_id:playlist}, {user:this.userId(), saved:true}]}); 
 });
-Meteor.publish('latestlists', function(){
-  var cursor = PlayLists.find({saved:true}, {sort:{when:-1}, limit:8})
-  var self = this;
-  var collection = 'latestlists';
-  var observe_handle = cursor.observe({
-    added: function (obj) {
-      obj.user_obj = getFilteredUser(obj.user);
-      self.set(collection, obj._id, obj);
-      self.flush();
-    },
-    changed: function (obj, old_idx, old_obj) {
-      var set = {};
-      _.each(obj, function (v, k) {
-        if (!_.isEqual(v, old_obj[k]))
-          set[k] = v;
-      });
-      self.set(collection, obj._id, set);
-      var dead_keys = _.difference(_.keys(old_obj), _.keys(obj));
-      self.unset(collection, obj._id, dead_keys);
-      self.flush();
-    },
-    removed: function (old_obj, old_idx) {
-      self.unset(collection, old_obj._id, _.keys(old_obj));
-      self.flush();
-    }
-  });  
-  self.complete();
-  self.flush();
+Meteor.publish('activities', function(){
+  return Activities.find({}, {sort:{when:-1},limit:6});
 });
 
 Meteor.publish('toptenlists', function(){
@@ -79,9 +53,6 @@ Meteor.methods({
   getUserServiceId: function () {
     return Meteor.users.find({_id:this.userId()}).fetch()[0];
   },
-  getLatestLists: function(){
-    return PlayLists.find({saved:true}, {sort:{when:-1}, limit:5}).fetch(); 
-  },  
   addPlaylist: function(doc){
     doc.when = Date.now(); // ms since epoch
     return PlayLists.insert(doc);
@@ -89,7 +60,11 @@ Meteor.methods({
   addSong: function(doc){
     doc.when = Date.now(); // ms since epoch
     return Songs.insert(doc);
-  }    
+  },
+  addActivity: function(doc){
+    doc.when = Date.now();
+    return Activities.insert(doc);
+  }   
 });
 
 Meteor.startup(function () {

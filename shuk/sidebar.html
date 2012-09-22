@@ -1,26 +1,26 @@
 <!--TEMPLATE SIDEBAR-->
 <template name="sidebar">
 	<div id="sidebar">
-		{{>latestlist}}
+		{{>activities}}
 		{{>toptenlist}}
 	</div>
 </template>
 
-<!-- TEMPLATE LATESTLIST-->
-<template name="latestlist">
-	<ul id="latestlist">
-		<li class="list-header">Recents Lists</li>
-		{{#each latest}}
-			{{>latestitem}}
+<!-- TEMPLATE ACTIVITIES-->
+<template name="activities">
+	<ul id="activities">
+		<li class="list-header">Activity</li>
+		{{#each activities}}
+			{{>activity}}
 		{{/each}}
 	</ul>
 </template>
 
-<!-- TEMPLATE LATESTITEM-->
-<template name="latestitem">
+<!-- TEMPLATE ACTIVITY-->
+<template name="activity">
 	<li>
 		<img src="{{get_profile_image_url user_obj}}"/>
-		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{name}}</a></p>
+		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{action}} {{resource}}</a></p>
 	</li>
 </template>
 

@@ -12,6 +12,11 @@ var ShukboxRouter = Backbone.Router.extend({
     console.log("main");
     Session.set('page', 'home');
     Session.set('listkey', playlist);
+    if(Session.get('fulluser')){
+        var plo = PlayLists.findOne(Session.get('listkey'));
+        var name = (playlist.name)? plo.name : "Anonym"
+        Meteor.call("addActivity", {user_obj:Session.get('fulluser'), action:"listened to", resource:name});
+    }
     this.navigate(playlist, true);
     
 

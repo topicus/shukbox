@@ -1,10 +1,9 @@
+Session.set('activities', null);
 
-Session.set('latestlists', null);
-
-Template.latestlist.latest = function(argument) {
-	return LatestLists.find( {},{sort:{when:-1}} );
+Template.activities.activities = function(argument) {
+	return Activities.find( {},{sort:{when:-1}} );
 };
-Template.latestlist.events({
+Template.activities.events({
 	'click li':function(e){
 		playManager.setList(this._id);
 	}	
