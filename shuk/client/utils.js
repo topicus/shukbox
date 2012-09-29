@@ -33,7 +33,13 @@ function showMyVideos(data){
         currentSelected=-1;
         $(e.currentTarget).find('span').html('Loading...');
       }else{
-        playManager.addSong($(this));
+        var $this = $(this);
+        var vid = get_youtube_id($this.children('a').attr("href"));
+        var title = $this.children('a').attr("title");        
+        videos.add({vid:vid,title:title});
+        $("#autocompleter").hide();
+        currentSelected = -1;
+        $('.nextsong').val('');          
       }      
     });
 }
@@ -111,4 +117,12 @@ function removeInputEvent(){
 
 function popup(link, obj){
   window.open(link, 'popup', 'height='+obj.height+',width='+obj.width+',toolbar=1');
+}
+function undef(obj){
+ return typeof obj === 'undefined';
+}
+
+function setModalMessage(title, body){
+  $('.modal-header h3').html(title);
+  $('.modal-body p').html(body);
 }

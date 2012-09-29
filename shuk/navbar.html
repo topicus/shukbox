@@ -1,20 +1,17 @@
 <!-- TEMPLATE NAVBAR-->
 <template name="navbar">
-  <ul class="nav">
-	{{#if currentUser}}
-	  {{#if signedup}}
-		{{#if profile_image_url}}
-		  <li><img width="25" height="25" src="{{profile_image_url}}" /></li>
+	<ul class="nav">
+		{{#if signedup}}
+			{{#if signedup.loading}}
+				<li><a href="javascript:void(0);">Logging in...</a></li>
+			{{else}}
+				<li><img width="25" height="25" src="{{profile_image}}" /></li>
+				<li><a href="javascript:void(0);">{{currentUser.profile.name}}</a></li>
+				<li><a href="javascript:userManager.logout();">Logout</a></li>
+			{{/if}}
+		{{else}}
+			<li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>
+			<li><a href="javascript:userManager.login('google');">Login with google</a></li>
 		{{/if}}
-		<li><a href="javascript:void(0);">{{currentUser.name}}</a></li>
-		<li><a href="javascript:userManager.logout();">Logout</a></li>
-	  {{else}}
-		<li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>
-		<li><a href="javascript:userManager.login('google');">Login with google</a></li>	  
-	  {{/if}}		
-	{{else}}
-	  <li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>
-	  <li><a href="javascript:userManager.login('google');">Login with google</a></li>
-	{{/if}}
-  </ul>  
+	</ul>  
 </template>

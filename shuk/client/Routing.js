@@ -5,23 +5,23 @@ var ShukboxRouter = Backbone.Router.extend({
     "profile/:userid": "profile"
   },
   init:function(){
-    console.log("init");
-    playManager.newList();
+    playManager.create();
   },
   main: function (playlist) {
-    console.log("main");
     Session.set('page', 'home');
     Session.set('listkey', playlist);
-    if(Session.get('fulluser')){
-        var plo = PlayLists.findOne(Session.get('listkey'));
-        var name = (playlist.name)? plo.name : "Anonym"
-        Meteor.call("addActivity", {user_obj:Session.get('fulluser'), action:"listened to", resource:name});
+    if(Meteor.user()){
+        var plo = PlayLists.findOne({_id:Session.get('listkey'), saved:true});
+        if(!undef(plo)){
+          var name = (plo.name)? plo.name : "Anonym";
+          activity.add("listened to", plo);          
+        }
     }
     this.navigate(playlist, true);
     
 
     PlayLists.find({_id:playlist}).observe({
-      added: function (item) {        
+      added: function (item) {     
         controls.setCurrent('set',item.current);
         Session.set('owner', item.user);
       } 

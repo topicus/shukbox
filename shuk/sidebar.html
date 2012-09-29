@@ -19,7 +19,7 @@
 <!-- TEMPLATE ACTIVITY-->
 <template name="activity">
 	<li>
-		<img src="{{get_profile_image_url user_obj}}"/>
+		<img src="{{picture}}"/>
 		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{action}} {{resource}}</a></p>
 	</li>
 </template>
@@ -37,7 +37,7 @@
 <!-- TEMPLATE TOPTENITEM-->
 <template name="toptenitem">
 	<li>
-		<img src="{{get_profile_image_url user_obj}}"/>
-		<p><span class="name">{{user_obj.name}} </span> <a href="#">{{name}}</a></p>
+		<img src="{{user_obj.profile.picture}}"/>
+		<p><span class="name">{{user_obj.profile.name}} </span> <a href="#">{{name}}</a></p>
 	</li>
 </template>

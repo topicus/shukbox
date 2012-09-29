@@ -1,28 +1,22 @@
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
 	<div id="wrap-playlist">
-	  	{{#if songs}}
+	  	{{#if videos}}
 		  <ul id="playlist">
-		  {{#each songs}}
-			{{>song}}
+		  {{#each videos}}
+			{{>video_item}}
 		  {{/each}}
 		  </ul>
 		{{/if}}
 	</div>
 </template>
 
-<!-- TEMPLATE SONG-->
-<template name="song">
+<!-- TEMPLATE VIDEO-ITEM-->
+<template name="video_item">
   <li class='{{is_current}}'>
  	
-  <div class="song">
-	{{#if fbid}}
-		<img src="http://graph.facebook.com/{{fbid}}/picture"/>
-	{{else}}
-		{{#if goid}}
-		  	<img src="https://plus.google.com/s2/photos/profile/{{goid}}?sz=30"/>
-		{{/if}}
-	{{/if}}
+  <div class="video_item">
+	<img src="{{added_by.profile_image}}"/>
 	<span class="title">{{title}}</span>
 	<div class="votes"><strong>Votes:</strong> {{score}}</div>
     <ul class="actions">

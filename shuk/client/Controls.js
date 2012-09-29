@@ -2,7 +2,7 @@
 
   function Controls(){
     var that = this;
-    this.playSong = function(vid){
+    this.play = function(vid){
         if(typeof(player)==='undefined' || !player){
           player = new YT.Player('player-div', {
             height: '300',
@@ -23,27 +23,26 @@
     };
     this.onPlayerStateChange = function(event) {
       if(event.data==YT.PlayerState.ENDED){
-        that.nextSong();  
+        that.next();  
       }
     };
-    this.stopVideo = function() {
+    this.stop = function() {
       if(player){
         player.stopVideo();
         player.destroy();    
       }
       player = null;
     };  
-    this.nextSong = function(){
-      console.log("nextSong");
+    this.next = function(){
       that.setCurrent('modify',1);
-      var c = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
+      var c = Videos.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
       if(c)
-        that.playSong(c.name);
+        that.play(c.vid);
       else {
         if(Session.get('repeat')){
           that.setCurrent('set',0);
-          c = Songs.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
-          that.playSong(c.name);
+          c = Videos.find({listkey:Session.get('listkey')},{sort: {when: 1}}).fetch()[Session.get('current')];
+          that.play(c.vid);
         }
       }
     };
@@ -54,7 +53,7 @@
       }else if(m=='set'){
         Session.set('current', i);
       } 
-      if(Session.get('listkey') ){
+      if(Session.get('listkey') && Session.get('current') != -1){      
         PlayLists.update({_id:Session.get('listkey')}, { $set: { current : Session.get('current') }} );    
       }
     };
