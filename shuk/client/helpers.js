@@ -18,7 +18,6 @@ if (window.Handlebars) {
   });   
   Handlebars.registerHelper('profile_image', function(user){
     var u = Meteor.user();
-    console.log(u);
     if(u && !undef(u.profile) && !undef(u.profile.picture)){
       return u.profile.picture;
     }else{

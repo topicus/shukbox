@@ -7,7 +7,14 @@
 			saved = typeof temp !== 'undefined' ? temp : false;
 			if(Meteor.user()){
 			    var name = 'Untitled-list';
-			    Meteor.call('addPlaylist', {name:name, user:Meteor.user()._id, saved:saved, blocked:false, current:-1}, function(error,response){
+			    var playlist = {
+			    		name:name, 
+			    		user:Meteor.user()._id, 
+			    		saved:saved, 
+			    		blocked:false, 
+			    		current:-1
+			    	}
+			    Meteor.call('addPlaylist', playList, function(error,response){
 					if(Meteor.user()) Session.set('owner', Meteor.user()._id);                      
 					Router.setList(response);
 			    });    

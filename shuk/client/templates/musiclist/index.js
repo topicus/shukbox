@@ -61,7 +61,7 @@ Meteor.startup(function(){
       return false;
   };
   Template.dropdown_playlist.events({
-    'click .dropdown-menu li':function(e){
+    'click .dropdown-item-playlist':function(e){
       playManager.copyVideoToList(this._id);
       $('.dropdown').removeClass('open');
       Alerts.show('Video has been saved.');

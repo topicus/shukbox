@@ -6,7 +6,6 @@ Meteor.startup(function(){
 	};
 	Template.activities.events({
 		'click li':function(e){
-			console.log(this.collection_id);
 			playManager.set(this.collection_id);
 		}	
 	});

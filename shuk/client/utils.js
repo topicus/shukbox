@@ -121,8 +121,11 @@ function popup(link, obj){
 function undef(obj){
  return typeof obj === 'undefined';
 }
-
 function setModalMessage(title, body){
   $('.modal-header h3').html(title);
   $('.modal-body p').html(body);
+}
+function log(args){
+  if(typeof console !== 'undefined')
+    console.log(args);
 }

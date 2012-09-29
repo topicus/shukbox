@@ -22,11 +22,11 @@
     <ul class="actions">
    	  <li class="delete"><a href="javascript:void(0);"><i class="icon-remove"></i></a></li>	  
 	  <li class="vote"><a href="javascript:void(0);"><i class="icon-thumbs-up"></i></a></li>
-	  <li class="copyto">
-		<div class="dropdown">
-		  <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-plus-sign"></i></a>
-		  {{>dropdown_playlist}}
-		</div> 
+	  <li>
+			<div class="dropdown">
+			  <a class="dropdown-toggle copyto" data-toggle="dropdown" href="javascript:void(0);"><i class="icon-plus-sign"></i></a>
+			  {{>dropdown_playlist}}
+			</div> 
 	  </li>
 	</div>
   </div>
@@ -44,5 +44,5 @@
 
 <!-- TEMPLATE DROPPLAYLIST-->
 <template name="item_dropdown_playlist">
-	<li class="dropdown-item-playlist"><a href="#">{{name}}</a></li>
+	<li><a class="dropdown-item-playlist" href="#">{{name}}</a></li>
 </template>
