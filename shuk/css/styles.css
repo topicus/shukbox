@@ -85,9 +85,11 @@ h3{
 }
 
 
-#wrap-playlist{
-  overflow:visible;
-}
+#wrap-playlist.nano {width: 100%; height: 300px; }
+#wrap-playlist.nano .content { padding: 10px; padding-top: 0; padding-bottom: 0; }
+#wrap-playlist.nano .pane   { background: #888; }
+#wrap-playlist.nano .slider { background: #111; }
+
 ul#playlist {
 	list-style: none;
 	border: 1px solid #DCDCDC;
@@ -118,13 +120,8 @@ ul#playlist>li img{
 	background:white;
 	border:1px solid #DDD;
 }
-ul#playlist>li:hover .actions{
-	display: block;
-}
-
-ul#playlist>li.current input{
-  display: none;
-}
+ul#playlist>li:hover .actions{ display: block;}
+ul#playlist>li.current input{ display: none;}
 ul#playlist>li.current{
 	font-weight: bold;
 	font-size: 1.5em;
@@ -288,14 +285,8 @@ ul#playlist>li.current .actions{
 	float:left;
 	margin-right:15px;
 }
-.call-to-action{
-	margin-top:30px;
-	width:50%;
-}
-.votes{
-	font-size:0.7em;
-	margin-top: 5px;
-}
+.call-to-action{ margin-top:30px; width:50%; }
+.votes{	font-size:0.7em; margin-top: 5px;}
 .modifiers .navbar div.navbar-inner{
 	margin-left:0px;
 	padding-left:0px;
@@ -310,21 +301,14 @@ ul#playlist>li.current .actions{
 	width:14px;
 	height:14px;
 }
-.modifiers .nav li.divider-vertical{
-	margin:0px;
-}
+.modifiers .nav li.divider-vertical{ margin:0px;}
 #mainnav .nav li img{
 	margin-top:7px !important;
 	display:block;
 	padding:2px;
 	background:white;
 }
-#mainnav .navbar-inner{
-	min-height:43px !important;
-}
-
-
-
+#mainnav .navbar-inner{	min-height:43px !important;}
 
 @media (max-width: 480px) {
 	.modifiers .nav li a{

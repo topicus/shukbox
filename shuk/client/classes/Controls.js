@@ -47,7 +47,6 @@
       }
     };
     this.setCurrent = function(m,i){
-      old_current = current;
       if(m=='modify'){
         Session.set('current', Session.get('current') + i);
       }else if(m=='set'){

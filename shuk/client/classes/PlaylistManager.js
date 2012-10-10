@@ -14,7 +14,7 @@
 			    		blocked:false, 
 			    		current:-1
 			    	}
-			    Meteor.call('addPlaylist', playList, function(error,response){
+			    Meteor.call('addPlaylist', playlist, function(error,response){
 					if(Meteor.user()) Session.set('owner', Meteor.user()._id);                      
 					Router.setList(response);
 			    });    

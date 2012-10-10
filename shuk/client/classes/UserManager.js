@@ -36,7 +36,7 @@
 				var username = 'anonym'+Meteor.uuid();
 				var password = Meteor.uuid();
 
-				Meteor.createUser({username:username, password:password}, {anonym:true}, function(r){
+				Accounts.createUser({username:username, password:password}, {anonym:true}, function(r){
 					Meteor.loginWithPassword(username, password);
 					playManager.create();
 				});

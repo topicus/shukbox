@@ -13,7 +13,9 @@ Meteor.startup(function(){
   playManager = new PlaylistManager();
   controls = new Controls();
   activity = new ActivityManager();
-  videos = new VideoManager(); 
+  videos = new VideoManager();
+  searchWidget = new SearchWidget(); 
+  searchWidget.testSearch("red");
   init();
 });
 Meteor.autosubscribe(function () {
@@ -23,26 +25,14 @@ Meteor.autosubscribe(function () {
   Meteor.subscribe('toptenlists');
 });
 
-var CONTROL_KEYCODES = new Array(40,38,37,39)
-var ENTER = 13;
-var ESC = 27;
-var AUTOCOMPLETE_PAGE_SIZE = 5;
-var currentSelected = -1;
-
-
-var player;
-var current = 0;
-var old_current = -1;
-var tag = document.createElement('script');
-var login_interval;
-tag.src = "//www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 function init(){
   Backbone.history.start({pushState: true});
   if(Meteor.user() === null) 
     userManager.loginAsAnonym();
 }
-
-
+var tag = document.createElement('script');
+    tag.src = "//www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var player;
