@@ -1,11 +1,17 @@
 if (window.Handlebars) {
   Handlebars.registerHelper("signedup", function() {
     var u = Meteor.user();
-    if(u && typeof(u.anonym) !=='undefined'){
-      if(u.loading)
-        return {loading:true};
-      return null;      
-    }
+      if(u){
+        if(Meteor.loggingIn())
+          return {loading:true};
+        else if(u.profile.anonym){
+          return null
+        }else{
+          Meteor.user();
+        }
+      }else{
+        return null;  
+      }
     return Meteor.user();  
   });
   Handlebars.registerHelper('owner', function(){

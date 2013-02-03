@@ -6,6 +6,7 @@
 		this.login = function(type){			
 			if(type==='facebook'){
 				Meteor.loginWithFacebook(function(error,response){
+					log('CALLBACK facebook',response);
 					that.onLoginComplete();
 				}); 
 			}else if(type==='google'){
@@ -20,10 +21,13 @@
 
 		};
 		this.onLoginComplete = function(){
-			var u = Meteor.user();
-    		if(u && undef(u.profile.picture)){
-    			that.setProfilePicture(u);	
-    		}		
+			if(Meteor.user()){
+				var u = Meteor.user();
+				console.log(u);
+	    		if(u && undef(u.profile.picture)){
+	    			that.setProfilePicture(u);	
+	    		}				
+			}		
 		};		
 		this.logout = function(){
 			Meteor.logout(function(){
@@ -36,7 +40,8 @@
 				var username = 'anonym'+Meteor.uuid();
 				var password = Meteor.uuid();
 
-				Accounts.createUser({username:username, password:password}, {anonym:true}, function(r){
+				Accounts.createUser({username:username, password:password, profile:{anonym:true}}, function(e,r){
+					console.log(r);
 					Meteor.loginWithPassword(username, password);
 					playManager.create();
 				});

@@ -15,7 +15,6 @@ Meteor.startup(function(){
   activity = new ActivityManager();
   videos = new VideoManager();
   searchWidget = new SearchWidget(); 
-  searchWidget.testSearch("red");
   init();
 });
 Meteor.autosubscribe(function () {

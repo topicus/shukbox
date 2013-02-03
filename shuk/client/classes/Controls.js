@@ -1,9 +1,8 @@
 (function(window){
-
   function Controls(){
     var that = this;
     this.play = function(vid){
-        if(typeof(player)==='undefined' || !player){
+        if(typeof(player) === 'undefined' || !player){
           player = new YT.Player('player-div', {
             height: '300',
             width: '100%',

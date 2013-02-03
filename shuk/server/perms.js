@@ -1,4 +1,3 @@
-
 Meteor.startup(function () {
   Videos.allow({
     insert: function (uid, doc) {
@@ -22,10 +21,6 @@ Meteor.startup(function () {
         return true;
       else
         return false;
-    },
-    fetch: function (uid, doc) {    
-      console.log("FETCH ALLOW");  
-      return true;
     }
   });
   PlayLists.allow({
@@ -50,9 +45,6 @@ Meteor.startup(function () {
         return true;
       }else
         return false;
-    },
-    fetch: function (uid, doc) {
-      return true;
     }
   });  
 });
