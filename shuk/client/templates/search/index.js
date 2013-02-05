@@ -3,53 +3,58 @@ Meteor.startup(function(){
   Modificar para que toda la logica que esta aca pase al widget
   una opcion es mapear los keycodes contra funciones del widget
   */
+  var did_scroll = false;
+  Template.search.rendered = function(){
+    console.log("RENDER");
+    $(window).scroll(function() {
+      if($(document).scrollTop() + $(window).height() >= $(document).height()-500) {
+        did_scroll = true;
+        
+      }
+    }); 
+    setInterval(function() {
+        if ( did_scroll ) {
+          console.log("did_scroll");
+          searchWidget.nextPage(function(){
+            did_scroll = false;
+          });
+        }
+    }, 600);    
+    $('#nextsong').typeahead({
+      source: function (query, typeahead) {
+          var ty = this;
+          $.getJSON("http://suggestqueries.google.com/complete/search?callback=?",
+              { 
+                "hl":"es", // Language
+                "ds":"yt", // Restrict lookup to youtube
+                "jsonp":"suggestCallBack", // jsonp callback function name
+                "q":query, // query term
+                "client":"youtube" // force youtube style response, i.e. jsonp
+              }
+          );
+          suggestCallBack = function (data) {
+              var suggestions = [];
+              $.each(data[1], function(key, val) {
+                  suggestions.push(String(val[0]));
+              });
+              suggestions.length = 5; // prune suggestions list to only 5 items
+              return ty.process(suggestions);
+          };                  
+      },
+      updater:function (query) {
+          searchWidget.clear();
+          searchWidget.search(query);
+          return query;
+      }              
+  });    
+  };
   Template.search.events({
     'focusin input.nextsong':function(e){
-      addInputEvent();
     },
     'focusout input.nextsong':function(e){
-      removeInputEvent();
     },  
-    'keydown input.nextsong':function(e){
-      if(jQuery.inArray(e.which, searchWidget.CONTROL_KEYCODES)!=-1){
-        autocompleter = $('#autocompleter li');
-        old = currentSelected;
-        
-        if(currentSelected==autocompleter.length-1 && e.which == 40){
-          currentSelected = 0;
-        }else if(!currentSelected && e.which == 38){
-          currentSelected = autocompleter.length-1;
-        }else{
-          if(e.which == 40)
-            currentSelected++;
-          else if(e.which ==38)
-            currentSelected--;
-        }
-        if(old!=-1) $('#autocompleter li').eq(old).removeClass('selected')
-        $('#autocompleter li').eq(currentSelected).addClass('selected')
-      }
-      if(e.which==searchWidget.ENTER){
-        if(currentSelected==autocompleter.length-1){
-          autocomple_offset +=searchWidget.AUTOCOMPLETE_PAGE_SIZE;
-          searchWidget.search(document.getElementById('nextsong').value, searchWidget.AUTOCOMPLETE_PAGE_SIZE);        
-          currentSelected = -1;
-          $('#autocompleter li.selected span').html('Loading...');
-        }    
-        
-        var $this = $('#autocompleter li').eq(currentSelected);
-        var vid = searchWidget.get_youtube_id($this.children('a').attr("href"));
-        var title = $this.children('a').attr("title");      
-           
-        if(currentSelected!==-1){
-          videos.add({vid:vid, title:title});
-          $("#autocompleter").hide();            
-        }
-      }
-      if(e.which==searchWidget.ESC){
-        currentSelected = -1;
-        autocomple_offset = 1;
-        $("#autocompleter").hide();    
-      }
-    }  
+    'keydown input.nextsong':function(e){ 
+
+    }
   });
 });

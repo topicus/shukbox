@@ -2,8 +2,6 @@ include_facebook();
 Videos = new Meteor.Collection("videos");
 PlayLists = new Meteor.Collection('playlists');
 Requests = new Meteor.Collection('requests');
-Activities = new Meteor.Collection("activities");
-TopTenLists = new Meteor.Collection("toptenlists");
 
 Session.set('page', null);
 
@@ -12,7 +10,6 @@ Meteor.startup(function(){
   userManager = new UserManager();
   playManager = new PlaylistManager();
   controls = new Controls();
-  activity = new ActivityManager();
   videos = new VideoManager();
   searchWidget = new SearchWidget(); 
   init();
@@ -20,10 +17,7 @@ Meteor.startup(function(){
 Meteor.autosubscribe(function () {
   Meteor.subscribe('videos',Session.get('listkey'));
   Meteor.subscribe('playlists', Session.get('listkey'));
-  Meteor.subscribe('activities', Session.get('listkey'));
-  Meteor.subscribe('toptenlists');
 });
-
 
 function init(){
   Backbone.history.start({pushState: true});

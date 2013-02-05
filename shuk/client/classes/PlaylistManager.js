@@ -52,8 +52,6 @@
 					Videos.find({listkey:Session.get('listkey')}).forEach(function(item){      
 						videos.clone(item, response);
 					});  
-					var playlist = PlayLists.findOne(response);
-					activity.add("listened to", playlist);
 				});		
 		};
 		this.save = function(e) {
@@ -63,7 +61,6 @@
 				var l = (Session.get('edited')) ? Session.get('edited') : Session.get('listkey');
 				PlayLists.update({_id:l}, { $set:{name:$('#listname').val(), saved:true} });
 				Session.set('edited', null);
-				activity.add("listened to", plo);
 			}else{
 				this.clone(e);
 			}

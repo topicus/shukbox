@@ -34,11 +34,7 @@ h3{
   width: 112.6%;
   font-size: 1em;
   padding:16px 10px ;
-	
-  position:absolute;
-  top:52px;
-  z-index:99999;
-  background-color:white;
+ 	background-color:white;
   -moz-box-shadow:    2px 2px 2px 2px #eaeaea;
   -webkit-box-shadow: 2px 2px 2px 2px #eaeaea;
   box-shadow:         2px 2px 2px 2px #eaeaea;

@@ -9,10 +9,5 @@ Meteor.methods({
     console.log("Main::addSong");
     doc.when = Date.now(); // ms since epoch
     return Videos.insert(doc);
-  },
-  addActivity: function(doc){
-    console.log("Main::addActivity");
-    doc.when = Date.now();
-    return Activities.insert(doc);
   }
 });
