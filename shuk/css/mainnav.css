@@ -1,0 +1,24 @@
+#mainnav{
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	padding: 15px;
+	padding-right: 25px;
+}
+#mainnav ul li{
+	list-style: none;
+	display: inline-block;
+	color: #666;
+	font-size: 12px;
+}
+.nav-profile-picture{
+	border: #b6b6b6 1px solid;
+}
+.nav-profile-caret{
+	position: relative;
+}
+.nav-profile-caret .caret{
+	position: absolute;
+	top: -5px;
+	border-top-color: #ccc;
+}

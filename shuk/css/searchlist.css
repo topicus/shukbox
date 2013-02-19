@@ -28,6 +28,13 @@
 {
   overflow:auto;
 }
+#autocompleter li.selected{	
+	border-right: 5px green solid;
+	background-color: #eaf8ea;
+}
+#autocompleter li.selected:hover{
+	background-color: #eaf8ea;
+}
 #autocompleter li div.right{
   float:right;
   padding-left:10px;

@@ -14,7 +14,6 @@ Meteor.startup(function(){
     }); 
     setInterval(function() {
         if ( did_scroll ) {
-          console.log("did_scroll");
           searchWidget.nextPage(function(){
             did_scroll = false;
           });
@@ -34,27 +33,28 @@ Meteor.startup(function(){
           );
           suggestCallBack = function (data) {
               var suggestions = [];
+              suggestions.push(query);
               $.each(data[1], function(key, val) {
                   suggestions.push(String(val[0]));
               });
-              suggestions.length = 5; // prune suggestions list to only 5 items
+              suggestions.length = 6; // prune suggestions list to only 5 items
               return ty.process(suggestions);
           };                  
       },
       updater:function (query) {
-          searchWidget.clear();
-          searchWidget.search(query);
-          return query;
+        log("UPDATER");
+        searchWidget.clear();
+        searchWidget.search(query);
+        return query;
       }              
   });    
   };
   Template.search.events({
-    'focusin input.nextsong':function(e){
-    },
-    'focusout input.nextsong':function(e){
-    },  
-    'keydown input.nextsong':function(e){ 
-
+    'keydown #nextsong':function(e){ 
+      if(e.keyCode == 13){
+        searchWidget.clear();
+        searchWidget.search($('#nextsong').val());
+      }
     }
   });
 });

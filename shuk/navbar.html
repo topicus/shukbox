@@ -1,13 +1,14 @@
 <!-- TEMPLATE NAVBAR-->
 <template name="navbar">
-	<ul class="nav">
+	<ul>
 		{{#if signedup}}
 			{{#if signedup.loading}}
-				<li><a href="javascript:void(0);">Logging in...</a></li>
+				<li>Logging in...</li>
 			{{else}}
-				<li><img width="25" height="25" src="{{profile_image}}" /></li>
-				<li><a href="javascript:void(0);">{{currentUser.profile.name}}</a></li>
-				<li><a href="javascript:userManager.logout();">Logout</a></li>
+				<li>{{currentUser.profile.name}}</li>
+				<li><a href="javascript:userManager.logout();" style="display:none">Logout</a></li>
+				<li><img class="nav-profile-picture" width="25" height="25" src="{{profile_image}}" /></li>
+				<li class="nav-profile-caret"><span class="caret"></span></li>
 			{{/if}}
 		{{else}}
 			<li><a href="javascript:userManager.login('facebook');">Login with facebook</a></li>

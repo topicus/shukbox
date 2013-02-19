@@ -42,8 +42,8 @@
 	    	log("click");
         var $video = $(this);
         var vid = that.get_youtube_id($video.find('.right').children('a').attr("href"));
-        log(vid);
         var title = $video.find('.right').children('a').attr("title");   
+        $(this).addClass('selected');        
         videos.add({vid:vid,title:title});
  	    });				
 		};
@@ -57,7 +57,7 @@
 			$('#results').empty();
 		};
 		this.search = function(q,callback){
-			if(q!==''){
+			if(q !== ''){
 				last_query = q;
 				var offset = (typeof(that.autocomple_offset) !== 'undefined')? that.autocomple_offset : 1;
 				var url = 'http://gdata.youtube.com/feeds/' + 

@@ -1,3 +1,7 @@
+html,body{
+	font-family: arial, sans-serif;
+	padding-top: 20px;
+}
 @-moz-document url-prefix() {
     img:-moz-loading {
         visibility: hidden;
@@ -9,13 +13,14 @@
 .logo{
   padding:0px;
   margin:0px;
-  width:300px;
   height:52px;
   background:url('/img/logo.jpg') top left;
   margin-left:0px;
   margin-top:13px;
   margin-bottom: 20px;
   background-repeat:no-repeat;
+  background-position: 51.5% center;
+
 }
 h3{
 	margin-top:20px;
@@ -31,7 +36,6 @@ h3{
 
 .selected{
  background-color:#000000;
- color:white;
 }
 .shareurl{
   border-radius: 30px;
@@ -169,14 +173,25 @@ h3{
 	height:14px;
 }
 .modifiers .nav li.divider-vertical{ margin:0px;}
-#mainnav .nav li img{
-	margin-top:7px !important;
-	display:block;
-	padding:2px;
-	background:white;
+.typeahead{
+	width: 104.7%;
+	margin-left: 12%;
+	margin-top: -1px; 
+  -moz-border-radius-topright: 0px;
+  -webkit-border-top-right-radius: 0px;
+  -khtml-border-radius-topright: 0px;
+  border-radius-topright: 0px;
+  -moz-border-radius-topleft: 0px;
+  -webkit-border-top-left-radius: 0px;
+  -khtml-border-radius-topleft: 0px;
+  border-radius-topleft: 0px;  
 }
-#mainnav .navbar-inner{	min-height:43px !important;}
-
+.typeahead .active > a,
+.typeahead .active > a:hover {
+    color: black;
+    background-color: #eeeeee;
+    background-image: none;
+}
 @media (max-width: 480px) {
 	.modifiers .nav li a{
 		padding-left:13px;
