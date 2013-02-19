@@ -1,0 +1,102 @@
+#autocompleter{
+  margin: 0 0 0 0px;
+  border-radius: 0;
+  width: 112.6%;
+  font-size: 1em;
+  padding:16px 10px ;
+ 	background-color:white;
+  -moz-box-shadow:    2px 2px 2px 2px #eaeaea;
+  -webkit-box-shadow: 2px 2px 2px 2px #eaeaea;
+  box-shadow:         2px 2px 2px 2px #eaeaea;
+}
+#autocompleter li{
+  list-style:none;
+  padding:10px;
+  border-bottom:1px solid #EAEAEA;
+}
+#autocompleter li:last-child{
+  border:none;
+}
+#autocompleter li:hover{
+ background-color:whiteSmoke;
+ cursor:pointer;
+}
+#autocompleter li img{
+  margin-right:20px;
+}
+#autocompleter li
+{
+  overflow:auto;
+}
+#autocompleter li div.right{
+  float:right;
+  padding-left:10px;
+  width: 320px;
+}
+#autocompleter li h3{
+	margin-top: -0.1em;
+	font-size: 1.2em;
+	line-height: 1.3em;
+}
+#autocompleter li p{
+	font-size: 0.8em;
+	height: 40px;
+	overflow: hidden;
+	text-overflow: ellipsis;	
+	color:#888;
+}
+/*FIX YOUTUBE STYLES*/
+.video-thumb {
+	position: relative;
+}
+.yt-thumb-default-185 {
+	width: 185px;
+	height: 104px;
+}
+.yt-thumb-clip img, .yt-thumb-clip .vertical-align {
+	display: inline-block;
+	vertical-align: middle;
+}
+.ux-thumb {
+	overflow: hidden;
+	vertical-align: bottom;
+	_line-height: 0;
+	display: inline-block;
+}
+.yt-thumb-clip {
+	position: absolute;
+	_position: static;
+	bottom: -100px;
+	top: -100px;
+	left: -100px;
+	right: -100px;
+	text-align: center;
+	white-space: nowrap;
+	word-break: normal;
+}
+.yt-thumb-clip-inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.yt-thumb-clip img, .yt-thumb-clip .vertical-align {
+	display: inline-block;
+	vertical-align: middle;
+}
+.yt-thumb-clip .vertical-align {
+	display: inline-block;
+	vertical-align: middle;
+}
+.ux-thumb img {
+	outline: none;
+	-ms-interpolation-mode: bicubic;
+}
+.ux-thumb .vertical-align {
+	height: 100%;
+}
+.yt-thumb-clip-inner img{
+	width: 185px;
+}
+/*END YOUTUBE STYLES*/

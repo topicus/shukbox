@@ -1,16 +1,12 @@
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
-	<div id="wrap-playlist" class="nano">
-			<div class="content">
-			  	{{#if videos}}
-				  <ul id="playlist">
-				  {{#each videos}}
-					{{>video_item}}
-				  {{/each}}
-				  </ul>
-				{{/if}}	
-			</div>	
-	</div>
+	{{#if videos}}
+		<ul id="playlist">
+		{{#each videos}}
+			{{>video_item}}
+		{{/each}}
+		</ul>
+	{{/if}}	
 </template>
 
 <!-- TEMPLATE VIDEO-ITEM-->

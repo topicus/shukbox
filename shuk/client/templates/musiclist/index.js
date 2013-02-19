@@ -1,10 +1,6 @@
 Meteor.startup(function(){
   Template.musiclist.rendered = function(){
     $('.dropdown-toggle').dropdown();
-    $(".nano").nanoScroller();
-    $(".nano").bind("scrollend", function(e){
-      console.log("current HTMLDivElement", e.currentTarget);
-    });    
   };
   Template.musiclist.videos = function () {
     if(typeof(Session.get('listkey'))=== "undefined"){

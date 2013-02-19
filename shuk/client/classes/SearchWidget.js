@@ -17,25 +17,35 @@
 			var entries = feed.entry || [];
 			var html = ['<ul id="autocompleter">'];
 			_.each(entries,function(entry){
-        var playCount = (typeof entry.yt$statistics !== 'undefined')? entry.yt$statistics.viewCount.valueOf() + ' views' : "";
-        var title = entry.title.$t;
-        var thumb = entry.media$group.media$thumbnail[3].url;
-        var thumb_height = entry.media$group.media$thumbnail[3].height * 0.5;
-        var thumb_width = entry.media$group.media$thumbnail[3].width * 0.5;	
-      	var thumb_tag = '<div style="height:'+thumb_height+'px; width:'+thumb_width+'px" class="thumb-search"><img src="'+thumb+'"/></div>'
-        var lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>';
-        html.push('<li>', thumb_tag, title, ', ', playCount, ', ', lnk, '</li>');		        			
+				log(entry);
+        var playCount = (undef(entry.yt$statistics))? '<div class="play-count">' + entry.yt$statistics.viewCount.valueOf() + ' views' + '</div>' : ""
+        	, title = '<h3>' + entry.title.$t + '</h3>'
+      		, description = '<p>' + entry.media$group.media$description.$t + '</p>'
+      		, vid = that.get_youtube_id(entry.link[0].href)
+        	, lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>'
+        	,	thumb = '<span class="video-thumb ux-thumb yt-thumb-default-185 ">' +
+											'<span class="yt-thumb-clip">' +
+												'<span class="yt-thumb-clip-inner">' +
+													'<img data-thumb="//i.ytimg.com/vi/' + vid + '/mqdefault.jpg" src="//i.ytimg.com/vi/' + vid + '/mqdefault.jpg" alt="Thumbnail" width="185" data-group-key="thumb-group-2">' +
+													'<span class="vertical-align"></span>' +
+												'</span>' +
+											'</span>' +
+										'</span>';
+
+        html.push('<li>', thumb, '<div class="right">', title, description, playCount, lnk, '</div>','</li>');		        			
 			});	
 	    html.push('</ul>');
 	    $('#results').append(html.join(''));
 	    var autocompleter = $('#autocompleter li');
-	    autocompleter.click(function(e){
+	    autocompleter.off();
+	    autocompleter.on('click',function(e){
+	    	log("click");
         var $video = $(this);
-        var vid = that.get_youtube_id($video.children('a').attr("href"));
-        var title = $video.children('a').attr("title");   
-        var newvideo = new Topicus.Song({code:vid,title:title,position:self.collection.length});         
-        newvideo.save();
-	    });				
+        var vid = that.get_youtube_id($video.find('.right').children('a').attr("href"));
+        log(vid);
+        var title = $video.find('.right').children('a').attr("title");   
+        videos.add({vid:vid,title:title});
+ 	    });				
 		};
 		this.nextPage = function(callback){
       that.autocomple_offset +=that.AUTOCOMPLETE_PAGE_SIZE;

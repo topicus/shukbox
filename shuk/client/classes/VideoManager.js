@@ -17,6 +17,7 @@
 					profile_image: profile_image
 				}
 			};
+			log("addVideo");
 			Meteor.call('addVideo', video);
 		};
 		this.clone = function(video, listkey){

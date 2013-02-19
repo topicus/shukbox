@@ -5,7 +5,6 @@ Requests = new Meteor.Collection('requests');
 
 Session.set('page', null);
 
-
 Meteor.startup(function(){
   userManager = new UserManager();
   playManager = new PlaylistManager();

@@ -22,30 +22,6 @@ function timestamp(){
   return new Date().getTime();  
 }
 
-/*SIMULATE INPUT EVENT*/
-var old_input_state = '';
-var timer_input_event = null;
-function addInputEvent(){
-  var inputnode = document.getElementById("nextsong");
-  old_input_state = inputnode.value;
-  timer_input_event = Meteor.setInterval(function(){
-    if(old_input_state !== inputnode.value){
-      searchWidget.search(inputnode.value);
-      old_input_state = inputnode.value;
-      autocomple_offset = 1;
-    }
-    if(inputnode.value===''){
-      var autocompleter = document.getElementById("autocompleter");
-      if(autocompleter) autocompleter.style.display = 'none';
-      currentSelected = -1;
-    }
-  }, 100);
-}
-function removeInputEvent(){
-  Meteor.clearInterval(timer_input_event);
-}
-/*END SIMULATE INPUT EVENT*/
-
 function popup(link, obj){
   window.open(link, 'popup', 'height='+obj.height+',width='+obj.width+',toolbar=1');
 }
