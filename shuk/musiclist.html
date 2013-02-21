@@ -1,11 +1,13 @@
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
 	{{#if videos}}
-		<ul id="playlist">
-		{{#each videos}}
-			{{>video_item}}
-		{{/each}}
-		</ul>
+		<div class="scrollwrap">
+				<ul id="playlist">
+					{{#each videos}}
+						{{>video_item}}
+					{{/each}}
+				</ul>
+		</div>
 	{{/if}}	
 </template>
 

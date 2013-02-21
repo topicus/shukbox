@@ -1,19 +1,22 @@
 ul#playlist {
+	list-style: none;
+  padding-bottom:10px; 
+  margin-right: 10px;
+}
+.scrollwrap{
 	position: fixed;
 	bottom: 0px;
 	left: 0;
 	z-index: 1031;
-	width: 100%; height: 300px; 
-	height: 88px;
-	list-style: none;
+	width: 100%; 
+	height: 92px;
 	border: 1px solid #DCDCDC;
 	margin: 0;
-  overflow-x: scroll;
-  overflow-y: hidden;
   white-space:nowrap;
   background-color: #000;
   padding-top:5px;
-  padding-bottom:10px; 
+	padding-left: 5px;
+  overflow: hidden;		
 }
 ul#playlist>li {
 	list-style: none;
@@ -70,10 +73,10 @@ ul#playlist>li.current .actions{
 	padding-right:5px;
 }
 .video_item .actions{
-  width:100px;
-  height: 40px;
+  width:85px;
+  height: 30px;
   position:absolute;
-  top:20px;
+  top:35px;
   right:0px;
   overflow:visible;
   padding-top: 9px;
@@ -85,8 +88,6 @@ ul#playlist>li.current .actions{
 	list-style: none;
 	line-height: 1px;
 	background-color: white;
-	border: #ccc 1px solid;
-	border-radius: 3px;
 }
 .video_item>ul>li>a, .video_item>ul>li> .dropdown>a{
 	padding: 4px;

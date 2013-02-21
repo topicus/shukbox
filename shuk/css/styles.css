@@ -192,6 +192,7 @@ h3{
     background-color: #eeeeee;
     background-image: none;
 }
+
 @media (max-width: 480px) {
 	.modifiers .nav li a{
 		padding-left:13px;
