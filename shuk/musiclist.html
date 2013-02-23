@@ -1,5 +1,7 @@
 <!-- TEMPLATE MUSICLIST-->
 <template name="musiclist">
+	<div id="control-bar">	
+	{{> modifiers}}
 	{{#if videos}}
 		<div class="scrollwrap">
 				<ul id="playlist">
@@ -8,28 +10,26 @@
 					{{/each}}
 				</ul>
 		</div>
+	</div>
 	{{/if}}	
 </template>
 
 <!-- TEMPLATE VIDEO-ITEM-->
 <template name="video_item">
   <li class='{{is_current}}'>
- 	
-  <div class="video_item">
-	<img src="//i.ytimg.com/vi/{{vid}}/1.jpg"/>
-	<span class="title">{{title}}</span>
-	<div class="votes"><strong>Votes:</strong> {{score}}</div>
-    <ul class="actions">
-   	  <li class="delete"><a href="javascript:void(0);"><i class="icon-remove"></i></a></li>	  
-	  <li class="vote"><a href="javascript:void(0);"><i class="icon-thumbs-up"></i></a></li>
-	  <li>
-			<div class="dropdown">
-			  <a class="dropdown-toggle copyto" data-toggle="dropdown" href="javascript:void(0);"><i class="icon-plus-sign"></i></a>
-			  {{>dropdown_playlist}}
-			</div> 
-	  </li>
-	</div>
-  </div>
+	  <div class="video_item">
+			<img src="//i.ytimg.com/vi/{{vid}}/1.jpg"/>
+			<span class="title">{{title}}</span>
+	    <ul class="actions">  
+		   	<li class="delete"><a href="javascript:void(0);"><i class="icon-remove icon-white"></i></a></li>	  
+			  <li>
+					<div class="dropdown">
+					  <a class="dropdown-toggle copyto" data-toggle="dropdown" href="javascript:void(0);"><i class="icon-plus-sign icon-white"></i></a>
+					  {{>dropdown_playlist}}
+					</div> 
+			  </li>
+			</ul>
+	  </div>
   </li>
 </template>
 

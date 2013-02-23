@@ -1,6 +1,6 @@
 html,body{
 	font-family: arial, sans-serif;
-	padding-top: 20px;
+	padding-top: 10px;
 }
 @-moz-document url-prefix() {
     img:-moz-loading {
@@ -50,7 +50,7 @@ h3{
 
 #search {
   position:relative;
-  background: #333 url('/img/icon-search.png') no-repeat 3.5% 13px;
+  background: #222 url('/img/icon-search.png') no-repeat 3.5% 13px;
   width:85.7%;
 }
 #search input {
@@ -60,9 +60,10 @@ h3{
 	font-size: 16px;
 	padding:16px 2.3% ;
 }
-#player {
+#player-div {
 	width: 100%;
 	overflow: hidden;
+	max-height: 200px;
 }
 
 .thumb-search{
@@ -149,13 +150,7 @@ h3{
 #listname{
 	width:30%;
 }
-.video_item img{
-	display:block;
-	width:35px;
-	height:35px;
-	float:left;
-	margin-right:15px;
-}
+
 .call-to-action{ margin-top:30px; width:50%; }
 .votes{	font-size:0.7em; margin-top: 5px;}
 .modifiers .navbar div.navbar-inner{
@@ -192,7 +187,48 @@ h3{
     background-color: #eeeeee;
     background-image: none;
 }
+#activate-second-toolbar{
+	position: fixed;
+	top: 15px;
+	left: 15px;
+	width: 200px;
+	cursor: pointer;
+}
+#activate-second-toolbar:hover #activate-second-toolbar-icon{
+	background-color: #333;
+}
+#activate-second-toolbar:hover span{
+	color: #000;
+}
+#activate-second-toolbar span{
+	position: absolute;
+	left: 35px;
+	color: #666;
+}
+#activate-second-toolbar span.title{
+	text-transform: uppercase;	
+	font-size: 0.8em;
+	font-weight: bold;
+	top: -4px;
+}
+#activate-second-toolbar span.desc{
+	top: 10px;	
+	font-size: 0.7em;
+}
+#activate-second-toolbar-icon{
+	display: block;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 3px;
+	border: #000;
+	border-top: solid 1px #999;
+	background-color: #666;
+	width: 15px;
+}
+#activate-second-toolbar i {
 
+}
 @media (max-width: 480px) {
 	.modifiers .nav li a{
 		padding-left:13px;

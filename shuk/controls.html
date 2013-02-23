@@ -1,33 +1,33 @@
 <!-- TEMPLATE MODIFIERS-->
 <template name="modifiers">
 	<div class="modifiers">
-	  <div class="navbar">
+	  <div class="navbar navbar-inverse">
 		<div class="navbar-inner">
 		  <div class="container">
 			<ul class="nav">
-			  <li><a class="playsong reseteable tip" title="Play List" href="javascript:void(0);"><i class="icon-play "></i></a></li>
+			  <li><a class="playsong reseteable tip" title="Play List" href="javascript:void(0);"><i class="icon-play icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
 			  {{#if owner}}
-			  	<li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward "></i></a></li>
+			  	<li><a class="skip reseteable tip" title="Skip Video" href="javascript:void(0);"><i class="icon-forward icon-white"></i></a></li>
 			  	<li class="divider-vertical"></li>
-				<li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash "></i></a></li>
+				<li><a class="clearlist reseteable tip" title="Empty List" href="javascript:void(0);"><i class="icon-trash icon-white"></i></a></li>
 				<li class="divider-vertical"></li>				  
 			  {{/if}}
 			  
-			  <li><a class="share-button reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share "></i></a></li>
+			  <li><a class="share-button reseteable tip" title="Share List" href="javascript:void(0);"><i class="icon-share icon-white"></i></a></li>
 			  <li class="divider-vertical"></li>
 
-			  <li><a class="vote-button reseteable tip" title="Vote" href="javascript:void(0);"><i class="icon-thumbs-up "></i></a></li>
+			  <li><a class="vote-button reseteable tip" title="Vote" href="javascript:void(0);"><i class="icon-thumbs-up icon-white"></i></a></li>
 
 			  <li class="divider-vertical"></li>
 		  
 			  {{#if owner}}
-				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock "></i></a></li>
+				<li class="{{blocked}}"><a class="block reseteable tip" title="Block List. Nobody can add videos" href="javascript:void(0);"><i class="icon-lock icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
-				<li class="{{repeated}}"><a class="repeat-button reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat "></i></a></li>
+				<li class="{{repeated}}"><a class="repeat-button reseteable tip" title="Repeat List." href="javascript:void(0);"><i class="icon-repeat icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{else}}
-				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet "></i></a></li>
+				<li class="{{synced}}"><a class="sync reseteable tip" title="Sync to host. Hear what the host is listening." href="javascript:void(0);"><i class="icon-retweet icon-white"></i></a></li>
 				<li class="divider-vertical"></li>
 			  {{/if}}	
 			</ul>

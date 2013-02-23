@@ -1,9 +1,11 @@
 Meteor.startup(function(){
   Template.musiclist.rendered = function(){
     $('.dropdown-toggle').dropdown();
+    $(".scrollwrap").mCustomScrollbar("destroy");
     $(".scrollwrap").mCustomScrollbar({
       horizontalScroll:true
     });
+    
   };
   Template.musiclist.videos = function () {
     if(typeof(Session.get('listkey'))=== "undefined"){
