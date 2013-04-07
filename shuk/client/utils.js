@@ -1,4 +1,4 @@
-function include_facebook(){
+window.include_facebook = function(){
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '407750262605974', // App ID
@@ -18,21 +18,21 @@ function include_facebook(){
 }
 
 /*GET TIMESTAMP*/
-function timestamp(){
+window.timestamp = function(){
   return new Date().getTime();  
 }
 
-function popup(link, obj){
+window.popup = function(link, obj){
   window.open(link, 'popup', 'height='+obj.height+',width='+obj.width+',toolbar=1');
 }
-function undef(obj){
+window.undef = function(obj){
  return typeof obj === 'undefined';
 }
-function setModalMessage(title, body){
+window.setModalMessage = function(title, body){
   $('.modal-header h3').html(title);
   $('.modal-body p').html(body);
 }
-function log(args){
+window.log = function(args){
   if(typeof console !== 'undefined')
     console.log(args);
 }
