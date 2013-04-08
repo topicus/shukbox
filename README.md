@@ -9,13 +9,17 @@ Despues de meses de no poder dedicarle tiempo suficiente al proyecto tome la dec
 
 Al día de publicación cuenta con numerosos bugs y menos de la mitad de las funcionalidades que originalmente se pensaron.
 
-INSTALACIÓN
+INSTALACIÓN (SOLO MAC OS Y LINUX)
 -----------------------------------
 	$ curl https://install.meteor.com | /bin/sh
 	$ cd MyProyectFolder
 	$ git clone https://github.com/topicus/shukbox.git
 	$ cd shukbox/shuk
 	$ meteor run
+
+Shukbox estará corriendo en http://localhost:3000/
+
+Los que quieran colaborar pueden hacerlo traduciendo este texto, difundiendo el proyecto, corriendo bugs, implementando features o simplemente usandolo. 
 
 BACKLOG
 -----------------------------------
