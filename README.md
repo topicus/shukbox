@@ -1,8 +1,9 @@
 SHUKBOX
 ====================
 
-Create, share and listen playlists
------------------------------------
+Shukbox es un proyecto creado de la necesidad de querer compartir listas de videos entre amigos y poder modificarlas entre todos los que las están escuchado.
+
+Shukbox es una single page app que permite crear listas, compartirlas, modificarlas junto con tus amigos en tiempo real (en vivo). Tambien permite sincronizarce con el creador de la lista para escuchar los temas que el esta escuchando en ese mismo momento.
 
 Despues de meses de no poder dedicarle tiempo suficiente al proyecto tome la decisión de liberar el codigo para que shukbox crezca y pueda ser utilizado por los que quieran.
 
@@ -10,11 +11,11 @@ Al día de publicación cuenta con numerosos bugs y menos de la mitad de las fun
 
 INSTALACIÓN
 -----------------------------------
-		$ curl https://install.meteor.com | /bin/sh
-		$ cd MyProyectFolder
-		$ git clone https://github.com/topicus/shukbox.git
-		$ cd shukbox/shuk
-		$ meteor run
+	$ curl https://install.meteor.com | /bin/sh
+	$ cd MyProyectFolder
+	$ git clone https://github.com/topicus/shukbox.git
+	$ cd shukbox/shuk
+	$ meteor run
 
 BACKLOG
 -----------------------------------
