@@ -8,17 +8,19 @@ Meteor.startup(function(){
     console.log("RENDER");
     $(window).scroll(function() {
       if($(document).scrollTop() + $(window).height() >= $(document).height()-500) {
-        did_scroll = true;
-        
+        if(!did_scroll)
+          did_scroll = true;        
       }
     }); 
     setInterval(function() {
-        if ( did_scroll ) {
-          searchWidget.nextPage(function(){
-            did_scroll = false;
-          });
+        if (did_scroll) {
+          log('did_scroll');
+          var hasQuery = $('#nextsong').val();
+          did_scroll = false;       
+          if(hasQuery !== '')
+            searchWidget.nextPage(function(){});
         }
-    }, 600);    
+    }, 1000);    
     $('#nextsong').typeahead({
       source: function (query, typeahead) {
           var ty = this;

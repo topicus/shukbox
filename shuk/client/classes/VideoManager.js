@@ -1,6 +1,7 @@
 (function(window) {
 	function VideoManager(){
 		this.add = function(obj){
+			console.log(obj);
 			var u = Meteor.user()
 				, listkey = obj.listkey || Session.get('listkey')
 				, user_logged = u

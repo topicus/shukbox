@@ -20,9 +20,6 @@
  background-color:whiteSmoke;
  cursor:pointer;
 }
-#autocompleter li img{
-  margin-right:20px;
-}
 #autocompleter li
 {
   overflow:auto;

@@ -1,4 +1,6 @@
 Meteor.startup(function(){
+  Template.playlists.rendered = function(){
+  };
   Template.playlists.mylists = function(){
     if (Meteor.user())
       return PlayLists.find({user:Meteor.user()._id, saved:true},{sort: {when: -1}});
@@ -17,6 +19,10 @@ Meteor.startup(function(){
       playManager.set(this._id);
       Meteor.flush();
       $('.reseteable').button('toggle');
+    },
+    'click #activate-second-toolbar': function(e){
+      $playlists = $('#playlists');
+      $playlists.toggleClass('toggled');
     },
     'click .create':function(){
       Meteor.flush();

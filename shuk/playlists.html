@@ -1,9 +1,13 @@
 <!-- TEMPLATE PLAYLISTS-->
 <template name="playlists">
-	<div class="playlists" style="display:none">
+	<div id="activate-second-toolbar">
+		<a id="activate-second-toolbar-icon" href="#"><i class="icon-th-list icon-white"></i></a>
+		<span class="title">Your lists</span>
+		<span class="desc">Check Your Lists</span>
+	</div>		
+	<div id="playlists">
 	  {{#if signedup}}			  
 		<ul class="nav nav-list" id="mylists">
-			<li class="nav-header">My lists</li>
 			{{#each mylists}}
 			  {{>playlist}}
 			{{/each}}
@@ -20,6 +24,7 @@
 	  	</div>
 	  {{/if}}
 	</div>
+	
 </template>
 
 <!-- TEMPLATE PLAYLIST-->

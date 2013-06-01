@@ -131,7 +131,9 @@ h3{
 	float: right;
 	margin-right: 5px;
 }
-
+#mylists li span{
+	position: static;
+}
 #save-control{
 	margin-top:10px;
 	margin-bottom:20px;
@@ -142,7 +144,7 @@ h3{
 	width:24%;
 }
 .save-create-buttons{
-	padding-left: 11px;
+	padding-left: 0px;
 }
 .playlists div.save-create-buttons a {
 	color: #777 !important;
@@ -193,6 +195,7 @@ h3{
 	left: 15px;
 	width: 200px;
 	cursor: pointer;
+	z-index: 20;
 }
 #activate-second-toolbar:hover #activate-second-toolbar-icon{
 	background-color: #333;
@@ -269,4 +272,8 @@ h3{
 		padding-right:24px;
 		padding-top:13px;
 	}		
+}
+
+#activate-second-tolbar{
+	border: 1px solid red;
 }

@@ -17,13 +17,12 @@
 			var entries = feed.entry || [];
 			var html = ['<ul id="autocompleter">'];
 			_.each(entries,function(entry){
-				log(entry);
         var playCount = (undef(entry.yt$statistics))? '<div class="play-count">' + entry.yt$statistics.viewCount.valueOf() + ' views' + '</div>' : ""
         	, title = '<h3>' + entry.title.$t + '</h3>'
       		, description = '<p>' + entry.media$group.media$description.$t + '</p>'
       		, vid = that.get_youtube_id(entry.link[0].href)
-        	, lnk = '<a data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>'
-        	,	thumb = '<span class="video-thumb ux-thumb yt-thumb-default-185 ">' +
+        	, lnk = '<a class="video-title" data-thumb="'+thumb+'" title="'+entry.title.$t+'" href = \"' + entry.link[0].href + '\"></a>'
+        	,	thumb = '<span class="video-thumb ux-thumb yt-thumb-default-185 span4">' +
 											'<span class="yt-thumb-clip">' +
 												'<span class="yt-thumb-clip-inner">' +
 													'<img data-thumb="//i.ytimg.com/vi/' + vid + '/mqdefault.jpg" src="//i.ytimg.com/vi/' + vid + '/mqdefault.jpg" alt="Thumbnail" width="185" data-group-key="thumb-group-2">' +
@@ -32,7 +31,7 @@
 											'</span>' +
 										'</span>';
 
-        html.push('<li>', thumb, '<div class="right">', title, description, playCount, lnk, '</div>','</li>');		        			
+        html.push('<li>', thumb, '<div class="span8 video-item">', title, description, playCount, lnk, '</div>','</li>');		        			
 			});	
 	    html.push('</ul>');
 	    $('#results').append(html.join(''));
@@ -41,22 +40,24 @@
 	    autocompleter.on('click',function(e){
 	    	log("click");
         var $video = $(this);
-        var vid = that.get_youtube_id($video.find('.right').children('a').attr("href"));
-        var title = $video.find('.right').children('a').attr("title");   
+        var vid = that.get_youtube_id($video.find('.video-item').children('a').attr("href"));
+        var title = $video.find('.video-item').children('a.video-title').attr("title");   
         $(this).addClass('selected');        
         videos.add({vid:vid,title:title});
  	    });				
 		};
 		this.nextPage = function(callback){
       that.autocomple_offset +=that.AUTOCOMPLETE_PAGE_SIZE;
-      that.search(last_query, function(error,response){
+      var xhr = that.search(last_query, function(error,response){
       	callback(error, response);
-      });        
+      });
+      return xhr;
 		};
 		this.clear = function(){
 			$('#results').empty();
 		};
 		this.search = function(q,callback){
+			var xhr;
 			if(q !== ''){
 				last_query = q;
 				var offset = (typeof(that.autocomple_offset) !== 'undefined')? that.autocomple_offset : 1;
@@ -65,7 +66,7 @@
 		              'alt=json-in-script&' +
 		              'start-index='+offset+'&' +
 		              'orderby=relevance&sortorder=descending&format=5&fmt=18'
-				$.ajax({
+				xhr = $.ajax({
 					type: 'GET',
 					url: url,
 					async: false,
@@ -85,8 +86,8 @@
 			}else{
 				document.getElementById("autocompleter").style.display = 'none';
 			}		
+			return xhr;
 		};
-
 	};
 
 	SearchWidget.prototype.CONTROL_KEYCODES = new Array(40,38,37,39)

@@ -1,0 +1,25 @@
+{
+  "meteor": {
+    "git": "https://github.com/meteor/meteor.git",
+    "branch": "master",
+    "commit": "5d736d4bf0448c7db1f9b47124dfafc34a9631bb"
+  },
+  "dependencies": {
+    "basePackages": {
+      "accounts-anonymous": {},
+      "accounts-ui-bootstrap-dropdown": {}
+    },
+    "packages": {
+      "accounts-anonymous": {
+        "git": "https://github.com/tmeasday/meteor-accounts-anonymous.git",
+        "tag": "v0.0.1",
+        "commit": "f013415fd4b84df8cc96f5149f0fa6d35dfa8b12"
+      },
+      "accounts-ui-bootstrap-dropdown": {
+        "git": "https://github.com/erobit/meteor-accounts-ui-bootstrap-dropdown.git",
+        "tag": "v0.1.0",
+        "commit": "e66558aaa4dc0d85c6ddb63bd2289b38c2b793f6"
+      }
+    }
+  }
+}

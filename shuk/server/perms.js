@@ -1,4 +1,10 @@
 Meteor.startup(function () {
+  Meteor.users.allow({
+    update:function(uid, doc){
+      return true;
+    }
+  });
+
   Videos.allow({
     insert: function (uid, doc) {
       console.log("INSERT ALLOW");
@@ -15,7 +21,7 @@ Meteor.startup(function () {
     },
     remove: function (uid, doc) {
       console.log("REMOVE ALLOW");
-      var so = Videos.findOne({_id:doc[0]._id});
+      var so = Videos.findOne({_id:doc._id});
       var plo = PlayLists.findOne({_id:so.listkey});
       if(plo && plo.user===uid)
         return true;
@@ -30,7 +36,7 @@ Meteor.startup(function () {
     },
     update: function (uid, doc, fields, modifiers) {
       console.log("UPDATE ALLOW PLAYLIST");
-      var plo = PlayLists.findOne({_id:doc[0]._id});
+      var plo = PlayLists.findOne({_id:doc._id});
       var perms = ['score', 'voters'];
       if(uid === plo.user || publicFields(perms, fields)){
         return true;
@@ -39,9 +45,10 @@ Meteor.startup(function () {
       }
     },
     remove: function (uid, doc) {
-      var plo = PlayLists.findOne({_id:doc[0]._id});
+      console.log(doc._id);
+      var plo = PlayLists.findOne({_id:doc._id});
       if(plo && uid === plo.user){
-        Videos.remove({listkey:doc[0]._id});
+        Videos.remove({listkey:doc._id});
         return true;
       }else
         return false;

@@ -2,22 +2,22 @@
   function Controls(){
     var that = this;
     this.play = function(vid){
-        if(typeof(player) === 'undefined' || !player){
-          player = new YT.Player('player-div', {
+        if(undef(that.player) || !that.player){
+          that.player = new YT.Player('player-div', {
             height: '300',
             width: '100%',
             videoId: vid,
             playerVars: { 'autoplay': 0, 'wmode': 'opaque' }, 
             events: {
               'onReady': function(event){
-                player.playVideo();
+                that.player.playVideo();
               },
               'onStateChange': that.onPlayerStateChange
             }
           });
-        }else if(player){
-          player.loadVideoById(vid);
-          player.playVideo();      
+        }else if(that.player){
+          that.player.loadVideoById(vid);
+          that.player.playVideo();      
         }
     };
     this.onPlayerStateChange = function(event) {
@@ -26,11 +26,11 @@
       }
     };
     this.stop = function() {
-      if(player){
-        player.stopVideo();
-        player.destroy();    
+      if(!undef(that.player) && that.player){
+        that.player.stopVideo();
+        that.player.destroy();    
       }
-      player = null;
+      that.player = null;
     };  
     this.next = function(){
       that.setCurrent('modify',1);

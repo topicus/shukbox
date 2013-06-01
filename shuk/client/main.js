@@ -20,8 +20,10 @@ Meteor.autosubscribe(function () {
 
 function init(){
   Backbone.history.start({pushState: true});
-  if(Meteor.user() === null) 
-    userManager.loginAsAnonym();
+  if(Meteor.user() === null){
+    userManager.loginAsAnonym();  
+  }
+  
 }
 var tag = document.createElement('script');
     tag.src = "//www.youtube.com/iframe_api";

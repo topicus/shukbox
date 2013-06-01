@@ -5,6 +5,7 @@ var ShukboxRouter = Backbone.Router.extend({
     "profile/:userid": "profile"
   },
   init:function(){
+    Session.set('page', 'home');
     playManager.create();
   },
   main: function (playlist) {
@@ -14,18 +15,16 @@ var ShukboxRouter = Backbone.Router.extend({
         var plo = PlayLists.findOne({_id:Session.get('listkey'), saved:true});
         if(!undef(plo)){
           var name = (plo.name)? plo.name : "Anonym";
-          activity.add("listened to", plo);          
+          //activity.add("listened to", plo);          
         }
     }
     this.navigate(playlist, true);
-    
-
     PlayLists.find({_id:playlist}).observe({
-      added: function (item) {     
+      added: function (item) {   
         controls.setCurrent('set',item.current);
         Session.set('owner', item.user);
       } 
-    });  
+    });   
   },
   profile: function(userid){
     Session.set('page', 'profile');

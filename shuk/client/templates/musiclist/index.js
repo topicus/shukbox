@@ -3,9 +3,19 @@ Meteor.startup(function(){
     $('.dropdown-toggle').dropdown();
     $(".scrollwrap").mCustomScrollbar("destroy");
     $(".scrollwrap").mCustomScrollbar({
-      horizontalScroll:true
+      horizontalScroll:true,
+      scrollInertia: 0,
+      mouseWheelPixels: 30, 
+      updateOnContentResize: true,
+      autoExpandHorizontalScroll: true,
+      normalizeMouseWheelDelta: true
     });
-    
+    if($('.current').length)
+      $(".scrollwrap").mCustomScrollbar("scrollTo",".current");
+
+    if($('#playlist').children().length){
+      $('#control-bar').height(120);
+    }    
   };
   Template.musiclist.videos = function () {
     if(typeof(Session.get('listkey'))=== "undefined"){

@@ -7,7 +7,7 @@ Meteor.startup(function(){
   }
   Template.shares.on_playlist_ready = function(){  
     if(typeof(FB)!=='undefined'){
-      Meteor.flush();
+      //Meteor.flush();
       Meteor.defer(function(){
         FB.XFBML.parse();    
       });
@@ -15,7 +15,7 @@ Meteor.startup(function(){
   };
   Template.shares.events({
     'click #playlist_url': function(e){
-      Meteor.flush();
+      //Meteor.flush();
       $(e.target).select();  
     },
     'click .qrcode':function(e){
